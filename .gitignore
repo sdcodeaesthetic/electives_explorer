@@ -1,7 +1,1 @@
-node_modules/
-client/node_modules/
-client/dist/
-*.log
-.env
-.env.local
-.DS_Store
+node_modules
