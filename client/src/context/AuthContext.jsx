@@ -1,9 +1,5 @@
 import { createContext, useContext, useState } from 'react';
-
-const USERS = [
-  { id: 1, username: 'admin',   password: 'admin123',   role: 'admin',   name: 'Admin' },
-  { id: 2, username: 'student', password: 'student123', role: 'student', name: 'Student' },
-];
+import { apiFetch } from '../lib/api';
 
 const AuthContext = createContext(null);
 
@@ -13,22 +9,43 @@ export function AuthProvider({ children }) {
     catch { return null; }
   });
 
-  const login = async (username, password) => {
-    const match = USERS.find(u => u.username === username && u.password === password);
-    if (!match) throw new Error('Invalid username or password');
-    const { password: _pw, ...safeUser } = match;
+  function persist(data) {
+    localStorage.setItem('elective_token', data.token);
+    const { token: _t, ...safeUser } = data;
     setUser(safeUser);
     localStorage.setItem('elective_user', JSON.stringify(safeUser));
     return safeUser;
+  }
+
+  // Students log in with email; admins with username
+  const login = async (identifier, password, role) => {
+    const body = role === 'admin'
+      ? { username: identifier.trim(), password }
+      : { email: identifier.trim(), password };
+
+    const data = await apiFetch('/api/auth/login', {
+      method: 'POST',
+      body: JSON.stringify(body),
+    });
+    return persist(data);
+  };
+
+  const register = async (name, email, password) => {
+    const data = await apiFetch('/api/auth/register', {
+      method: 'POST',
+      body: JSON.stringify({ name: name.trim(), email: email.trim(), password }),
+    });
+    return persist(data);
   };
 
   const logout = () => {
     setUser(null);
     localStorage.removeItem('elective_user');
+    localStorage.removeItem('elective_token');
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout }}>
+    <AuthContext.Provider value={{ user, login, register, logout }}>
       {children}
     </AuthContext.Provider>
   );

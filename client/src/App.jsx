@@ -9,6 +9,7 @@ import CourseGrid from './components/CourseGrid';
 import BasketView from './components/BasketView';
 import CoursePage from './components/CoursePage';
 import LoginPage from './components/LoginPage';
+import SuggestionsTab from './components/SuggestionsTab';
 
 const TERM_RULES = {
   'Term IV':  { min: 18, max: 21, label: 'Term 4' },
@@ -166,10 +167,18 @@ function AppInner({ logout, user }) {
             My Planner
             {basket.size > 0 && <span className="tab-badge">{basket.size}</span>}
           </button>
+          {user.role === 'student' && (
+            <button
+              className={`tab-btn ${activeTab === 'suggest' ? 'active' : ''}`}
+              onClick={() => setActiveTab('suggest')}
+            >
+              AI Suggestions
+            </button>
+          )}
         </div>
       </div>
 
-      {activeTab === 'browse' ? (
+      {activeTab === 'browse' && (
         <>
           <FilterBar
             search={search} setSearch={setSearch}
@@ -188,12 +197,20 @@ function AppInner({ logout, user }) {
             onExpand={course => navigate(`/course/${course.id}`)}
           />
         </>
-      ) : (
+      )}
+      {activeTab === 'basket' && (
         <BasketView
           basketCourses={basketCourses}
           toggleBasket={toggleBasket}
           onDownloadPDF={handleDownloadPDF}
           canDownload={allThreeTermsFilled}
+        />
+      )}
+      {activeTab === 'suggest' && user.role === 'student' && (
+        <SuggestionsTab
+          allCourses={allCourses}
+          basket={basket}
+          toggleBasket={toggleBasket}
         />
       )}
     </>

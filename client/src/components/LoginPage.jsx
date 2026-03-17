@@ -2,26 +2,56 @@ import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import '../styles/LoginPage.css';
 
+const INST_DOMAIN = 'iimsambalpur.ac.in';
+
 export default function LoginPage() {
-  const { login } = useAuth();
-  const [tab,      setTab]      = useState('student');   // 'student' | 'admin'
+  const { login, register } = useAuth();
+
+  const [role,     setRole]     = useState('student');  // 'student' | 'admin'
+  const [mode,     setMode]     = useState('login');    // 'login' | 'register'  (student only)
+
+  // shared fields
+  const [name,     setName]     = useState('');
+  const [email,    setEmail]    = useState('');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+
   const [error,    setError]    = useState('');
   const [loading,  setLoading]  = useState(false);
+  const [emailPopup, setEmailPopup] = useState(false);
+
+  function resetForm() {
+    setName(''); setEmail(''); setUsername(''); setPassword(''); setError('');
+  }
+
+  function switchRole(r) { setRole(r); setMode('login'); resetForm(); }
+  function switchMode(m) { setMode(m); resetForm(); }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+
+    // Block non-institutional email before hitting the server
+    if (role === 'student') {
+      const em = email.trim().toLowerCase();
+      if (!em.endsWith(`@${INST_DOMAIN}`)) {
+        setEmailPopup(true);
+        return;
+      }
+    }
+
     setLoading(true);
     try {
-      const user = await login(username.trim(), password);
-      // role mismatch guard
-      if (user.role !== tab) {
-        setError(`These credentials belong to an ${user.role} account. Please use the correct tab.`);
-        // log them out immediately
-        localStorage.removeItem('elective_user');
-        window.location.reload();
+      if (mode === 'register') {
+        await register(name, email, password);
+      } else {
+        const identifier = role === 'admin' ? username : email;
+        const user = await login(identifier, password, role);
+        if (user.role !== role) {
+          setError(`These credentials belong to a ${user.role} account. Please use the correct tab.`);
+          localStorage.removeItem('elective_user');
+          window.location.reload();
+        }
       }
     } catch (err) {
       setError(err.message);
@@ -30,12 +60,10 @@ export default function LoginPage() {
     }
   };
 
-  const fill = (u, p) => { setUsername(u); setPassword(p); setError(''); };
-
   return (
     <div className="login-page">
       <div className="login-card">
-        {/* Logo / title */}
+        {/* Logo */}
         <div className="login-logo">
           <div className="login-logo-icon">E</div>
           <div>
@@ -46,32 +74,70 @@ export default function LoginPage() {
 
         {/* Role tabs */}
         <div className="login-tabs">
-          <button
-            className={`login-tab ${tab === 'student' ? 'active' : ''}`}
-            onClick={() => { setTab('student'); setError(''); }}
-          >
+          <button className={`login-tab ${role === 'student' ? 'active' : ''}`} onClick={() => switchRole('student')}>
             Student
           </button>
-          <button
-            className={`login-tab ${tab === 'admin' ? 'active' : ''}`}
-            onClick={() => { setTab('admin'); setError(''); }}
-          >
+          <button className={`login-tab ${role === 'admin' ? 'active' : ''}`} onClick={() => switchRole('admin')}>
             Admin
           </button>
         </div>
 
-        <form className="login-form" onSubmit={handleSubmit}>
-          <div className="login-field">
-            <label>Username</label>
-            <input
-              type="text"
-              value={username}
-              onChange={e => setUsername(e.target.value)}
-              placeholder={tab === 'admin' ? 'admin' : 'student'}
-              autoComplete="username"
-              required
-            />
+        {/* Student mode/sub-tabs */}
+        {role === 'student' && (
+          <div className="login-mode-tabs">
+            <button className={`login-mode-tab ${mode === 'login' ? 'active' : ''}`} onClick={() => switchMode('login')}>
+              Sign In
+            </button>
+            <button className={`login-mode-tab ${mode === 'register' ? 'active' : ''}`} onClick={() => switchMode('register')}>
+              Create Account
+            </button>
           </div>
+        )}
+
+        <form className="login-form" onSubmit={handleSubmit}>
+          {/* Name — register only */}
+          {mode === 'register' && (
+            <div className="login-field">
+              <label>Full Name</label>
+              <input
+                type="text"
+                value={name}
+                onChange={e => setName(e.target.value)}
+                placeholder="Your full name"
+                required
+              />
+            </div>
+          )}
+
+          {/* Email (students) or Username (admin) */}
+          {role === 'student' ? (
+            <div className="login-field">
+              <label>Institutional Email</label>
+              <input
+                type="email"
+                value={email}
+                onChange={e => setEmail(e.target.value)}
+                placeholder={`yourname@${INST_DOMAIN}`}
+                autoComplete="email"
+                required
+              />
+              <span className="login-field-hint">Must be a @{INST_DOMAIN} address</span>
+            </div>
+          ) : (
+            <div className="login-field">
+              <label>Username</label>
+              <input
+                type="text"
+                value={username}
+                onChange={e => setUsername(e.target.value)}
+                placeholder="admin"
+                autoComplete="username"
+                required
+              />
+            </div>
+          )}
+
+          {/* Password */}
           <div className="login-field">
             <label>Password</label>
             <input
@@ -79,7 +145,7 @@ export default function LoginPage() {
               value={password}
               onChange={e => setPassword(e.target.value)}
               placeholder="••••••••"
-              autoComplete="current-password"
+              autoComplete={mode === 'register' ? 'new-password' : 'current-password'}
               required
             />
           </div>
@@ -87,23 +153,37 @@ export default function LoginPage() {
           {error && <div className="login-error">{error}</div>}
 
           <button className="login-btn" type="submit" disabled={loading}>
-            {loading ? 'Signing in…' : `Sign in as ${tab === 'admin' ? 'Admin' : 'Student'}`}
+            {loading
+              ? (mode === 'register' ? 'Creating account…' : 'Signing in…')
+              : (mode === 'register' ? 'Create Account' : `Sign in as ${role === 'admin' ? 'Admin' : 'Student'}`)
+            }
           </button>
         </form>
 
-        {/* Demo hint */}
-        <div className="login-demo">
-          <p>Demo credentials</p>
-          <div className="login-demo-btns">
-            <button onClick={() => { setTab('student'); fill('student', 'student123'); }}>
-              Student login
-            </button>
-            <button onClick={() => { setTab('admin'); fill('admin', 'admin123'); }}>
-              Admin login
+        {/* Admin hint */}
+        {role === 'admin' && (
+          <div className="login-demo">
+            <p>Admin accounts are managed by the institution</p>
+          </div>
+        )}
+      </div>
+
+      {/* Institutional email popup */}
+      {emailPopup && (
+        <div className="modal-backdrop" onClick={() => setEmailPopup(false)}>
+          <div className="modal-box email-popup" onClick={e => e.stopPropagation()}>
+            <div className="modal-icon">📧</div>
+            <h3 className="modal-title">Institutional Email Required</h3>
+            <p className="modal-body">
+              Please use your <strong>@{INST_DOMAIN}</strong> email address to access the platform.
+              Personal email addresses (Gmail, Yahoo, etc.) are not accepted.
+            </p>
+            <button className="modal-close-btn" onClick={() => { setEmailPopup(false); setEmail(''); }}>
+              Use Institutional Email
             </button>
           </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }

@@ -8,14 +8,20 @@
     "client": "npm run dev --prefix client",
     "install:all": "npm install && npm install --prefix client",
     "build": "npm install --prefix client && npm run build --prefix client",
-    "start": "node server/index.js"
+    "start": "node server/index.js",
+    "seed": "node server/seed.js"
   },
   "engines": {
-    "node": ">=18"
+    "node": "20.x"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.79.0",
+    "bcryptjs": "^3.0.3",
     "concurrently": "^8.2.2",
     "cors": "^2.8.5",
-    "express": "^4.18.2"
+    "dotenv": "^17.3.1",
+    "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.3",
+    "mongoose": "^9.3.0"
   }
 }

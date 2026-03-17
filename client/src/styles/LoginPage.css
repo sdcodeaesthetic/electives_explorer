@@ -119,6 +119,41 @@
 .login-btn:hover    { background: #ffd166; }
 .login-btn:disabled { opacity: 0.6; cursor: not-allowed; }
 
+/* Mode sub-tabs (Sign In / Create Account) */
+.login-mode-tabs {
+  display: flex;
+  gap: 0;
+  margin-bottom: 24px;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+.login-mode-tab {
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 8px 16px;
+  margin-bottom: -1px;
+  transition: color 0.15s, border-color 0.15s;
+}
+.login-mode-tab:hover  { color: var(--text-primary); }
+.login-mode-tab.active { color: var(--accent); border-bottom-color: var(--accent); font-weight: 700; }
+
+/* Field hint */
+.login-field-hint {
+  font-size: 11px;
+  color: var(--text-dim);
+  margin-top: 2px;
+}
+
+/* Email popup modal */
+.email-popup { max-width: 380px; text-align: center; }
+.email-popup .modal-body { color: var(--text-muted); font-size: 14px; line-height: 1.6; margin: 0 0 20px; }
+.email-popup .modal-body strong { color: var(--accent); }
+
 /* Demo hints */
 .login-demo {
   margin-top: 24px;
