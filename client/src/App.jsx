@@ -301,6 +301,28 @@ function buildPrintHTML(courses, { t4, t5, t6, total }) {
 
   const termCredits = { 'Term IV': t4, 'Term V': t5, 'Term VI': t6 };
 
+  // Area breakdown
+  const areaMap = {};
+  courses.forEach(c => {
+    if (!areaMap[c.area]) areaMap[c.area] = { credits: 0, count: 0 };
+    areaMap[c.area].credits += c.credits || 0;
+    areaMap[c.area].count  += 1;
+  });
+  const areaEntries = Object.entries(areaMap).sort((a, b) => b[1].credits - a[1].credits);
+  const areaCards = areaEntries.map(([area, { credits, count }]) => {
+    const pct = total > 0 ? Math.round((credits / total) * 100) : 0;
+    const color = AREA_COLORS[area] || '#64748b';
+    return `
+      <div class="area-card">
+        <div class="area-top">
+          <span class="area-name" style="color:${color}">${area}</span>
+          <span class="area-cr">${credits} cr</span>
+        </div>
+        <div class="area-bar-bg"><div class="area-bar-fill" style="width:${pct}%;background:${color}"></div></div>
+        <div class="area-meta">${count} course${count > 1 ? 's' : ''} &nbsp;·&nbsp; ${pct}% of total</div>
+      </div>`;
+  }).join('');
+
   const termRows = TERM_ORDER.map(term => {
     const list = byTerm[term];
     if (!list.length) return '';
@@ -340,9 +362,20 @@ function buildPrintHTML(courses, { t4, t5, t6, total }) {
   .rule-table td, .rule-table th { padding: 5px 14px; }
   .ok  { color: #16a34a; font-weight: 700; }
   .bad { color: #dc2626; font-weight: 700; }
+  .section-title { font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: #6b7280; margin: 28px 0 12px; }
+  .area-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 28px; }
+  .area-card { border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px 14px; background: #f8fafc; }
+  .area-top  { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; }
+  .area-name { font-size: 13px; font-weight: 700; }
+  .area-cr   { font-size: 16px; font-weight: 800; color: #111; }
+  .area-bar-bg   { background: #e5e7eb; border-radius: 4px; height: 4px; margin-bottom: 6px; }
+  .area-bar-fill { height: 4px; border-radius: 4px; }
+  .area-meta { font-size: 11px; color: #6b7280; }
 </style></head><body>
 <h1>IIM Sambalpur · MBA Elective Plan</h1>
 <p class="sub">Generated on ${new Date().toLocaleDateString('en-IN', { day:'numeric', month:'long', year:'numeric' })}</p>
+<p class="section-title">Credit Breakdown by Area</p>
+<div class="area-grid">${areaCards}</div>
 <table>
   <thead><tr><th>Course</th><th>Area</th><th>Faculty</th><th style="text-align:right">Credits</th></tr></thead>
   <tbody>
