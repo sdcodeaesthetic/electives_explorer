@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Routes, Route, useNavigate } from 'react-router-dom';
 import './styles/global.css';
 import { useCourses } from './hooks/useCourses';
 import { useAuth } from './context/AuthContext';
+import { apiFetch } from './lib/api';
 import Header from './components/Header';
 import FilterBar from './components/FilterBar';
 import CourseGrid from './components/CourseGrid';
@@ -51,6 +52,33 @@ function AppInner({ logout, user }) {
   const [basket,    setBasket]        = useState(new Set());
   const [validationMsg, setValidationMsg] = useState(null);
   const [courseOverrides, setCourseOverrides] = useState({});
+
+  const saveTimer    = useRef(null);
+  const isRestored   = useRef(false);
+
+  // Restore basket from DB on login (students only)
+  useEffect(() => {
+    if (user.role !== 'student') return;
+    apiFetch('/api/session')
+      .then(data => {
+        if (data.basket?.length) setBasket(new Set(data.basket));
+        isRestored.current = true;
+      })
+      .catch(() => { isRestored.current = true; });
+  }, [user]);
+
+  // Auto-save basket to DB whenever it changes (students only, debounced 800ms)
+  useEffect(() => {
+    if (user.role !== 'student' || !isRestored.current) return;
+    clearTimeout(saveTimer.current);
+    saveTimer.current = setTimeout(() => {
+      apiFetch('/api/session', {
+        method: 'PUT',
+        body: JSON.stringify({ basket: [...basket] }),
+      }).catch(() => {});
+    }, 800);
+    return () => clearTimeout(saveTimer.current);
+  }, [basket, user]);
 
   // When admin saves an edit from CoursePage, sync overrides back to browse view
   const handleCourseUpdated = (updated) => {

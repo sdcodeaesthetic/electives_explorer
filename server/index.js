@@ -7,6 +7,7 @@ const coursesRouter     = require('./routes/courses');
 const authRouter        = require('./routes/auth');
 const reviewsRouter     = require('./routes/reviews');
 const suggestionsRouter = require('./routes/suggestions');
+const sessionRouter     = require('./routes/session');
 
 // Auto-seed on first startup (empty Atlas DB)
 async function autoSeed() {
@@ -65,6 +66,7 @@ app.use('/api/courses',     coursesRouter);
 app.use('/api/auth',        authRouter);
 app.use('/api/reviews',     reviewsRouter);
 app.use('/api/suggestions', suggestionsRouter);
+app.use('/api/session',     sessionRouter);
 
 app.get('/api/health', (req, res) => res.json({ status: 'ok' }));
 
