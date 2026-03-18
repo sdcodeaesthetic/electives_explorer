@@ -1,6 +1,6 @@
-const express  = require('express');
-const Anthropic = require('@anthropic-ai/sdk');
-const Course    = require('../models/Course');
+const express     = require('express');
+const Anthropic   = require('@anthropic-ai/sdk');
+const coursesJSON = require('../data/courses.json');
 const { requireAuth } = require('../middleware/auth');
 
 const router = express.Router();
@@ -126,9 +126,15 @@ router.post('/', requireAuth, async (req, res) => {
     if (!process.env.ANTHROPIC_API_KEY)
       return res.status(503).json({ error: 'AI suggestions not configured (missing ANTHROPIC_API_KEY)' });
 
-    const allCourses = await Course.find(
-      {}, 'courseId area term course faculty credits description'
-    ).lean();
+    const allCourses = coursesJSON.map(c => ({
+      courseId:    c.id,
+      area:        c.area,
+      term:        c.term,
+      course:      c.course,
+      faculty:     c.faculty,
+      credits:     c.credits ?? null,
+      description: c.description || '',
+    }));
 
     const termSections = ['Term IV', 'Term V', 'Term VI'].map(term => {
       const list = allCourses

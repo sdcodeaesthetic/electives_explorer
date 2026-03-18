@@ -1,56 +1,36 @@
 /**
- * seed.js — Migrate JSON data into MongoDB
+ * seed.js — Seed default users into PostgreSQL
  * Run once: node server/seed.js
  */
 require('dotenv').config();
-const mongoose = require('mongoose');
-const bcrypt   = require('bcryptjs');
-const User     = require('./models/User');
-const Course   = require('./models/Course');
-const coursesData = require('./data/courses.json');
-const usersData   = require('./data/users.json');
+const bcrypt = require('bcryptjs');
+const { connectDB, pool } = require('./db');
+const usersData = require('./data/users.json');
 
 async function seed() {
-  await mongoose.connect(process.env.MONGODB_URI);
-  console.log('Connected to MongoDB');
+  await connectDB();
+  console.log('Connected to PostgreSQL');
 
   // ── Users ──────────────────────────────────────────────────────────────────
-  const existingUsers = await User.countDocuments();
+  const { rows } = await pool.query('SELECT COUNT(*) FROM users');
+  const existingUsers = parseInt(rows[0].count);
+
   if (existingUsers === 0) {
-    const users = await Promise.all(
-      usersData.map(async u => ({
-        username: u.username,
-        password: await bcrypt.hash(u.password, 10),
-        role:     u.role,
-        name:     u.name,
-      }))
-    );
-    await User.insertMany(users);
-    console.log(`✓ Seeded ${users.length} users`);
+    for (const u of usersData) {
+      const hashed = await bcrypt.hash(u.password, 10);
+      await pool.query(
+        `INSERT INTO users (username, password, role, name)
+         VALUES ($1, $2, $3, $4) ON CONFLICT DO NOTHING`,
+        [u.username, hashed, u.role, u.name]
+      );
+    }
+    console.log(`✓ Seeded ${usersData.length} users`);
   } else {
     console.log(`  Users already seeded (${existingUsers} found), skipping`);
   }
 
-  // ── Courses ────────────────────────────────────────────────────────────────
-  const existingCourses = await Course.countDocuments();
-  if (existingCourses === 0) {
-    const courses = coursesData.map(c => ({
-      courseId:    c.id,
-      area:        c.area,
-      term:        c.term,
-      course:      c.course,
-      faculty:     c.faculty,
-      credits:     c.credits ?? null,
-      description: c.description || '',
-    }));
-    await Course.insertMany(courses);
-    console.log(`✓ Seeded ${courses.length} courses`);
-  } else {
-    console.log(`  Courses already seeded (${existingCourses} found), skipping`);
-  }
-
-  await mongoose.disconnect();
-  console.log('Done — MongoDB disconnected');
+  await pool.end();
+  console.log('Done — PostgreSQL disconnected');
 }
 
 seed().catch(err => {

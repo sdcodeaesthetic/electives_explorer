@@ -1,7 +1,7 @@
 const express = require('express');
 const bcrypt  = require('bcryptjs');
 const jwt     = require('jsonwebtoken');
-const User    = require('../models/User');
+const { pool } = require('../db');
 const { requireAuth } = require('../middleware/auth');
 
 const router = express.Router();
@@ -10,7 +10,7 @@ const INST_DOMAIN = 'iimsambalpur.ac.in';
 
 function signToken(user) {
   return jwt.sign(
-    { id: user._id, username: user.username, email: user.email, role: user.role, name: user.name },
+    { id: user.id, username: user.username, email: user.email, role: user.role, name: user.name },
     process.env.JWT_SECRET,
     { expiresIn: '7d' }
   );
@@ -27,15 +27,20 @@ router.post('/register', async (req, res) => {
     if (!normalised.endsWith(`@${INST_DOMAIN}`))
       return res.status(400).json({ error: `Only @${INST_DOMAIN} email addresses are allowed` });
 
-    const existing = await User.findOne({ email: normalised });
-    if (existing)
+    const existing = await pool.query('SELECT id FROM users WHERE email = $1', [normalised]);
+    if (existing.rows.length)
       return res.status(409).json({ error: 'An account with this email already exists' });
 
     const hashed = await bcrypt.hash(password, 10);
-    const user   = await User.create({ name: name.trim(), email: normalised, password: hashed, role: 'student' });
-
+    const { rows } = await pool.query(
+      `INSERT INTO users (name, email, password, role)
+       VALUES ($1, $2, $3, 'student')
+       RETURNING id, email, name, role`,
+      [name.trim(), normalised, hashed]
+    );
+    const user  = rows[0];
     const token = signToken(user);
-    res.status(201).json({ id: user._id, email: user.email, name: user.name, role: user.role, token });
+    res.status(201).json({ id: user.id, email: user.email, name: user.name, role: user.role, token });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -51,14 +56,14 @@ router.post('/login', async (req, res) => {
 
     let user;
     if (email) {
-      // Student login via institutional email
       const normalised = email.trim().toLowerCase();
       if (!normalised.endsWith(`@${INST_DOMAIN}`))
         return res.status(400).json({ error: `Only @${INST_DOMAIN} email addresses are allowed` });
-      user = await User.findOne({ email: normalised });
+      const { rows } = await pool.query('SELECT * FROM users WHERE email = $1', [normalised]);
+      user = rows[0];
     } else if (username) {
-      // Admin login via username
-      user = await User.findOne({ username: username.trim().toLowerCase() });
+      const { rows } = await pool.query('SELECT * FROM users WHERE username = $1', [username.trim().toLowerCase()]);
+      user = rows[0];
     } else {
       return res.status(400).json({ error: 'Email or username is required' });
     }
@@ -69,7 +74,7 @@ router.post('/login', async (req, res) => {
     if (!match) return res.status(401).json({ error: 'Invalid credentials' });
 
     const token = signToken(user);
-    res.json({ id: user._id, username: user.username, email: user.email, name: user.name, role: user.role, token });
+    res.json({ id: user.id, username: user.username, email: user.email, name: user.name, role: user.role, token });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -78,9 +83,12 @@ router.post('/login', async (req, res) => {
 // GET /api/auth/me
 router.get('/me', requireAuth, async (req, res) => {
   try {
-    const user = await User.findById(req.user.id).select('-password');
-    if (!user) return res.status(404).json({ error: 'User not found' });
-    res.json({ id: user._id, username: user.username, email: user.email, name: user.name, role: user.role });
+    const { rows } = await pool.query(
+      'SELECT id, username, email, name, role FROM users WHERE id = $1',
+      [req.user.id]
+    );
+    if (!rows.length) return res.status(404).json({ error: 'User not found' });
+    res.json(rows[0]);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

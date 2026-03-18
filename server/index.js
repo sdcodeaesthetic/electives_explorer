@@ -1,52 +1,39 @@
 require('dotenv').config();
 const express = require('express');
 const cors    = require('cors');
-const mongoose = require('mongoose');
-const connectDB      = require('./db');
+const bcrypt  = require('bcryptjs');
+const { connectDB, pool } = require('./db');
 const coursesRouter     = require('./routes/courses');
 const authRouter        = require('./routes/auth');
 const reviewsRouter     = require('./routes/reviews');
 const suggestionsRouter = require('./routes/suggestions');
 const sessionRouter     = require('./routes/session');
 
-// Auto-seed on first startup (empty Atlas DB)
+// Auto-seed users on first startup
 async function autoSeed() {
   try {
-    const User   = require('./models/User');
-    const Course = require('./models/Course');
-    const bcrypt = require('bcryptjs');
-    const usersData   = require('./data/users.json');
-    const coursesData = require('./data/courses.json');
+    const usersData = require('./data/users.json');
 
-    const userCount   = await User.countDocuments();
-    const courseCount = await Course.countDocuments();
+    const { rows } = await pool.query('SELECT COUNT(*) FROM users');
+    if (parseInt(rows[0].count) > 0) return;
 
-    if (userCount === 0) {
-      const users = await Promise.all(
-        usersData.map(async u => ({
-          username: u.username,
-          password: await bcrypt.hash(u.password, 10),
-          role:     u.role,
-          name:     u.name,
-        }))
+    const users = await Promise.all(
+      usersData.map(async u => ({
+        username: u.username,
+        password: await bcrypt.hash(u.password, 10),
+        role:     u.role,
+        name:     u.name,
+      }))
+    );
+
+    for (const u of users) {
+      await pool.query(
+        `INSERT INTO users (username, password, role, name)
+         VALUES ($1, $2, $3, $4) ON CONFLICT DO NOTHING`,
+        [u.username, u.password, u.role, u.name]
       );
-      await User.insertMany(users);
-      console.log(`✓ Auto-seeded ${users.length} users`);
     }
-
-    if (courseCount === 0) {
-      const courses = coursesData.map(c => ({
-        courseId:    c.id,
-        area:        c.area,
-        term:        c.term,
-        course:      c.course,
-        faculty:     c.faculty,
-        credits:     c.credits ?? null,
-        description: c.description || '',
-      }));
-      await Course.insertMany(courses);
-      console.log(`✓ Auto-seeded ${courses.length} courses`);
-    }
+    console.log(`✓ Auto-seeded ${users.length} users`);
   } catch (err) {
     console.error('Auto-seed error:', err.message);
   }
@@ -70,10 +57,15 @@ app.use('/api/session',     sessionRouter);
 
 app.get('/api/health', (req, res) => res.json({ status: 'ok' }));
 
-// Connect to MongoDB then start server
-connectDB().then(() => {
-  autoSeed();
-  app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
+// Connect to PostgreSQL then start server
+connectDB()
+  .then(() => {
+    autoSeed();
+    app.listen(PORT, () => {
+      console.log(`Server running on http://localhost:${PORT}`);
+    });
+  })
+  .catch(err => {
+    console.error('PostgreSQL connection error:', err.message);
+    process.exit(1);
   });
-});
