@@ -12,9 +12,19 @@ const sessionRouter          = require('./routes/session');
 
 const app = express();
 
-const allowedOrigin = process.env.CORS_ORIGIN;
+const allowedOrigins = (process.env.CORS_ORIGIN || '')
+  .split(',').map(s => s.trim()).filter(Boolean);
+
 app.use(cors({
-  origin: allowedOrigin || '*',
+  origin: (origin, callback) => {
+    // Allow requests with no origin (server-to-server, curl, Postman)
+    if (!origin) return callback(null, true);
+    // If no CORS_ORIGIN configured, allow everything (dev / first deploy)
+    if (!allowedOrigins.length) return callback(null, true);
+    // Otherwise check against the whitelist
+    if (allowedOrigins.includes(origin)) return callback(null, true);
+    callback(new Error(`CORS: origin ${origin} not allowed`));
+  },
   credentials: true,
 }));
 app.use(express.json());
