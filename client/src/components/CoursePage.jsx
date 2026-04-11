@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import StarRating from './StarRating';
 import Header from './Header';
 import { apiFetch } from '../lib/api';
+import BASE from '../lib/api';
 import courseDetails from '../data/courseDetails.js';
 import '../styles/CoursePage.css';
 
@@ -56,7 +57,7 @@ export default function CoursePage({
   const [professors, setProfessors] = useState([]);
 
   useEffect(() => {
-    fetch('/api/professors').then(r => r.json()).then(setProfessors).catch(() => {});
+    fetch(`${BASE}/api/professors`).then(r => r.json()).then(setProfessors).catch(() => {});
   }, []);
 
   const startEdit = () => {

@@ -4,8 +4,10 @@ import { apiFetch, authHeaders } from '../lib/api';
 import StarRating from './StarRating';
 import '../styles/CourseDetailModal.css';
 
+import BASE from '../lib/api';
+
 async function fetchProfessors() {
-  const r = await fetch('/api/professors');
+  const r = await fetch(`${BASE}/api/professors`);
   if (!r.ok) throw new Error('Failed to load professors');
   return r.json();
 }
@@ -153,8 +155,8 @@ export default function CourseDetailModal({ course: initialCourse, onClose, onCo
   const fetchRatings = useCallback(() => {
     setRatingsLoading(true);
     Promise.all([
-      fetch(`/api/course-ratings/${course.id}`).then(r => r.json()),
-      fetch(`/api/professor-ratings/by-course/${course.id}`).then(r => r.json()),
+      fetch(`${BASE}/api/course-ratings/${course.id}`).then(r => r.json()),
+      fetch(`${BASE}/api/professor-ratings/by-course/${course.id}`).then(r => r.json()),
     ])
       .then(([cr, pr]) => {
         setCourseRatings(Array.isArray(cr) ? cr : []);
@@ -215,12 +217,12 @@ export default function CourseDetailModal({ course: initialCourse, onClose, onCo
 
   // ── admin delete ratings ──────────────────────────────────────────────────
   const deleteCourseRating = async (id) => {
-    await fetch(`/api/course-ratings/${id}`, { method: 'DELETE', headers: authHeaders() });
+    await fetch(`${BASE}/api/course-ratings/${id}`, { method: 'DELETE', headers: authHeaders() });
     setCourseRatings(prev => prev.filter(r => r.id !== id));
   };
 
   const deleteProfRating = async (id) => {
-    await fetch(`/api/professor-ratings/${id}`, { method: 'DELETE', headers: authHeaders() });
+    await fetch(`${BASE}/api/professor-ratings/${id}`, { method: 'DELETE', headers: authHeaders() });
     setProfRatings(prev => prev.filter(r => r.id !== id));
   };
 

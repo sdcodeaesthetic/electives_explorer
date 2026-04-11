@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
+import BASE from '../lib/api';
 
 export function useCourses() {
   const [allCourses, setAllCourses] = useState([]);
@@ -16,7 +17,7 @@ export function useCourses() {
 
   const fetchCourses = useCallback(() => {
     setLoading(true);
-    fetch('/api/courses')
+    fetch(`${BASE}/api/courses`)
       .then(r => { if (!r.ok) throw new Error(`Server error ${r.status}`); return r.json(); })
       .then(data => { setAllCourses(data); setError(null); })
       .catch(err => setError(err.message))

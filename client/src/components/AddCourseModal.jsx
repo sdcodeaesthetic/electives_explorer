@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { apiFetch } from '../lib/api';
+import BASE from '../lib/api';
 import '../styles/CourseDetailModal.css';
 
 const AREAS   = ['Finance','GMPP','ISM','Marketing','OB/HR','Operations','Strategy','Inter-Area'];
@@ -15,7 +16,7 @@ export default function AddCourseModal({ onClose, onCreated }) {
   const [err,        setErr]        = useState('');
 
   useEffect(() => {
-    fetch('/api/professors').then(r => r.json()).then(setProfessors).catch(() => {});
+    fetch(`${BASE}/api/professors`).then(r => r.json()).then(setProfessors).catch(() => {});
   }, []);
 
   const set = (field, val) => setForm(f => ({ ...f, [field]: val }));
