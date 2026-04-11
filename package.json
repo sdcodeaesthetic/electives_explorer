@@ -12,7 +12,7 @@
     "seed": "node server/seed.js"
   },
   "engines": {
-    "node": ">=18.0.0"
+    "node": "24.x"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.79.0",
