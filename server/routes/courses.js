@@ -1,68 +1,155 @@
 const express = require('express');
 const router  = express.Router();
-const fs      = require('fs');
-const path    = require('path');
+const { pool } = require('../db');
+const { requireAuth, requireAdmin } = require('../middleware/auth');
 
-const COURSES_FILE = path.join(__dirname, '../data/courses.json');
-let courses = require('../data/courses.json');
-
-function saveCourses() {
-  fs.writeFileSync(COURSES_FILE, JSON.stringify(courses, null, 2));
-}
+// Shared SELECT that joins professors and returns a computed `faculty` string
+// for backward-compat with all frontend code that reads course.faculty
+const COURSE_SELECT = `
+  SELECT
+    c.id, c.area, c.term, c.course, c.credits, c.description,
+    c.professor1_id, c.professor2_id,
+    p1.name AS professor1_name,
+    p2.name AS professor2_name,
+    CASE
+      WHEN p2.name IS NOT NULL THEN p1.name || ' & ' || p2.name
+      ELSE p1.name
+    END AS faculty,
+    c.created_at, c.updated_at
+  FROM courses c
+  LEFT JOIN professors p1 ON p1.id = c.professor1_id
+  LEFT JOIN professors p2 ON p2.id = c.professor2_id
+`;
 
 // GET /api/courses
-// Query params: area, credits, faculty, search
-router.get('/', (req, res) => {
-  let result = [...courses];
-  const { area, credits, faculty, search } = req.query;
+router.get('/', async (req, res) => {
+  try {
+    const { area, credits, faculty, search, term } = req.query;
+    let where  = 'WHERE 1=1';
+    const params = [];
 
-  if (area) {
-    const areas = area.split(',').map(a => a.trim().toLowerCase());
-    result = result.filter(c => areas.includes(c.area.toLowerCase()));
-  }
+    if (area) {
+      const areas = area.split(',').map(a => a.trim());
+      params.push(areas);
+      where += ` AND c.area = ANY($${params.length}::text[])`;
+    }
+    if (credits) {
+      params.push(parseFloat(credits));
+      where += ` AND c.credits = $${params.length}`;
+    }
+    if (faculty) {
+      params.push(`%${faculty}%`);
+      where += ` AND (p1.name ILIKE $${params.length} OR p2.name ILIKE $${params.length})`;
+    }
+    if (search) {
+      params.push(`%${search}%`);
+      where += ` AND (c.course ILIKE $${params.length} OR p1.name ILIKE $${params.length} OR p2.name ILIKE $${params.length} OR c.area ILIKE $${params.length})`;
+    }
+    if (term) {
+      params.push(term);
+      where += ` AND c.term = $${params.length}`;
+    }
 
-  if (credits) {
-    const val = parseFloat(credits);
-    result = result.filter(c => c.credits === val);
-  }
-
-  if (faculty) {
-    const q = faculty.toLowerCase();
-    result = result.filter(c => c.faculty.toLowerCase().includes(q));
-  }
-
-  if (search) {
-    const q = search.toLowerCase();
-    result = result.filter(c =>
-      c.course.toLowerCase().includes(q) ||
-      c.faculty.toLowerCase().includes(q) ||
-      c.area.toLowerCase().includes(q)
+    const { rows } = await pool.query(
+      `${COURSE_SELECT} ${where} ORDER BY c.id ASC`,
+      params
     );
+    res.json(rows);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
-
-  res.json(result);
 });
 
-// GET /api/courses/meta — returns unique areas, faculties, credit values
-router.get('/meta', (req, res) => {
-  const areas = [...new Set(courses.map(c => c.area))].sort();
-  const faculties = [...new Set(courses.map(c => c.faculty))].sort();
-  const creditValues = [...new Set(courses.map(c => c.credits).filter(Boolean))].sort((a, b) => a - b);
-  res.json({ areas, faculties, creditValues });
+// GET /api/courses/meta
+router.get('/meta', async (req, res) => {
+  try {
+    const { rows } = await pool.query(`
+      SELECT DISTINCT c.area, c.credits, p1.name AS p1, p2.name AS p2
+      FROM courses c
+      LEFT JOIN professors p1 ON p1.id = c.professor1_id
+      LEFT JOIN professors p2 ON p2.id = c.professor2_id
+      ORDER BY c.area
+    `);
+    const areas        = [...new Set(rows.map(r => r.area))].sort();
+    const faculties    = [...new Set(rows.flatMap(r => [r.p1, r.p2].filter(Boolean)))].sort();
+    const creditValues = [...new Set(rows.map(r => r.credits).filter(Boolean))].sort((a, b) => a - b);
+    res.json({ areas, faculties, creditValues });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
-// PUT /api/courses/:id  (admin: update course details)
-router.put('/:id', (req, res) => {
-  const id  = parseInt(req.params.id, 10);
-  const idx = courses.findIndex(c => c.id === id);
-  if (idx === -1) return res.status(404).json({ error: 'Course not found' });
+// GET /api/courses/:id
+router.get('/:id', async (req, res) => {
+  try {
+    const { rows } = await pool.query(
+      `${COURSE_SELECT} WHERE c.id = $1`,
+      [parseInt(req.params.id)]
+    );
+    if (!rows.length) return res.status(404).json({ error: 'Course not found' });
+    res.json(rows[0]);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
 
-  const allowed = ['course', 'faculty', 'area', 'term', 'credits', 'description'];
-  allowed.forEach(field => {
-    if (req.body[field] !== undefined) courses[idx][field] = req.body[field];
-  });
-  saveCourses();
-  res.json(courses[idx]);
+// POST /api/courses — admin only
+router.post('/', requireAuth, requireAdmin, async (req, res) => {
+  try {
+    const { area, term, course, professor1_id, professor2_id, credits, description } = req.body;
+    if (!area || !term || !course || !professor1_id)
+      return res.status(400).json({ error: 'area, term, course and professor1_id are required' });
+
+    const { rows } = await pool.query(
+      `INSERT INTO courses (area, term, course, professor1_id, professor2_id, credits, description)
+       VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id`,
+      [area, term, course, professor1_id, professor2_id || null, credits ?? null, description || '']
+    );
+
+    const { rows: full } = await pool.query(`${COURSE_SELECT} WHERE c.id = $1`, [rows[0].id]);
+    res.status(201).json(full[0]);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// PUT /api/courses/:id — admin only
+router.put('/:id', requireAuth, requireAdmin, async (req, res) => {
+  try {
+    const id = parseInt(req.params.id);
+    const { area, term, course, professor1_id, professor2_id, credits, description } = req.body;
+
+    await pool.query(
+      `UPDATE courses
+          SET area          = COALESCE($1, area),
+              term          = COALESCE($2, term),
+              course        = COALESCE($3, course),
+              professor1_id = COALESCE($4, professor1_id),
+              professor2_id = $5,
+              credits       = COALESCE($6, credits),
+              description   = COALESCE($7, description),
+              updated_at    = NOW()
+        WHERE id = $8`,
+      [area, term, course, professor1_id, professor2_id ?? null, credits ?? null, description, id]
+    );
+
+    const { rows } = await pool.query(`${COURSE_SELECT} WHERE c.id = $1`, [id]);
+    if (!rows.length) return res.status(404).json({ error: 'Course not found' });
+    res.json(rows[0]);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// DELETE /api/courses/:id — admin only
+router.delete('/:id', requireAuth, requireAdmin, async (req, res) => {
+  try {
+    const { rowCount } = await pool.query('DELETE FROM courses WHERE id = $1', [parseInt(req.params.id)]);
+    if (!rowCount) return res.status(404).json({ error: 'Course not found' });
+    res.json({ ok: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 module.exports = router;

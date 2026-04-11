@@ -425,7 +425,51 @@
 .cdm-save-btn:hover    { background: #ffd166; }
 .cdm-save-btn:disabled { opacity: 0.6; cursor: not-allowed; }
 
+/* ── Two-column ratings grid ── */
+.cdm-ratings-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.cdm-rating-tile {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 12px;
+  padding: 16px;
+}
+
+.cdm-rating-tile-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+
+.cdm-tile-avg {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.cdm-agg-count-sm {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.cdm-edit-hint {
+  font-size: 11px;
+  color: var(--accent);
+  margin-left: 8px;
+}
+
 /* ── Responsive ── */
+@media (max-width: 700px) {
+  .cdm-ratings-grid { grid-template-columns: 1fr; }
+}
+
 @media (max-width: 600px) {
   .cdm-panel   { max-width: 100%; }
   .cdm-header  { padding: 20px 18px 16px; }

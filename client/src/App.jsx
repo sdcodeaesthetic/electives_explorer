@@ -11,6 +11,8 @@ import BasketView from './components/BasketView';
 import CoursePage from './components/CoursePage';
 import LoginPage from './components/LoginPage';
 import SuggestionsTab from './components/SuggestionsTab';
+import CreditRibbon from './components/CreditRibbon';
+import AddCourseModal from './components/AddCourseModal';
 
 const TERM_RULES = {
   'Term IV':  { min: 18, max: 21, label: 'Term 4' },
@@ -46,12 +48,14 @@ function AppInner({ logout, user }) {
     selectedTerm, setSelectedTerm,
     clearAll, hasFilters,
     filterVersion,
+    refetchCourses,
   } = useCourses();
 
   const [activeTab, setActiveTab]     = useState('browse');
   const [basket,    setBasket]        = useState(new Set());
   const [validationMsg, setValidationMsg] = useState(null);
   const [courseOverrides, setCourseOverrides] = useState({});
+  const [addCourseOpen, setAddCourseOpen] = useState(false);
 
   const saveTimer    = useRef(null);
   const isRestored   = useRef(false);
@@ -80,10 +84,17 @@ function AppInner({ logout, user }) {
     return () => clearTimeout(saveTimer.current);
   }, [basket, user]);
 
-  // When admin saves an edit from CoursePage, sync overrides back to browse view
+  // When admin saves an edit, sync overrides back to browse view
   const handleCourseUpdated = (updated) => {
     setCourseOverrides(prev => ({ ...prev, [updated.id]: updated }));
   };
+
+  // When admin creates a new course, refresh the full list from DB
+  const handleCourseCreated = () => {
+    refetchCourses();
+  };
+
+  const clearBasket = () => setBasket(new Set());
 
   const toggleBasket = (course) => {
     setBasket(prev => {
@@ -180,42 +191,66 @@ function AppInner({ logout, user }) {
     <>
       <Header total={allCourses.length} filtered={filtered.length} user={user} onLogout={logout} />
 
-      <div className="tab-bar">
-        <div className="tab-bar-inner">
-          <button
-            className={`tab-btn ${activeTab === 'browse' ? 'active' : ''}`}
-            onClick={() => setActiveTab('browse')}
-          >
-            Browse Courses
-          </button>
-          <button
-            className={`tab-btn ${activeTab === 'basket' ? 'active' : ''}`}
-            onClick={() => setActiveTab('basket')}
-          >
-            My Planner
-            {basket.size > 0 && <span className="tab-badge">{basket.size}</span>}
-          </button>
-          {user.role === 'student' && (
+      {/* ── Sticky zone: tabs + filters + credit ribbon ── */}
+      <div className="sticky-zone">
+        <div className="tab-bar">
+          <div className="tab-bar-inner">
             <button
-              className={`tab-btn ${activeTab === 'suggest' ? 'active' : ''}`}
-              onClick={() => setActiveTab('suggest')}
+              className={`tab-btn ${activeTab === 'browse' ? 'active' : ''}`}
+              onClick={() => setActiveTab('browse')}
             >
-              AI Suggestions
+              Browse Courses
             </button>
-          )}
+            <button
+              className={`tab-btn ${activeTab === 'basket' ? 'active' : ''}`}
+              onClick={() => setActiveTab('basket')}
+            >
+              My Planner
+              {basket.size > 0 && <span className="tab-badge">{basket.size}</span>}
+            </button>
+            {user.role === 'student' && (
+              <button
+                className={`tab-btn ${activeTab === 'suggest' ? 'active' : ''}`}
+                onClick={() => setActiveTab('suggest')}
+              >
+                AI Suggestions
+              </button>
+            )}
+          </div>
         </div>
+
+        {activeTab === 'browse' && (
+          <>
+            <FilterBar
+              search={search} setSearch={setSearch}
+              areas={areas} selectedAreas={selectedAreas} toggleArea={toggleArea}
+              selectedCredit={selectedCredit} setSelectedCredit={setSelectedCredit}
+              faculties={faculties} selectedFaculty={selectedFaculty} setSelectedFaculty={setSelectedFaculty}
+              terms={terms} selectedTerm={selectedTerm} setSelectedTerm={setSelectedTerm}
+              clearAll={clearAll} hasFilters={hasFilters}
+            />
+            <CreditRibbon basketCourses={basketCourses} />
+          </>
+        )}
       </div>
 
+      {/* ── Scrollable content ── */}
       {activeTab === 'browse' && (
         <>
-          <FilterBar
-            search={search} setSearch={setSearch}
-            areas={areas} selectedAreas={selectedAreas} toggleArea={toggleArea}
-            selectedCredit={selectedCredit} setSelectedCredit={setSelectedCredit}
-            faculties={faculties} selectedFaculty={selectedFaculty} setSelectedFaculty={setSelectedFaculty}
-            terms={terms} selectedTerm={selectedTerm} setSelectedTerm={setSelectedTerm}
-            clearAll={clearAll} hasFilters={hasFilters}
-          />
+          {user.role === 'admin' && (
+            <div style={{ display: 'flex', justifyContent: 'flex-end', padding: '12px 24px 0' }}>
+              <button
+                onClick={() => setAddCourseOpen(true)}
+                style={{
+                  background: 'var(--accent)', color: '#000', border: 'none',
+                  borderRadius: 8, padding: '8px 18px', fontSize: 13, fontWeight: 700,
+                  cursor: 'pointer', fontFamily: 'inherit',
+                }}
+              >
+                + Add Course
+              </button>
+            </div>
+          )}
           <CourseGrid
             courses={displayCourses}
             total={allCourses.length}
@@ -230,6 +265,7 @@ function AppInner({ logout, user }) {
         <BasketView
           basketCourses={basketCourses}
           toggleBasket={toggleBasket}
+          clearBasket={clearBasket}
           onDownloadPDF={handleDownloadPDF}
           canDownload={allThreeTermsFilled}
         />
@@ -265,6 +301,14 @@ function AppInner({ logout, user }) {
           }
         />
       </Routes>
+
+      {/* ── Add Course modal (admin) ── */}
+      {addCourseOpen && (
+        <AddCourseModal
+          onClose={() => setAddCourseOpen(false)}
+          onCreated={handleCourseCreated}
+        />
+      )}
 
       {/* ── Validation modal ── */}
       {validationMsg && (

@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import StarRating from './StarRating';
 import Header from './Header';
+import { apiFetch } from '../lib/api';
 import courseDetails from '../data/courseDetails.js';
 import '../styles/CoursePage.css';
 
@@ -48,28 +49,50 @@ export default function CoursePage({
   }, [allCourses, id, courseOverrides, course]);
 
   // ── Admin edit state ──────────────────────────────────────────────────────
-  const [editing,   setEditing]   = useState(false);
-  const [editDraft, setEditDraft] = useState({});
-  const [saveErr,   setSaveErr]   = useState('');
+  const [editing,    setEditing]    = useState(false);
+  const [editDraft,  setEditDraft]  = useState({});
+  const [saving,     setSaving]     = useState(false);
+  const [saveErr,    setSaveErr]    = useState('');
+  const [professors, setProfessors] = useState([]);
+
+  useEffect(() => {
+    fetch('/api/professors').then(r => r.json()).then(setProfessors).catch(() => {});
+  }, []);
 
   const startEdit = () => {
     setEditDraft({
-      course:      course.course,
-      faculty:     course.faculty,
-      area:        course.area,
-      term:        course.term,
-      credits:     course.credits,
-      description: course.description || '',
+      course:        course.course,
+      professor1_id: course.professor1_id || '',
+      professor2_id: course.professor2_id || '',
+      area:          course.area,
+      term:          course.term,
+      credits:       course.credits,
+      description:   course.description || '',
     });
     setSaveErr('');
     setEditing(true);
   };
 
-  const saveEdit = () => {
-    const updated = { ...course, ...editDraft };
-    setCourse(updated);
-    setEditing(false);
-    onCourseUpdated && onCourseUpdated(updated);
+  const saveEdit = async () => {
+    setSaving(true); setSaveErr('');
+    try {
+      const payload = {
+        ...editDraft,
+        professor1_id: editDraft.professor1_id ? parseInt(editDraft.professor1_id) : null,
+        professor2_id: editDraft.professor2_id ? parseInt(editDraft.professor2_id) : null,
+      };
+      const updated = await apiFetch(`/api/courses/${course.id}`, {
+        method: 'PUT',
+        body: JSON.stringify(payload),
+      });
+      setCourse(updated);
+      setEditing(false);
+      onCourseUpdated && onCourseUpdated(updated);
+    } catch (e) {
+      setSaveErr(e.message);
+    } finally {
+      setSaving(false);
+    }
   };
 
   // ── Reviews ───────────────────────────────────────────────────────────────
@@ -189,8 +212,18 @@ export default function CoursePage({
               </div>
               <div className="cp-edit-grid">
                 <div className="cp-edit-row">
-                  <label>Faculty</label>
-                  <input value={editDraft.faculty} onChange={e => setEditDraft(d => ({ ...d, faculty: e.target.value }))} />
+                  <label>Professor 1 *</label>
+                  <select value={editDraft.professor1_id} onChange={e => setEditDraft(d => ({ ...d, professor1_id: e.target.value }))}>
+                    <option value="">— Select professor —</option>
+                    {professors.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
+                  </select>
+                </div>
+                <div className="cp-edit-row">
+                  <label>Professor 2</label>
+                  <select value={editDraft.professor2_id} onChange={e => setEditDraft(d => ({ ...d, professor2_id: e.target.value }))}>
+                    <option value="">— None —</option>
+                    {professors.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
+                  </select>
                 </div>
                 <div className="cp-edit-row">
                   <label>Area</label>

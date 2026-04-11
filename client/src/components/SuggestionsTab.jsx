@@ -7,6 +7,7 @@ const AREA_COLORS = {
   Marketing: '#f97316', 'OB/HR': '#22c55e', Operations: '#eab308',
   Strategy: '#ec4899', 'Inter-Area': '#64748b',
 };
+const AREAS      = ['Finance', 'ISM', 'Marketing', 'OB/HR', 'Operations', 'Strategy'];
 const TERM_ORDER = ['Term IV', 'Term V', 'Term VI'];
 
 const CAREER_SUGGESTIONS = [
@@ -20,24 +21,64 @@ const CAREER_SUGGESTIONS = [
   'Entrepreneurship / Startups',
 ];
 
+// Multi-select dropdown limited to `max` items
+function AreaPicker({ label, selected, onChange, max }) {
+  const available = AREAS.filter(a => !selected.includes(a));
+  const add    = (a) => { if (selected.length < max) onChange([...selected, a]); };
+  const remove = (a) => onChange(selected.filter(x => x !== a));
+
+  return (
+    <div className="suggest-field">
+      <label>{label} <span className="suggest-field-hint">(up to {max})</span></label>
+      <div className="suggest-area-chips">
+        {selected.map(a => (
+          <span key={a} className="suggest-area-tag" style={{ '--ac': AREA_COLORS[a] || '#64748b' }}>
+            {a}
+            <button type="button" className="suggest-area-remove" onClick={() => remove(a)}>✕</button>
+          </span>
+        ))}
+        {selected.length < max && (
+          <select
+            className="suggest-area-select"
+            value=""
+            onChange={e => { if (e.target.value) add(e.target.value); }}
+          >
+            <option value="">+ Add area…</option>
+            {available.map(a => <option key={a} value={a}>{a}</option>)}
+          </select>
+        )}
+        {selected.length === 0 && available.length === 0 && (
+          <span className="suggest-field-hint">All areas selected</span>
+        )}
+      </div>
+    </div>
+  );
+}
+
 export default function SuggestionsTab({ allCourses, basket, toggleBasket }) {
   const [careerGoal, setCareerGoal] = useState('');
-  const [majors,     setMajors]     = useState('');
-  const [minors,     setMinors]     = useState('');
+  const [majors,     setMajors]     = useState([]);   // array, max 2
+  const [minors,     setMinors]     = useState([]);   // array, max 2
   const [loading,    setLoading]    = useState(false);
   const [result,     setResult]     = useState(null);
   const [error,      setError]      = useState('');
 
+  const canGenerate = !loading && (careerGoal.trim() || majors.length > 0 || minors.length > 0);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!careerGoal.trim()) return;
+    if (!canGenerate) return;
     setLoading(true);
     setError('');
     setResult(null);
     try {
       const data = await apiFetch('/api/suggestions', {
         method: 'POST',
-        body: JSON.stringify({ careerGoal, majors, minors }),
+        body: JSON.stringify({
+          careerGoal,
+          majors: majors.join(', '),
+          minors: minors.join(', '),
+        }),
       });
       setResult(data);
     } catch (err) {
@@ -76,15 +117,16 @@ export default function SuggestionsTab({ allCourses, basket, toggleBasket }) {
           </div>
         </div>
 
-        <form className="suggest-form" onSubmit={handleSubmit}>
+        <form className={`suggest-form${loading ? ' suggest-form--locked' : ''}`} onSubmit={handleSubmit}>
           <div className="suggest-field">
-            <label>Career Goal</label>
+            <label>Career Goal <span className="suggest-field-hint">(optional if majors/minors selected)</span></label>
             <div className="suggest-chip-row">
               {CAREER_SUGGESTIONS.map(s => (
                 <button
                   key={s} type="button"
                   className={`suggest-chip ${careerGoal === s ? 'active' : ''}`}
                   onClick={() => setCareerGoal(s)}
+                  disabled={loading}
                 >
                   {s}
                 </button>
@@ -96,33 +138,26 @@ export default function SuggestionsTab({ allCourses, basket, toggleBasket }) {
               onChange={e => setCareerGoal(e.target.value)}
               placeholder="Or describe your own goal…"
               className="suggest-input"
+              disabled={loading}
             />
           </div>
 
           <div className="suggest-row">
-            <div className="suggest-field">
-              <label>Preferred Major(s)</label>
-              <input
-                type="text"
-                value={majors}
-                onChange={e => setMajors(e.target.value)}
-                placeholder="e.g. Finance, Strategy"
-                className="suggest-input"
-              />
-            </div>
-            <div className="suggest-field">
-              <label>Preferred Minor(s)</label>
-              <input
-                type="text"
-                value={minors}
-                onChange={e => setMinors(e.target.value)}
-                placeholder="e.g. Marketing, ISM"
-                className="suggest-input"
-              />
-            </div>
+            <AreaPicker
+              label="Preferred Major(s)"
+              selected={majors}
+              onChange={loading ? () => {} : setMajors}
+              max={2}
+            />
+            <AreaPicker
+              label="Preferred Minor(s)"
+              selected={minors}
+              onChange={loading ? () => {} : setMinors}
+              max={2}
+            />
           </div>
 
-          <button className="suggest-btn" type="submit" disabled={loading || !careerGoal.trim()}>
+          <button className="suggest-btn" type="submit" disabled={!canGenerate}>
             {loading ? (
               <><span className="suggest-spinner" /> Generating suggestions…</>
             ) : (

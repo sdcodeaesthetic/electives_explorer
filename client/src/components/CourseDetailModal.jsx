@@ -1,7 +1,14 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { apiFetch, authHeaders } from '../lib/api';
 import StarRating from './StarRating';
 import '../styles/CourseDetailModal.css';
+
+async function fetchProfessors() {
+  const r = await fetch('/api/professors');
+  if (!r.ok) throw new Error('Failed to load professors');
+  return r.json();
+}
 
 const AREA_COLORS = {
   Finance: '#3b82f6', GMPP: '#8b5cf6', ISM: '#14b8a6',
@@ -13,82 +20,172 @@ const AREAS   = ['Finance','GMPP','ISM','Marketing','OB/HR','Operations','Strate
 const TERMS   = ['Term IV','Term V','Term VI'];
 const CREDITS = [1.5, 2, 2.5, 3, 4, 6];
 
-function avg(reviews, field) {
-  if (!reviews.length) return 0;
-  const valid = reviews.filter(r => r[field] > 0);
-  if (!valid.length) return 0;
-  return valid.reduce((s, r) => s + r[field], 0) / valid.length;
+function avg(ratings) {
+  if (!ratings.length) return 0;
+  return ratings.reduce((s, r) => s + r.rating, 0) / ratings.length;
 }
 
 function fmtDate(iso) {
   return new Date(iso).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
 }
 
+// ── Reusable rating tile ─────────────────────────────────────────────────────
+function RatingTile({ title, ratings, loading, isAdmin, onDelete, user, onSubmit }) {
+  const [rating,     setRating]     = useState(0);
+  const [comment,    setComment]    = useState('');
+  const [submitting, setSubmitting] = useState(false);
+  const [err,        setErr]        = useState('');
+
+  const average  = avg(ratings);
+  const myRating = ratings.find(r => r.user_id === user?.id);
+
+  useEffect(() => {
+    if (myRating) { setRating(myRating.rating); setComment(myRating.comment || ''); }
+  }, [myRating]);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!rating) { setErr('Please select a star rating.'); return; }
+    setErr(''); setSubmitting(true);
+    try {
+      await onSubmit({ rating, comment });
+    } catch (e) {
+      setErr(e.message);
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  return (
+    <section className="cdm-section cdm-rating-tile">
+      <div className="cdm-rating-tile-header">
+        <h3 className="cdm-section-title">{title}</h3>
+        {ratings.length > 0 && (
+          <div className="cdm-tile-avg">
+            <StarRating value={Math.round(average)} readOnly size={14} />
+            <span className="cdm-agg-val">{average.toFixed(1)}</span>
+            <span className="cdm-agg-count-sm">({ratings.length})</span>
+          </div>
+        )}
+      </div>
+
+      {!isAdmin && (
+        <form className="cdm-review-form" onSubmit={handleSubmit}>
+          <div className="cdm-rating-group">
+            <StarRating value={rating} onChange={setRating} />
+            <span className="cdm-rating-hint">{rating ? `${rating}/5` : 'Tap to rate'}</span>
+            {myRating && <span className="cdm-edit-hint">Editing your previous rating</span>}
+          </div>
+          <textarea
+            className="cdm-comment-input"
+            rows={2}
+            placeholder="Add a comment (optional)…"
+            value={comment}
+            onChange={e => setComment(e.target.value)}
+          />
+          {err && <p className="cdm-err">{err}</p>}
+          <button className="cdm-submit-btn" type="submit" disabled={submitting}>
+            {submitting ? 'Saving…' : myRating ? 'Update Rating' : 'Submit Rating'}
+          </button>
+        </form>
+      )}
+
+      {loading ? (
+        <p className="cdm-muted">Loading…</p>
+      ) : ratings.length === 0 ? (
+        <div className="cdm-no-reviews">
+          <p>No ratings yet.{!isAdmin && ' Be the first!'}</p>
+        </div>
+      ) : (
+        <div className="cdm-reviews-list">
+          {ratings.map(r => (
+            <div className="cdm-review-card" key={r.id}>
+              <div className="cdm-review-top">
+                <div className="cdm-reviewer-info">
+                  <div className="cdm-avatar">{r.user_name?.[0]?.toUpperCase() || '?'}</div>
+                  <div>
+                    <span className="cdm-reviewer-name">{r.user_name}</span>
+                    <span className="cdm-review-date">{fmtDate(r.created_at)}</span>
+                  </div>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <StarRating value={r.rating} readOnly size={13} />
+                  {isAdmin && (
+                    <button className="cdm-delete-review" onClick={() => onDelete(r.id)} title="Delete">🗑</button>
+                  )}
+                </div>
+              </div>
+              {r.comment && <p className="cdm-review-comment">{r.comment}</p>}
+            </div>
+          ))}
+        </div>
+      )}
+    </section>
+  );
+}
+
+// ── Main modal ───────────────────────────────────────────────────────────────
 export default function CourseDetailModal({ course: initialCourse, onClose, onCourseUpdated, inBasket, onToggleBasket }) {
   const { user } = useAuth();
   const isAdmin  = user?.role === 'admin';
 
-  // ── course data (admin may edit) ─────────────────────────────────────────
-  const [course,   setCourse]   = useState(initialCourse);
-  const [editing,  setEditing]  = useState(false);
-  const [editDraft, setEditDraft] = useState({});
-  const [saving,   setSaving]   = useState(false);
-  const [saveErr,  setSaveErr]  = useState('');
+  const [course,      setCourse]      = useState(initialCourse);
+  const [editing,     setEditing]     = useState(false);
+  const [editDraft,   setEditDraft]   = useState({});
+  const [saving,      setSaving]      = useState(false);
+  const [saveErr,     setSaveErr]     = useState('');
+  const [professors,  setProfessors]  = useState([]);
 
-  // ── reviews ───────────────────────────────────────────────────────────────
-  const [reviews,  setReviews]  = useState([]);
-  const [revLoad,  setRevLoad]  = useState(true);
+  const [courseRatings,  setCourseRatings]  = useState([]);
+  const [profRatings,    setProfRatings]    = useState([]);
+  const [ratingsLoading, setRatingsLoading] = useState(true);
 
-  // ── review form ───────────────────────────────────────────────────────────
-  const [cRating,  setCRating]  = useState(0);
-  const [pRating,  setPRating]  = useState(0);
-  const [comment,  setComment]  = useState('');
-  const [submitting, setSubmitting] = useState(false);
-  const [formErr,  setFormErr]  = useState('');
-
-  // close on Escape
   useEffect(() => {
     const handler = e => { if (e.key === 'Escape') onClose(); };
     window.addEventListener('keydown', handler);
     return () => window.removeEventListener('keydown', handler);
   }, [onClose]);
 
-  // fetch reviews
-  const fetchReviews = useCallback(() => {
-    setRevLoad(true);
-    fetch(`/api/reviews/${course.id}`)
-      .then(r => r.json())
-      .then(data => setReviews(Array.isArray(data) ? data : []))
-      .finally(() => setRevLoad(false));
+  useEffect(() => {
+    fetchProfessors().then(setProfessors).catch(() => {});
+  }, []);
+
+  const fetchRatings = useCallback(() => {
+    setRatingsLoading(true);
+    Promise.all([
+      fetch(`/api/course-ratings/${course.id}`).then(r => r.json()),
+      fetch(`/api/professor-ratings/by-course/${course.id}`).then(r => r.json()),
+    ])
+      .then(([cr, pr]) => {
+        setCourseRatings(Array.isArray(cr) ? cr : []);
+        setProfRatings(Array.isArray(pr?.ratings) ? pr.ratings : []);
+      })
+      .finally(() => setRatingsLoading(false));
   }, [course.id]);
 
-  useEffect(() => { fetchReviews(); }, [fetchReviews]);
+  useEffect(() => { fetchRatings(); }, [fetchRatings]);
 
   // ── admin edit ────────────────────────────────────────────────────────────
   const startEdit = () => {
     setEditDraft({
-      course:      course.course,
-      faculty:     course.faculty,
-      area:        course.area,
-      term:        course.term,
-      credits:     course.credits,
-      description: course.description || '',
+      course:        course.course,
+      professor1_id: course.professor1_id || '',
+      professor2_id: course.professor2_id || '',
+      area:          course.area,
+      term:          course.term,
+      credits:       course.credits,
+      description:   course.description || '',
     });
-    setSaveErr('');
-    setEditing(true);
+    setSaveErr(''); setEditing(true);
   };
 
   const saveEdit = async () => {
-    setSaving(true);
-    setSaveErr('');
+    setSaving(true); setSaveErr('');
     try {
-      const res = await fetch(`/api/courses/${course.id}`, {
-        method:  'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body:    JSON.stringify(editDraft),
+      const updated = await apiFetch(`/api/courses/${course.id}`, {
+        method: 'PUT',
+        body: JSON.stringify(editDraft),
       });
-      if (!res.ok) throw new Error('Save failed');
-      const updated = await res.json();
       setCourse(updated);
       setEditing(false);
       onCourseUpdated && onCourseUpdated(updated);
@@ -99,46 +196,35 @@ export default function CourseDetailModal({ course: initialCourse, onClose, onCo
     }
   };
 
-  // ── submit review ─────────────────────────────────────────────────────────
-  const submitReview = async (e) => {
-    e.preventDefault();
-    if (!cRating && !pRating && !comment.trim()) {
-      setFormErr('Please provide at least a rating or a comment.');
-      return;
-    }
-    setFormErr('');
-    setSubmitting(true);
-    try {
-      const res = await fetch(`/api/reviews/${course.id}`, {
-        method:  'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body:    JSON.stringify({
-          username:     user.username,
-          name:         user.name,
-          courseRating: cRating,
-          profRating:   pRating,
-          comment,
-        }),
-      });
-      if (!res.ok) throw new Error('Submit failed');
-      setCRating(0); setPRating(0); setComment('');
-      fetchReviews();
-    } catch (e) {
-      setFormErr(e.message);
-    } finally {
-      setSubmitting(false);
-    }
+  // ── submit ratings ────────────────────────────────────────────────────────
+  const submitCourseRating = async ({ rating, comment }) => {
+    const r = await apiFetch(`/api/course-ratings/${course.id}`, {
+      method: 'POST',
+      body: JSON.stringify({ rating, comment }),
+    });
+    setCourseRatings(prev => [r, ...prev.filter(x => x.user_id !== user.id)]);
   };
 
-  // ── admin delete review ───────────────────────────────────────────────────
-  const deleteReview = async (reviewId) => {
-    await fetch(`/api/reviews/${course.id}/${reviewId}`, { method: 'DELETE' });
-    setReviews(prev => prev.filter(r => r.id !== reviewId));
+  const submitProfRating = async ({ rating, comment }) => {
+    const r = await apiFetch(`/api/professor-ratings/${course.id}`, {
+      method: 'POST',
+      body: JSON.stringify({ rating, comment }),
+    });
+    setProfRatings(prev => [r, ...prev.filter(x => x.user_id !== user.id)]);
   };
 
-  const color     = AREA_COLORS[course.area] || '#64748b';
-  const avgCourse = avg(reviews, 'courseRating');
-  const avgProf   = avg(reviews, 'profRating');
+  // ── admin delete ratings ──────────────────────────────────────────────────
+  const deleteCourseRating = async (id) => {
+    await fetch(`/api/course-ratings/${id}`, { method: 'DELETE', headers: authHeaders() });
+    setCourseRatings(prev => prev.filter(r => r.id !== id));
+  };
+
+  const deleteProfRating = async (id) => {
+    await fetch(`/api/professor-ratings/${id}`, { method: 'DELETE', headers: authHeaders() });
+    setProfRatings(prev => prev.filter(r => r.id !== id));
+  };
+
+  const color = AREA_COLORS[course.area] || '#64748b';
 
   return (
     <div className="cdm-backdrop" onClick={onClose}>
@@ -159,7 +245,6 @@ export default function CourseDetailModal({ course: initialCourse, onClose, onCo
           </div>
 
           {editing ? (
-            /* ── Admin edit form ── */
             <div className="cdm-edit-form">
               <div className="cdm-edit-row">
                 <label>Course Name</label>
@@ -167,8 +252,18 @@ export default function CourseDetailModal({ course: initialCourse, onClose, onCo
               </div>
               <div className="cdm-edit-grid">
                 <div className="cdm-edit-row">
-                  <label>Faculty</label>
-                  <input value={editDraft.faculty} onChange={e => setEditDraft(d => ({ ...d, faculty: e.target.value }))} />
+                  <label>Professor 1 *</label>
+                  <select value={editDraft.professor1_id} onChange={e => setEditDraft(d => ({ ...d, professor1_id: e.target.value ? parseInt(e.target.value) : '' }))}>
+                    <option value="">— Select professor —</option>
+                    {professors.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
+                  </select>
+                </div>
+                <div className="cdm-edit-row">
+                  <label>Professor 2</label>
+                  <select value={editDraft.professor2_id} onChange={e => setEditDraft(d => ({ ...d, professor2_id: e.target.value ? parseInt(e.target.value) : '' }))}>
+                    <option value="">— None —</option>
+                    {professors.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
+                  </select>
                 </div>
                 <div className="cdm-edit-row">
                   <label>Area</label>
@@ -191,12 +286,8 @@ export default function CourseDetailModal({ course: initialCourse, onClose, onCo
               </div>
               <div className="cdm-edit-row">
                 <label>Description</label>
-                <textarea
-                  rows={3}
-                  value={editDraft.description}
-                  placeholder="Add a short course description…"
-                  onChange={e => setEditDraft(d => ({ ...d, description: e.target.value }))}
-                />
+                <textarea rows={3} value={editDraft.description} placeholder="Add a short course description…"
+                  onChange={e => setEditDraft(d => ({ ...d, description: e.target.value }))} />
               </div>
               {saveErr && <p className="cdm-err">{saveErr}</p>}
               <div className="cdm-edit-actions">
@@ -222,9 +313,7 @@ export default function CourseDetailModal({ course: initialCourse, onClose, onCo
                   {course.credits ? `${course.credits} Credits` : 'Credits TBD'}
                 </span>
               </div>
-              {course.description && (
-                <p className="cdm-description">{course.description}</p>
-              )}
+              {course.description && <p className="cdm-description">{course.description}</p>}
             </>
           )}
         </div>
@@ -241,122 +330,28 @@ export default function CourseDetailModal({ course: initialCourse, onClose, onCo
           </div>
         )}
 
-        {/* ── Aggregate ratings ── */}
-        {!editing && reviews.length > 0 && (
-          <div className="cdm-agg">
-            <div className="cdm-agg-item">
-              <span className="cdm-agg-label">Course Rating</span>
-              <StarRating value={Math.round(avgCourse)} readOnly size={18} />
-              <span className="cdm-agg-val">{avgCourse.toFixed(1)} / 5</span>
-            </div>
-            <div className="cdm-agg-divider" />
-            <div className="cdm-agg-item">
-              <span className="cdm-agg-label">Professor Rating</span>
-              <StarRating value={Math.round(avgProf)} readOnly size={18} />
-              <span className="cdm-agg-val">{avgProf.toFixed(1)} / 5</span>
-            </div>
-            <div className="cdm-agg-divider" />
-            <div className="cdm-agg-item">
-              <span className="cdm-agg-label">Reviews</span>
-              <span className="cdm-agg-count">{reviews.length}</span>
-            </div>
-          </div>
-        )}
-
+        {/* ── Two separate rating tiles side by side ── */}
         <div className="cdm-body">
-
-          {/* ── Review form (students only) ── */}
-          {!isAdmin && (
-            <section className="cdm-section">
-              <h3 className="cdm-section-title">Rate This Course</h3>
-              <form className="cdm-review-form" onSubmit={submitReview}>
-                <div className="cdm-rating-row">
-                  <div className="cdm-rating-group">
-                    <span className="cdm-rating-label">Course</span>
-                    <StarRating value={cRating} onChange={setCRating} />
-                    <span className="cdm-rating-hint">{cRating ? `${cRating}/5` : 'Tap to rate'}</span>
-                  </div>
-                  <div className="cdm-rating-group">
-                    <span className="cdm-rating-label">Professor</span>
-                    <StarRating value={pRating} onChange={setPRating} />
-                    <span className="cdm-rating-hint">{pRating ? `${pRating}/5` : 'Tap to rate'}</span>
-                  </div>
-                </div>
-                <textarea
-                  className="cdm-comment-input"
-                  rows={3}
-                  placeholder="Share your thoughts about this course, workload, learning outcomes…"
-                  value={comment}
-                  onChange={e => setComment(e.target.value)}
-                />
-                {formErr && <p className="cdm-err">{formErr}</p>}
-                <button className="cdm-submit-btn" type="submit" disabled={submitting}>
-                  {submitting ? 'Submitting…' : 'Submit Review'}
-                </button>
-              </form>
-            </section>
-          )}
-
-          {/* ── Comments list ── */}
-          <section className="cdm-section">
-            <h3 className="cdm-section-title">
-              Student Reviews
-              {reviews.length > 0 && <span className="cdm-review-count">{reviews.length}</span>}
-            </h3>
-
-            {revLoad ? (
-              <p className="cdm-muted">Loading reviews…</p>
-            ) : reviews.length === 0 ? (
-              <div className="cdm-no-reviews">
-                <p>No reviews yet.</p>
-                {!isAdmin && <p>Be the first to rate this course!</p>}
-              </div>
-            ) : (
-              <div className="cdm-reviews-list">
-                {reviews.map(r => (
-                  <div className="cdm-review-card" key={r.id}>
-                    <div className="cdm-review-top">
-                      <div className="cdm-reviewer-info">
-                        <div className="cdm-avatar">{r.name?.[0]?.toUpperCase() || '?'}</div>
-                        <div>
-                          <span className="cdm-reviewer-name">{r.name}</span>
-                          <span className="cdm-review-date">{fmtDate(r.timestamp)}</span>
-                        </div>
-                      </div>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                        {isAdmin && (
-                          <button
-                            className="cdm-delete-review"
-                            onClick={() => deleteReview(r.id)}
-                            title="Delete review"
-                          >
-                            🗑
-                          </button>
-                        )}
-                      </div>
-                    </div>
-
-                    {(r.courseRating > 0 || r.profRating > 0) && (
-                      <div className="cdm-review-ratings">
-                        {r.courseRating > 0 && (
-                          <span className="cdm-mini-rating">
-                            Course: <StarRating value={r.courseRating} readOnly size={13} />
-                          </span>
-                        )}
-                        {r.profRating > 0 && (
-                          <span className="cdm-mini-rating">
-                            Prof: <StarRating value={r.profRating} readOnly size={13} />
-                          </span>
-                        )}
-                      </div>
-                    )}
-
-                    {r.comment && <p className="cdm-review-comment">{r.comment}</p>}
-                  </div>
-                ))}
-              </div>
-            )}
-          </section>
+          <div className="cdm-ratings-grid">
+            <RatingTile
+              title="Course Rating"
+              ratings={courseRatings}
+              loading={ratingsLoading}
+              isAdmin={isAdmin}
+              user={user}
+              onDelete={deleteCourseRating}
+              onSubmit={submitCourseRating}
+            />
+            <RatingTile
+              title={`Professor — ${course.faculty}`}
+              ratings={profRatings}
+              loading={ratingsLoading}
+              isAdmin={isAdmin}
+              user={user}
+              onDelete={deleteProfRating}
+              onSubmit={submitProfRating}
+            />
+          </div>
         </div>
       </div>
     </div>

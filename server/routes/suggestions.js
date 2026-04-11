@@ -1,6 +1,6 @@
 const express     = require('express');
 const Anthropic   = require('@anthropic-ai/sdk');
-const coursesJSON = require('../data/courses.json');
+const { pool }    = require('../db');
 const { requireAuth } = require('../middleware/auth');
 
 const router = express.Router();
@@ -120,19 +120,29 @@ function enforceCredits(basket, allCourses, profile) {
 router.post('/', requireAuth, async (req, res) => {
   try {
     const { careerGoal, majors, minors } = req.body;
-    if (!careerGoal)
-      return res.status(400).json({ error: 'careerGoal is required' });
+    if (!careerGoal && !majors && !minors)
+      return res.status(400).json({ error: 'Provide at least a career goal or preferred majors/minors' });
 
     if (!process.env.ANTHROPIC_API_KEY)
       return res.status(503).json({ error: 'AI suggestions not configured (missing ANTHROPIC_API_KEY)' });
 
-    const allCourses = coursesJSON.map(c => ({
+    const { rows: dbCourses } = await pool.query(`
+      SELECT c.id, c.area, c.term, c.course, c.credits, c.description,
+             CASE WHEN p2.name IS NOT NULL THEN p1.name || ' & ' || p2.name
+                  ELSE p1.name END AS faculty
+        FROM courses c
+        LEFT JOIN professors p1 ON p1.id = c.professor1_id
+        LEFT JOIN professors p2 ON p2.id = c.professor2_id
+       ORDER BY c.id
+    `);
+
+    const allCourses = dbCourses.map(c => ({
       courseId:    c.id,
       area:        c.area,
       term:        c.term,
       course:      c.course,
       faculty:     c.faculty,
-      credits:     c.credits ?? null,
+      credits:     c.credits != null ? parseFloat(c.credits) : null,
       description: c.description || '',
     }));
 
@@ -147,7 +157,7 @@ router.post('/', requireAuth, async (req, res) => {
     const prompt = `You are an academic advisor at IIM Sambalpur selecting MBA electives for a student.
 
 STUDENT PROFILE
-Career goal   : ${careerGoal}
+Career goal      : ${careerGoal || 'not specified'}
 Preferred majors : ${majors || 'not specified'}
 Preferred minors : ${minors || 'not specified'}
 
@@ -188,11 +198,34 @@ Respond ONLY with valid JSON — no markdown, no extra text:
     const raw = message.content[0].text.trim();
     let parsed;
     try {
-      parsed = JSON.parse(raw);
-    } catch {
-      const match = raw.match(/\{[\s\S]*\}/);
-      if (!match) return res.status(502).json({ error: 'AI returned an unexpected response format' });
-      parsed = JSON.parse(match[0]);
+      // Strip ALL markdown code fences anywhere in the response
+      const cleaned = raw.replace(/```(?:json)?/gi, '').replace(/```/g, '').trim();
+
+      // 1st attempt: direct parse of the cleaned text
+      try { parsed = JSON.parse(cleaned); } catch {}
+
+      // 2nd attempt: the model sometimes re-checks and emits multiple JSON blocks.
+      // Extract ALL top-level { ... } blocks and try from last to first
+      // (the last block is the model's final corrected answer).
+      if (!parsed) {
+        const candidates = [];
+        let depth = 0, start = -1;
+        for (let i = 0; i < cleaned.length; i++) {
+          if (cleaned[i] === '{') { if (depth === 0) start = i; depth++; }
+          else if (cleaned[i] === '}') {
+            depth--;
+            if (depth === 0 && start !== -1) { candidates.push(cleaned.slice(start, i + 1)); start = -1; }
+          }
+        }
+        for (let i = candidates.length - 1; i >= 0; i--) {
+          try { parsed = JSON.parse(candidates[i]); break; } catch {}
+        }
+      }
+
+      if (!parsed) throw new Error('no valid JSON object found');
+    } catch (parseErr) {
+      console.error('AI parse error. Raw response:\n', raw);
+      return res.status(502).json({ error: 'AI returned an unexpected response format' });
     }
 
     const courseMap = Object.fromEntries(allCourses.map(c => [c.courseId, c]));

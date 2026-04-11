@@ -1,27 +1,39 @@
-import { useState, useEffect, useMemo, useRef } from 'react';
-import coursesData from '../data/courses.json';
+import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 
 export function useCourses() {
   const [allCourses, setAllCourses] = useState([]);
   const [loading, setLoading]       = useState(true);
   const [error, setError]           = useState(null);
 
-  const [search,        setSearch]        = useState('');
-  const [selectedAreas, setSelectedAreas] = useState([]);
+  const [search,         setSearch]         = useState('');
+  const [selectedAreas,  setSelectedAreas]  = useState([]);
   const [selectedCredit, setSelectedCredit] = useState('all');
   const [selectedFaculty, setSelectedFaculty] = useState('');
-  const [selectedTerm, setSelectedTerm]   = useState('all');
+  const [selectedTerm,   setSelectedTerm]   = useState('all');
 
   const filterVersion = useRef(0);
   const isFirstRender = useRef(true);
 
-  useEffect(() => {
-    setAllCourses(coursesData);
-    setLoading(false);
+  const fetchCourses = useCallback(() => {
+    setLoading(true);
+    fetch('/api/courses')
+      .then(r => { if (!r.ok) throw new Error(`Server error ${r.status}`); return r.json(); })
+      .then(data => { setAllCourses(data); setError(null); })
+      .catch(err => setError(err.message))
+      .finally(() => setLoading(false));
   }, []);
 
+  useEffect(() => { fetchCourses(); }, [fetchCourses]);
+
   const areas    = useMemo(() => [...new Set(allCourses.map(c => c.area))].sort(), [allCourses]);
-  const faculties = useMemo(() => [...new Set(allCourses.map(c => c.faculty))].sort(), [allCourses]);
+  const faculties = useMemo(() => {
+    const names = new Set();
+    allCourses.forEach(c => {
+      if (c.professor1_name) names.add(c.professor1_name);
+      if (c.professor2_name) names.add(c.professor2_name);
+    });
+    return [...names].sort();
+  }, [allCourses]);
   const terms    = useMemo(() => {
     const order = ['Term IV', 'Term V', 'Term VI', 'X'];
     const unique = [...new Set(allCourses.map(c => c.term))];
@@ -40,24 +52,24 @@ export function useCourses() {
       const q = search.toLowerCase();
       result = result.filter(c =>
         c.course.toLowerCase().includes(q) ||
-        c.faculty.toLowerCase().includes(q) ||
+        (c.professor1_name || '').toLowerCase().includes(q) ||
+        (c.professor2_name || '').toLowerCase().includes(q) ||
         c.area.toLowerCase().includes(q)
       );
     }
-
     if (selectedAreas.length > 0) {
       result = result.filter(c => selectedAreas.includes(c.area));
     }
-
     if (selectedCredit !== 'all') {
-      result = result.filter(c => c.credits === parseFloat(selectedCredit));
+      result = result.filter(c => parseFloat(c.credits) === parseFloat(selectedCredit));
     }
-
     if (selectedFaculty) {
       const q = selectedFaculty.toLowerCase();
-      result = result.filter(c => c.faculty.toLowerCase().includes(q));
+      result = result.filter(c =>
+        (c.professor1_name || '').toLowerCase().includes(q) ||
+        (c.professor2_name || '').toLowerCase().includes(q)
+      );
     }
-
     if (selectedTerm !== 'all') {
       result = result.filter(c => c.term === selectedTerm);
     }
@@ -92,5 +104,6 @@ export function useCourses() {
     selectedTerm, setSelectedTerm,
     clearAll, hasFilters,
     filterVersion,
+    refetchCourses: fetchCourses,
   };
 }

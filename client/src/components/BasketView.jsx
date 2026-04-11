@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import '../styles/BasketView.css';
 
 const AREA_COLORS = {
@@ -21,7 +22,8 @@ const TERM_LABELS = {
 
 const fmtCr = (v) => (v % 1 === 0 ? v : v.toFixed(1));
 
-export default function BasketView({ basketCourses, toggleBasket, onDownloadPDF, canDownload }) {
+export default function BasketView({ basketCourses, toggleBasket, clearBasket, onDownloadPDF, canDownload }) {
+  const [confirming, setConfirming] = useState(false);
   const totalCredits = basketCourses.reduce((sum, c) => sum + (c.credits || 0), 0);
   const totalCourses = basketCourses.length;
 
@@ -125,12 +127,34 @@ export default function BasketView({ basketCourses, toggleBasket, onDownloadPDF,
         })}
       </div>
 
-      {/* ── Download button ── */}
-      {canDownload && (
-        <div className="download-row">
+      {/* ── Action row: Download + Clear All ── */}
+      <div className="download-row">
+        {canDownload && (
           <button className="download-pdf-btn" onClick={onDownloadPDF}>
             <span className="download-icon">⬇</span> Download Plan as PDF
           </button>
+        )}
+        <button className="clear-all-btn" onClick={() => setConfirming(true)}>
+          ✕ Clear All
+        </button>
+      </div>
+
+      {/* ── Clear All confirmation popup ── */}
+      {confirming && (
+        <div className="clear-modal-backdrop" onClick={() => setConfirming(false)}>
+          <div className="clear-modal" onClick={e => e.stopPropagation()}>
+            <div className="clear-modal-icon">🗑️</div>
+            <h3 className="clear-modal-title">Clear Planner?</h3>
+            <p className="clear-modal-body">
+              This will remove all <strong>{basketCourses.length} course{basketCourses.length !== 1 ? 's' : ''}</strong> from your planner. This cannot be undone.
+            </p>
+            <div className="clear-modal-actions">
+              <button className="clear-confirm-no" onClick={() => setConfirming(false)}>Cancel</button>
+              <button className="clear-confirm-yes" onClick={() => { clearBasket(); setConfirming(false); }}>
+                Yes, clear all
+              </button>
+            </div>
+          </div>
         </div>
       )}
 
