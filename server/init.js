@@ -12,9 +12,9 @@ async function init() {
     for (const u of usersData) {
       const hashed = await bcrypt.hash(u.password, 10);
       await pool.query(
-        `INSERT INTO users (username, password, role, name)
+        `INSERT INTO users (email, password, role, name)
          VALUES ($1, $2, $3, $4) ON CONFLICT DO NOTHING`,
-        [u.username, hashed, u.role, u.name]
+        [u.email || null, hashed, u.role, u.name]
       );
     }
     console.log(`✓ Auto-seeded ${usersData.length} users`);

@@ -105,7 +105,7 @@ router.post('/reset-password', async (req, res) => {
 router.get('/me', requireAuth, async (req, res) => {
   try {
     const { rows } = await pool.query(
-      'SELECT id, username, email, name, role FROM users WHERE id = $1',
+      'SELECT id, email, name, role FROM users WHERE id = $1',
       [req.user.id]
     );
     if (!rows.length) return res.status(404).json({ error: 'User not found' });
