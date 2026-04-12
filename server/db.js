@@ -140,7 +140,6 @@ async function connectDB() {
     await client.query(`
       CREATE TABLE IF NOT EXISTS users (
         id         SERIAL PRIMARY KEY,
-        username   VARCHAR(255),
         email      VARCHAR(255),
         password   VARCHAR(255) NOT NULL,
         role       VARCHAR(20)  NOT NULL DEFAULT 'student',
@@ -149,8 +148,6 @@ async function connectDB() {
         created_at TIMESTAMPTZ  NOT NULL DEFAULT NOW(),
         updated_at TIMESTAMPTZ  NOT NULL DEFAULT NOW()
       );
-      CREATE UNIQUE INDEX IF NOT EXISTS users_username_key
-        ON users (username) WHERE username IS NOT NULL;
       CREATE UNIQUE INDEX IF NOT EXISTS users_email_key
         ON users (email) WHERE email IS NOT NULL;
 
