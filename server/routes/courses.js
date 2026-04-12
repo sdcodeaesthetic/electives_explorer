@@ -8,6 +8,7 @@ const { requireAuth, requireAdmin } = require('../middleware/auth');
 const COURSE_SELECT = `
   SELECT
     c.id, c.area, c.term, c.course, c.credits, c.description,
+    c.key_takeaways, c.prerequisites,
     c.professor1_id, c.professor2_id,
     p1.name AS professor1_name,
     p2.name AS professor2_name,
@@ -96,14 +97,14 @@ router.get('/:id', async (req, res) => {
 // POST /api/courses — admin only
 router.post('/', requireAuth, requireAdmin, async (req, res) => {
   try {
-    const { area, term, course, professor1_id, professor2_id, credits, description } = req.body;
+    const { area, term, course, professor1_id, professor2_id, credits, description, key_takeaways, prerequisites } = req.body;
     if (!area || !term || !course || !professor1_id)
       return res.status(400).json({ error: 'area, term, course and professor1_id are required' });
 
     const { rows } = await pool.query(
-      `INSERT INTO courses (area, term, course, professor1_id, professor2_id, credits, description)
-       VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id`,
-      [area, term, course, professor1_id, professor2_id || null, credits ?? null, description || '']
+      `INSERT INTO courses (area, term, course, professor1_id, professor2_id, credits, description, key_takeaways, prerequisites)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING id`,
+      [area, term, course, professor1_id, professor2_id || null, credits ?? null, description || '', key_takeaways || '', prerequisites || '']
     );
 
     const { rows: full } = await pool.query(`${COURSE_SELECT} WHERE c.id = $1`, [rows[0].id]);
@@ -117,7 +118,7 @@ router.post('/', requireAuth, requireAdmin, async (req, res) => {
 router.put('/:id', requireAuth, requireAdmin, async (req, res) => {
   try {
     const id = parseInt(req.params.id);
-    const { area, term, course, professor1_id, professor2_id, credits, description } = req.body;
+    const { area, term, course, professor1_id, professor2_id, credits, description, key_takeaways, prerequisites } = req.body;
 
     await pool.query(
       `UPDATE courses
@@ -128,9 +129,11 @@ router.put('/:id', requireAuth, requireAdmin, async (req, res) => {
               professor2_id = $5,
               credits       = COALESCE($6, credits),
               description   = COALESCE($7, description),
+              key_takeaways = COALESCE($8, key_takeaways),
+              prerequisites = COALESCE($9, prerequisites),
               updated_at    = NOW()
-        WHERE id = $8`,
-      [area, term, course, professor1_id, professor2_id ?? null, credits ?? null, description, id]
+        WHERE id = $10`,
+      [area, term, course, professor1_id, professor2_id ?? null, credits ?? null, description, key_takeaways ?? null, prerequisites ?? null, id]
     );
 
     const { rows } = await pool.query(`${COURSE_SELECT} WHERE c.id = $1`, [id]);

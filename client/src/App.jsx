@@ -94,6 +94,16 @@ function AppInner({ logout, user }) {
     refetchCourses();
   };
 
+  // When admin deletes a course from grid or modal
+  const handleDeleteCourse = async (course) => {
+    try {
+      await apiFetch(`/api/courses/${course.id}`, { method: 'DELETE' });
+      refetchCourses();
+    } catch (e) {
+      setValidationMsg([e.message]);
+    }
+  };
+
   const clearBasket = () => setBasket(new Set());
 
   const toggleBasket = (course) => {
@@ -191,33 +201,35 @@ function AppInner({ logout, user }) {
     <>
       <Header total={allCourses.length} filtered={filtered.length} user={user} onLogout={logout} />
 
-      {/* ── Sticky zone: tabs + filters + credit ribbon ── */}
+      {/* ── Sticky zone: tabs (students only) + filters + credit ribbon ── */}
       <div className="sticky-zone">
-        <div className="tab-bar">
-          <div className="tab-bar-inner">
-            <button
-              className={`tab-btn ${activeTab === 'browse' ? 'active' : ''}`}
-              onClick={() => setActiveTab('browse')}
-            >
-              Browse Courses
-            </button>
-            <button
-              className={`tab-btn ${activeTab === 'basket' ? 'active' : ''}`}
-              onClick={() => setActiveTab('basket')}
-            >
-              My Planner
-              {basket.size > 0 && <span className="tab-badge">{basket.size}</span>}
-            </button>
-            {user.role === 'student' && (
+        {user.role !== 'admin' && (
+          <div className="tab-bar">
+            <div className="tab-bar-inner">
               <button
-                className={`tab-btn ${activeTab === 'suggest' ? 'active' : ''}`}
-                onClick={() => setActiveTab('suggest')}
+                className={`tab-btn ${activeTab === 'browse' ? 'active' : ''}`}
+                onClick={() => setActiveTab('browse')}
               >
-                AI Suggestions
+                Browse Courses
               </button>
-            )}
+              <button
+                className={`tab-btn ${activeTab === 'basket' ? 'active' : ''}`}
+                onClick={() => setActiveTab('basket')}
+              >
+                My Planner
+                {basket.size > 0 && <span className="tab-badge">{basket.size}</span>}
+              </button>
+              {user.role === 'student' && (
+                <button
+                  className={`tab-btn ${activeTab === 'suggest' ? 'active' : ''}`}
+                  onClick={() => setActiveTab('suggest')}
+                >
+                  AI Suggestions
+                </button>
+              )}
+            </div>
           </div>
-        </div>
+        )}
 
         {activeTab === 'browse' && (
           <>
@@ -229,37 +241,24 @@ function AppInner({ logout, user }) {
               terms={terms} selectedTerm={selectedTerm} setSelectedTerm={setSelectedTerm}
               clearAll={clearAll} hasFilters={hasFilters}
             />
-            <CreditRibbon basketCourses={basketCourses} />
+            {user.role !== 'admin' && <CreditRibbon basketCourses={basketCourses} />}
           </>
         )}
       </div>
 
       {/* ── Scrollable content ── */}
       {activeTab === 'browse' && (
-        <>
-          {user.role === 'admin' && (
-            <div style={{ display: 'flex', justifyContent: 'flex-end', padding: '12px 24px 0' }}>
-              <button
-                onClick={() => setAddCourseOpen(true)}
-                style={{
-                  background: 'var(--accent)', color: '#000', border: 'none',
-                  borderRadius: 8, padding: '8px 18px', fontSize: 13, fontWeight: 700,
-                  cursor: 'pointer', fontFamily: 'inherit',
-                }}
-              >
-                + Add Course
-              </button>
-            </div>
-          )}
-          <CourseGrid
-            courses={displayCourses}
-            total={allCourses.length}
-            filterVersion={filterVersion}
-            basket={basket}
-            toggleBasket={toggleBasket}
-            onExpand={course => navigate(`/course/${course.id}`)}
-          />
-        </>
+        <CourseGrid
+          courses={displayCourses}
+          total={allCourses.length}
+          filterVersion={filterVersion}
+          basket={basket}
+          toggleBasket={toggleBasket}
+          onExpand={course => navigate(`/course/${course.id}`)}
+          isAdmin={user.role === 'admin'}
+          onAddCourse={() => setAddCourseOpen(true)}
+          onDeleteCourse={handleDeleteCourse}
+        />
       )}
       {activeTab === 'basket' && (
         <BasketView

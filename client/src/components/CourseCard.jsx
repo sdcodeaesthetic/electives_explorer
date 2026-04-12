@@ -11,7 +11,7 @@ const AREA_COLORS = {
   'Inter-Area': '#64748b',
 };
 
-export default function CourseCard({ course, selected = false, onToggle, onExpand }) {
+export default function CourseCard({ course, selected = false, onToggle, onExpand, isAdmin = false, onDelete }) {
   const color = AREA_COLORS[course.area] || '#64748b';
 
   return (
@@ -22,7 +22,7 @@ export default function CourseCard({ course, selected = false, onToggle, onExpan
       onMouseEnter={e => { if (!selected) e.currentTarget.style.borderColor = `${color}55`; }}
       onMouseLeave={e => { if (!selected) e.currentTarget.style.borderColor = 'var(--glass-border)'; }}
     >
-      {/* Top row: area badge + credits + check + add button */}
+      {/* Top row: area badge + credits + check */}
       <div className="card-top">
         <span
           className="area-badge"
@@ -31,7 +31,7 @@ export default function CourseCard({ course, selected = false, onToggle, onExpan
           {course.area}
         </span>
         <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-          {selected && (
+          {selected && !isAdmin && (
             <span className="card-check">
               <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2.5">
                 <polyline points="2.5,8.5 6.5,12.5 13.5,4.5" />
@@ -69,15 +69,26 @@ export default function CourseCard({ course, selected = false, onToggle, onExpan
         )}
       </div>
 
-      {/* Footer: add to planner */}
-      <div className="card-footer" onClick={e => e.stopPropagation()}>
-        <button
-          className={`card-add-btn ${selected ? 'added' : ''}`}
-          onClick={() => onToggle && onToggle(course)}
-        >
-          {selected ? '✓ In Planner' : '+ Add to Planner'}
-        </button>
-      </div>
+      {/* Footer: Add to Planner (students only) | Delete (admin only) */}
+      {isAdmin ? (
+        <div className="card-footer" onClick={e => e.stopPropagation()}>
+          <button
+            className="card-delete-btn"
+            onClick={() => onDelete && onDelete(course)}
+          >
+            🗑 Delete Course
+          </button>
+        </div>
+      ) : (
+        <div className="card-footer" onClick={e => e.stopPropagation()}>
+          <button
+            className={`card-add-btn ${selected ? 'added' : ''}`}
+            onClick={() => onToggle && onToggle(course)}
+          >
+            {selected ? '✓ In Planner' : '+ Add to Planner'}
+          </button>
+        </div>
+      )}
     </div>
   );
 }
