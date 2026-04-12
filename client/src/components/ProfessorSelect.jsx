@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { apiFetch } from '../lib/api';
+import '../styles/ProfessorSelect.css';
 
 /**
  * Searchable professor dropdown with "Add new professor" capability.

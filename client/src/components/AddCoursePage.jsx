@@ -135,7 +135,7 @@ export default function AddCoursePage({ onCreated, user, onLogout, allCourses })
           <div className="acp-upload-card">
             <div className="acp-upload-icon">📄</div>
             <div className="acp-upload-content">
-              <p className="acp-upload-title">Auto-fill from PDF or Word document</p>
+              <p className="acp-upload-title">Auto-fill from PDF or Word Document</p>
               <p className="acp-upload-sub">
                 Upload a course brochure or syllabus — fields will be filled automatically using AI.
               </p>

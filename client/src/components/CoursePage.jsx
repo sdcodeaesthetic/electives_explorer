@@ -16,12 +16,117 @@ const AREAS   = ['Finance','GMPP','ISM','Marketing','OB/HR','Operations','Strate
 const TERMS   = ['Term IV','Term V','Term VI'];
 const CREDITS = [1.5, 2, 2.5, 3, 4, 6];
 
-function avg(ratings) {
+function calcAvg(ratings) {
   if (!ratings.length) return 0;
   return ratings.reduce((s, r) => s + r.rating, 0) / ratings.length;
 }
 function fmtDate(iso) {
   return new Date(iso).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+}
+
+// ── Static star display (supports float averages) ─────────────────────────────
+function StarDisplay({ value, size = 17 }) {
+  const rounded = Math.round(value);
+  return (
+    <span style={{ display: 'inline-flex', gap: 2 }}>
+      {[1, 2, 3, 4, 5].map(s => (
+        <span key={s} style={{
+          fontSize: size, lineHeight: 1,
+          color: s <= rounded ? '#f0a500' : 'rgba(255,255,255,0.2)',
+        }}>★</span>
+      ))}
+    </span>
+  );
+}
+
+// ── One summary row: [label]  ★★★★☆  4.2  (N) ────────────────────────────────
+function RatingSummaryRow({ label, ratings, loading, showLabel = true }) {
+  const average = calcAvg(ratings);
+  return (
+    <div className="cp-rsr">
+      {showLabel && <span className="cp-rsr-label">{label}</span>}
+      {loading ? (
+        <span className="cp-muted" style={{ fontSize: 12 }}>Loading…</span>
+      ) : ratings.length === 0 ? (
+        <span className="cp-rsr-none">No ratings yet</span>
+      ) : (
+        <div className="cp-rsr-data">
+          <StarDisplay value={average} size={17} />
+          <span className="cp-rsr-val">{average.toFixed(1)}</span>
+          <span className="cp-rsr-count">({ratings.length} {ratings.length === 1 ? 'rating' : 'ratings'})</span>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ── Compact rating submission form ────────────────────────────────────────────
+function RatingForm({ formLabel, myRating, onSubmit }) {
+  const [rating,     setRating]     = useState(myRating?.rating  || 0);
+  const [comment,    setComment]    = useState(myRating?.comment || '');
+  const [submitting, setSubmitting] = useState(false);
+  const [err,        setErr]        = useState('');
+
+  // Sync if myRating changes (e.g. after submit)
+  useEffect(() => {
+    if (myRating) { setRating(myRating.rating); setComment(myRating.comment || ''); }
+  }, [myRating]);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!rating) { setErr('Please select a star rating.'); return; }
+    setErr(''); setSubmitting(true);
+    try { await onSubmit({ rating, comment }); }
+    catch (e) { setErr(e.message); }
+    finally { setSubmitting(false); }
+  };
+
+  return (
+    <form className="cp-rate-form" onSubmit={handleSubmit}>
+      {formLabel && <span className="cp-rate-form-label">{formLabel}</span>}
+      <div className="cp-rating-group">
+        <StarRating value={rating} onChange={setRating} size={22} />
+        <span className="cp-rating-hint">{rating ? `${rating}/5` : 'Tap to rate'}</span>
+        {myRating && <span className="cp-edit-hint-inline">Editing your rating</span>}
+      </div>
+      <textarea
+        className="cp-comment-input"
+        rows={2}
+        placeholder="Add a comment (optional)…"
+        value={comment}
+        onChange={e => setComment(e.target.value)}
+      />
+      {err && <p className="cp-err">{err}</p>}
+      <button className="cp-submit-btn" type="submit" disabled={submitting}>
+        {submitting ? 'Saving…' : myRating ? 'Update Rating' : 'Submit Rating'}
+      </button>
+    </form>
+  );
+}
+
+// ── Comment card (full-width grid below ratings) ──────────────────────────────
+function CommentCard({ review, source, isAdmin, onDelete }) {
+  return (
+    <div className="cp-comment-card">
+      <div className="cp-comment-card-top">
+        <div className="cp-reviewer-info">
+          <div className="cp-avatar">{review.user_name?.[0]?.toUpperCase() || '?'}</div>
+          <div>
+            <span className="cp-reviewer-name">{review.user_name}</span>
+            <span className="cp-review-date">{fmtDate(review.created_at)}</span>
+          </div>
+        </div>
+        <div className="cp-comment-card-right">
+          <StarDisplay value={review.rating} size={13} />
+          <span className="cp-comment-source">{source}</span>
+          {isAdmin && (
+            <button className="cp-delete-review" onClick={() => onDelete(review.id)} title="Delete">🗑</button>
+          )}
+        </div>
+      </div>
+      <p className="cp-review-comment">{review.comment}</p>
+    </div>
+  );
 }
 
 // ── Inline-editable content section ──────────────────────────────────────────
@@ -109,103 +214,12 @@ function DeleteCourseModal({ courseName, onConfirm, onCancel, deleting }) {
           This will permanently delete <strong>{courseName}</strong>. This action cannot be undone.
         </p>
         <div className="clear-modal-actions">
-          <button className="clear-confirm-no"  onClick={onCancel} disabled={deleting}>Cancel</button>
+          <button className="clear-confirm-no"  onClick={onCancel}  disabled={deleting}>Cancel</button>
           <button className="clear-confirm-yes" onClick={onConfirm} disabled={deleting}>
             {deleting ? 'Deleting…' : 'Yes, delete'}
           </button>
         </div>
       </div>
-    </div>
-  );
-}
-
-// ── Rating tile ───────────────────────────────────────────────────────────────
-function RatingTile({ title, ratings, loading, isAdmin, user, onDelete, onSubmit }) {
-  const [rating,     setRating]     = useState(0);
-  const [comment,    setComment]    = useState('');
-  const [submitting, setSubmitting] = useState(false);
-  const [err,        setErr]        = useState('');
-
-  const average  = avg(ratings);
-  const myRating = ratings.find(r => r.user_id === user?.id);
-
-  useEffect(() => {
-    if (myRating) { setRating(myRating.rating); setComment(myRating.comment || ''); }
-  }, [myRating]);
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!rating) { setErr('Please select a star rating.'); return; }
-    setErr(''); setSubmitting(true);
-    try { await onSubmit({ rating, comment }); }
-    catch (e) { setErr(e.message); }
-    finally { setSubmitting(false); }
-  };
-
-  return (
-    <div className="cp-rating-tile">
-      <div className="cp-rating-tile-header">
-        <h3 className="cp-section-heading">{title}</h3>
-        {ratings.length > 0 && (
-          <div className="cp-tile-avg">
-            <StarRating value={Math.round(average)} readOnly size={15} />
-            <span className="cp-avg-val">{average.toFixed(1)}</span>
-            <span className="cp-avg-count">({ratings.length})</span>
-          </div>
-        )}
-      </div>
-
-      {!isAdmin && (
-        <form className="cp-rate-form" onSubmit={handleSubmit}>
-          <div className="cp-rating-group">
-            <StarRating value={rating} onChange={setRating} size={24} />
-            <span className="cp-rating-hint">{rating ? `${rating}/5` : 'Tap to rate'}</span>
-            {myRating && <span className="cp-edit-hint-inline">Editing your previous rating</span>}
-          </div>
-          <textarea
-            className="cp-comment-input"
-            rows={2}
-            placeholder="Add a comment (optional)…"
-            value={comment}
-            onChange={e => setComment(e.target.value)}
-          />
-          {err && <p className="cp-err">{err}</p>}
-          <button className="cp-submit-btn" type="submit" disabled={submitting}>
-            {submitting ? 'Saving…' : myRating ? 'Update Rating' : 'Submit Rating'}
-          </button>
-        </form>
-      )}
-
-      {loading ? (
-        <p className="cp-muted">Loading…</p>
-      ) : ratings.length === 0 ? (
-        <div className="cp-no-reviews">
-          <p>No ratings yet.{!isAdmin && ' Be the first!'}</p>
-        </div>
-      ) : (
-        <div className="cp-reviews-list">
-          {ratings.map(r => (
-            <div className="cp-review-card" key={r.id}>
-              <div className="cp-review-top">
-                <div className="cp-reviewer-info">
-                  <div className="cp-avatar">{r.user_name?.[0]?.toUpperCase() || '?'}</div>
-                  <div>
-                    <span className="cp-reviewer-name">{r.user_name}</span>
-                    <span className="cp-review-date">{fmtDate(r.created_at)}</span>
-                  </div>
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                  <StarRating value={r.rating} readOnly size={13} />
-                  {isAdmin && (
-                    <button className="cp-delete-review" onClick={() => onDelete(r.id)} title="Delete review">🗑</button>
-                  )}
-                </div>
-              </div>
-              {r.comment && <p className="cp-review-comment">{r.comment}</p>}
-            </div>
-          ))}
-        </div>
-      )}
     </div>
   );
 }
@@ -301,9 +315,9 @@ export default function CoursePage({
   };
 
   // ── Ratings (DB) ──────────────────────────────────────────────────────────
-  const [courseRatings,  setCourseRatings]  = useState([]);
-  const [profRatings,    setProfRatings]    = useState([]);
-  const [ratingsLoading, setRatingsLoading] = useState(true);
+  const [courseRatings,    setCourseRatings]    = useState([]);
+  const [profRatingsData,  setProfRatingsData]  = useState({ professors: [] });
+  const [ratingsLoading,   setRatingsLoading]   = useState(true);
 
   const fetchRatings = useCallback(() => {
     if (!id) return;
@@ -314,7 +328,7 @@ export default function CoursePage({
     ])
       .then(([cr, pr]) => {
         setCourseRatings(Array.isArray(cr) ? cr : []);
-        setProfRatings(Array.isArray(pr?.ratings) ? pr.ratings : []);
+        setProfRatingsData(pr?.professors ? pr : { professors: [] });
       })
       .catch(() => {})
       .finally(() => setRatingsLoading(false));
@@ -330,12 +344,18 @@ export default function CoursePage({
     setCourseRatings(prev => [r, ...prev.filter(x => x.user_id !== user.id)]);
   };
 
-  const submitProfRating = async ({ rating, comment }) => {
+  const submitProfRating = async (professorId, { rating, comment }) => {
     const r = await apiFetch(`/api/professor-ratings/${id}`, {
       method: 'POST',
-      body: JSON.stringify({ rating, comment }),
+      body: JSON.stringify({ rating, comment, professor_id: professorId }),
     });
-    setProfRatings(prev => [r, ...prev.filter(x => x.user_id !== user.id)]);
+    setProfRatingsData(prev => ({
+      professors: prev.professors.map(p =>
+        p.id === professorId
+          ? { ...p, ratings: [r, ...p.ratings.filter(x => x.user_id !== user.id)] }
+          : p
+      ),
+    }));
   };
 
   const deleteCourseRating = async (ratingId) => {
@@ -345,8 +365,24 @@ export default function CoursePage({
 
   const deleteProfRating = async (ratingId) => {
     await fetch(`${BASE}/api/professor-ratings/${ratingId}`, { method: 'DELETE', headers: authHeaders() });
-    setProfRatings(prev => prev.filter(r => r.id !== ratingId));
+    setProfRatingsData(prev => ({
+      professors: prev.professors.map(p => ({
+        ...p,
+        ratings: p.ratings.filter(r => r.id !== ratingId),
+      })),
+    }));
   };
+
+  // ── All comments (course + all professors), newest first ─────────────────
+  const allComments = [
+    ...courseRatings.filter(r => r.comment).map(r => ({ ...r, _source: 'Course' })),
+    ...profRatingsData.professors.flatMap(p =>
+      p.ratings.filter(r => r.comment).map(r => ({ ...r, _source: p.name }))
+    ),
+  ].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+
+  const totalRatings = courseRatings.length +
+    profRatingsData.professors.reduce((s, p) => s + p.ratings.length, 0);
 
   // ── Loading / not-found ───────────────────────────────────────────────────
   if (allCourses.length > 0 && !course) {
@@ -371,7 +407,6 @@ export default function CoursePage({
 
   const color    = AREA_COLORS[course.area] || '#64748b';
   const inBasket = basket.has(course.id);
-  const totalReviews = courseRatings.length + profRatings.length;
 
   return (
     <>
@@ -530,28 +565,79 @@ export default function CoursePage({
         <div className="cp-reviews-section">
           <h2 className="cp-reviews-heading">
             Reviews &amp; Ratings
-            {totalReviews > 0 && <span className="cp-review-count-badge">{totalReviews}</span>}
+            {totalRatings > 0 && <span className="cp-review-count-badge">{totalRatings}</span>}
           </h2>
 
+          {/* ── Two-column rating tiles ── */}
           <div className="cp-ratings-grid">
-            <RatingTile
-              title="Course Rating"
-              ratings={courseRatings}
-              loading={ratingsLoading}
-              isAdmin={isAdmin}
-              user={user}
-              onDelete={deleteCourseRating}
-              onSubmit={submitCourseRating}
-            />
-            <RatingTile
-              title={`Professor — ${course.faculty}`}
-              ratings={profRatings}
-              loading={ratingsLoading}
-              isAdmin={isAdmin}
-              user={user}
-              onDelete={deleteProfRating}
-              onSubmit={submitProfRating}
-            />
+
+            {/* Course rating tile */}
+            <div className="cp-rating-tile">
+              <h3 className="cp-rating-tile-title">Course Rating</h3>
+              <RatingSummaryRow
+                label="Course"
+                ratings={courseRatings}
+                loading={ratingsLoading}
+                showLabel={false}
+              />
+              {!isAdmin && (
+                <RatingForm
+                  myRating={courseRatings.find(r => r.user_id === user?.id)}
+                  onSubmit={submitCourseRating}
+                />
+              )}
+            </div>
+
+            {/* Professor rating tile */}
+            <div className="cp-rating-tile">
+              <h3 className="cp-rating-tile-title">Professor Ratings</h3>
+              {ratingsLoading ? (
+                <p className="cp-muted" style={{ fontSize: 13 }}>Loading…</p>
+              ) : profRatingsData.professors.length === 0 ? (
+                <p className="cp-rsr-none">No professor assigned.</p>
+              ) : (
+                profRatingsData.professors.map((prof, idx) => (
+                  <div key={prof.id} className={`cp-prof-rating-block${idx > 0 ? ' cp-prof-rating-block--sep' : ''}`}>
+                    <RatingSummaryRow
+                      label={prof.name}
+                      ratings={prof.ratings}
+                      loading={ratingsLoading}
+                      showLabel={true}
+                    />
+                    {!isAdmin && (
+                      <RatingForm
+                        formLabel={`Rate ${prof.name}`}
+                        myRating={prof.ratings.find(r => r.user_id === user?.id)}
+                        onSubmit={(payload) => submitProfRating(prof.id, payload)}
+                      />
+                    )}
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
+
+          {/* ── Comments — always visible, full width below the two tiles ── */}
+          <div className="cp-comments-section">
+            <h3 className="cp-comments-heading">
+              Comments
+              {allComments.length > 0 && <span className="cp-review-count-badge">{allComments.length}</span>}
+            </h3>
+            {allComments.length === 0 ? (
+              <p className="cp-rsr-none" style={{ padding: '8px 0' }}>No comments yet.</p>
+            ) : (
+              <div className="cp-comments-grid">
+                {allComments.map(r => (
+                  <CommentCard
+                    key={`${r._source}-${r.id}`}
+                    review={r}
+                    source={r._source}
+                    isAdmin={isAdmin}
+                    onDelete={r._source === 'Course' ? deleteCourseRating : deleteProfRating}
+                  />
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </div>
