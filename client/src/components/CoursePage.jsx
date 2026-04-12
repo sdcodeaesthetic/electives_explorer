@@ -2,12 +2,10 @@ import { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import StarRating from './StarRating';
 import Header from './Header';
-import { apiFetch } from '../lib/api';
+import { apiFetch, authHeaders } from '../lib/api';
 import BASE from '../lib/api';
 import courseDetails from '../data/courseDetails.js';
 import '../styles/CoursePage.css';
-
-const reviewsKey = (id) => `elective_reviews_${id}`;
 
 const AREA_COLORS = {
   Finance: '#3b82f6', GMPP: '#8b5cf6', ISM: '#14b8a6',
@@ -18,16 +16,119 @@ const AREAS   = ['Finance','GMPP','ISM','Marketing','OB/HR','Operations','Strate
 const TERMS   = ['Term IV','Term V','Term VI'];
 const CREDITS = [1.5, 2, 2.5, 3, 4, 6];
 
-function avg(reviews, field) {
-  const valid = reviews.filter(r => r[field] > 0);
-  if (!valid.length) return 0;
-  return valid.reduce((s, r) => s + r[field], 0) / valid.length;
+function calcAvg(ratings) {
+  if (!ratings.length) return 0;
+  return ratings.reduce((s, r) => s + r.rating, 0) / ratings.length;
 }
-
 function fmtDate(iso) {
   return new Date(iso).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
 }
 
+// ── Static filled-star display (supports float averages) ─────────────────────
+function StarDisplay({ value, size = 17 }) {
+  const rounded = Math.round(value);
+  return (
+    <span style={{ display: 'inline-flex', gap: 2 }}>
+      {[1, 2, 3, 4, 5].map(s => (
+        <span key={s} style={{
+          fontSize: size, lineHeight: 1,
+          color: s <= rounded ? '#f0a500' : 'rgba(255,255,255,0.2)',
+        }}>★</span>
+      ))}
+    </span>
+  );
+}
+
+// ── One summary row:  [label]  ★★★★☆  4.2  (N ratings) ──────────────────────
+function RatingSummaryRow({ label, ratings, loading, showLabel = true }) {
+  const average = calcAvg(ratings);
+  return (
+    <div className="cp-rsr">
+      {showLabel && <span className="cp-rsr-label">{label}</span>}
+      {loading ? (
+        <span className="cp-muted" style={{ fontSize: 12 }}>Loading…</span>
+      ) : ratings.length === 0 ? (
+        <span className="cp-rsr-none">No ratings yet</span>
+      ) : (
+        <div className="cp-rsr-data">
+          <StarDisplay value={average} size={17} />
+          <span className="cp-rsr-val">{average.toFixed(1)}</span>
+          <span className="cp-rsr-count">({ratings.length} {ratings.length === 1 ? 'rating' : 'ratings'})</span>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ── Compact per-entity rating form ────────────────────────────────────────────
+function RatingForm({ formLabel, myRating, onSubmit }) {
+  const [rating,     setRating]     = useState(myRating?.rating  || 0);
+  const [comment,    setComment]    = useState(myRating?.comment || '');
+  const [submitting, setSubmitting] = useState(false);
+  const [err,        setErr]        = useState('');
+
+  useEffect(() => {
+    if (myRating) { setRating(myRating.rating); setComment(myRating.comment || ''); }
+  }, [myRating]);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!rating) { setErr('Please select a star rating.'); return; }
+    setErr(''); setSubmitting(true);
+    try { await onSubmit({ rating, comment }); }
+    catch (e) { setErr(e.message); }
+    finally { setSubmitting(false); }
+  };
+
+  return (
+    <form className="cp-rate-form" onSubmit={handleSubmit}>
+      {formLabel && <span className="cp-rate-form-label">{formLabel}</span>}
+      <div className="cp-rating-group">
+        <StarRating value={rating} onChange={setRating} size={22} />
+        <span className="cp-rating-hint">{rating ? `${rating}/5` : 'Tap to rate'}</span>
+        {myRating && <span className="cp-edit-hint-inline">Editing your rating</span>}
+      </div>
+      <textarea
+        className="cp-comment-input"
+        rows={2}
+        placeholder="Add a comment (optional)…"
+        value={comment}
+        onChange={e => setComment(e.target.value)}
+      />
+      {err && <p className="cp-err">{err}</p>}
+      <button className="cp-submit-btn" type="submit" disabled={submitting}>
+        {submitting ? 'Saving…' : myRating ? 'Update Rating' : 'Submit Rating'}
+      </button>
+    </form>
+  );
+}
+
+// ── Comment card ──────────────────────────────────────────────────────────────
+function CommentCard({ review, source, isAdmin, onDelete }) {
+  return (
+    <div className="cp-comment-card">
+      <div className="cp-comment-card-top">
+        <div className="cp-reviewer-info">
+          <div className="cp-avatar">{review.user_name?.[0]?.toUpperCase() || '?'}</div>
+          <div>
+            <span className="cp-reviewer-name">{review.user_name}</span>
+            <span className="cp-review-date">{fmtDate(review.created_at)}</span>
+          </div>
+        </div>
+        <div className="cp-comment-card-right">
+          <StarDisplay value={review.rating} size={13} />
+          <span className="cp-comment-source">{source}</span>
+          {isAdmin && (
+            <button className="cp-delete-review" onClick={() => onDelete(review.id)} title="Delete">🗑</button>
+          )}
+        </div>
+      </div>
+      <p className="cp-review-comment">{review.comment}</p>
+    </div>
+  );
+}
+
+// ── Main page ─────────────────────────────────────────────────────────────────
 export default function CoursePage({
   allCourses, courseOverrides, onCourseUpdated,
   basket, toggleBasket, validationMsg, setValidationMsg,
@@ -37,11 +138,9 @@ export default function CoursePage({
   const navigate = useNavigate();
   const isAdmin  = user?.role === 'admin';
 
-  // Resolve course from allCourses + any admin overrides
-  const base   = allCourses.find(c => String(c.id) === id);
+  const base = allCourses.find(c => String(c.id) === id);
   const [course, setCourse] = useState(base ? (courseOverrides[base.id] || base) : null);
 
-  // Sync if allCourses loads after mount (first render)
   useEffect(() => {
     if (!course && allCourses.length) {
       const found = allCourses.find(c => String(c.id) === id);
@@ -49,7 +148,7 @@ export default function CoursePage({
     }
   }, [allCourses, id, courseOverrides, course]);
 
-  // ── Admin edit state ──────────────────────────────────────────────────────
+  // ── Admin edit ────────────────────────────────────────────────────────────
   const [editing,    setEditing]    = useState(false);
   const [editDraft,  setEditDraft]  = useState({});
   const [saving,     setSaving]     = useState(false);
@@ -70,83 +169,94 @@ export default function CoursePage({
       credits:       course.credits,
       description:   course.description || '',
     });
-    setSaveErr('');
-    setEditing(true);
+    setSaveErr(''); setEditing(true);
   };
 
   const saveEdit = async () => {
     setSaving(true); setSaveErr('');
     try {
-      const payload = {
-        ...editDraft,
-        professor1_id: editDraft.professor1_id ? parseInt(editDraft.professor1_id) : null,
-        professor2_id: editDraft.professor2_id ? parseInt(editDraft.professor2_id) : null,
-      };
       const updated = await apiFetch(`/api/courses/${course.id}`, {
         method: 'PUT',
-        body: JSON.stringify(payload),
+        body: JSON.stringify({
+          ...editDraft,
+          professor1_id: editDraft.professor1_id ? parseInt(editDraft.professor1_id) : null,
+          professor2_id: editDraft.professor2_id ? parseInt(editDraft.professor2_id) : null,
+        }),
       });
-      setCourse(updated);
-      setEditing(false);
+      setCourse(updated); setEditing(false);
       onCourseUpdated && onCourseUpdated(updated);
-    } catch (e) {
-      setSaveErr(e.message);
-    } finally {
-      setSaving(false);
-    }
+    } catch (e) { setSaveErr(e.message); }
+    finally { setSaving(false); }
   };
 
-  // ── Reviews ───────────────────────────────────────────────────────────────
-  const [reviews,    setReviews]    = useState([]);
-  const [revLoad,    setRevLoad]    = useState(true);
-  const [cRating,    setCRating]    = useState(0);
-  const [pRating,    setPRating]    = useState(0);
-  const [comment,    setComment]    = useState('');
-  const [submitting, setSubmitting] = useState(false);
-  const [formErr,    setFormErr]    = useState('');
+  // ── DB-backed ratings ─────────────────────────────────────────────────────
+  const [courseRatings,   setCourseRatings]   = useState([]);
+  const [profRatingsData, setProfRatingsData] = useState({ professors: [] });
+  const [ratingsLoading,  setRatingsLoading]  = useState(true);
 
-  const fetchReviews = useCallback(() => {
+  const fetchRatings = useCallback(() => {
     if (!id) return;
-    setRevLoad(true);
-    try {
-      const stored = JSON.parse(localStorage.getItem(reviewsKey(id))) || [];
-      setReviews(Array.isArray(stored) ? stored : []);
-    } catch {
-      setReviews([]);
-    }
-    setRevLoad(false);
+    setRatingsLoading(true);
+    Promise.all([
+      fetch(`${BASE}/api/course-ratings/${id}`).then(r => r.json()),
+      fetch(`${BASE}/api/professor-ratings/by-course/${id}`).then(r => r.json()),
+    ])
+      .then(([cr, pr]) => {
+        setCourseRatings(Array.isArray(cr) ? cr : []);
+        setProfRatingsData(pr?.professors ? pr : { professors: [] });
+      })
+      .catch(() => {})
+      .finally(() => setRatingsLoading(false));
   }, [id]);
 
-  useEffect(() => { fetchReviews(); }, [fetchReviews]);
+  useEffect(() => { fetchRatings(); }, [fetchRatings]);
 
-  const submitReview = (e) => {
-    e.preventDefault();
-    if (!cRating && !pRating && !comment.trim()) {
-      setFormErr('Please provide at least a rating or a comment.');
-      return;
-    }
-    setFormErr(''); setSubmitting(true);
-    const newReview = {
-      id: Date.now(),
-      username: user.username,
-      name: user.name,
-      courseRating: cRating,
-      profRating: pRating,
-      comment,
-      timestamp: new Date().toISOString(),
-    };
-    const updated = [...reviews, newReview];
-    localStorage.setItem(reviewsKey(id), JSON.stringify(updated));
-    setReviews(updated);
-    setCRating(0); setPRating(0); setComment('');
-    setSubmitting(false);
+  const submitCourseRating = async ({ rating, comment }) => {
+    const r = await apiFetch(`/api/course-ratings/${id}`, {
+      method: 'POST',
+      body: JSON.stringify({ rating, comment }),
+    });
+    setCourseRatings(prev => [r, ...prev.filter(x => x.user_id !== user.id)]);
   };
 
-  const deleteReview = (reviewId) => {
-    const updated = reviews.filter(r => r.id !== reviewId);
-    localStorage.setItem(reviewsKey(id), JSON.stringify(updated));
-    setReviews(updated);
+  const submitProfRating = async (professorId, { rating, comment }) => {
+    const r = await apiFetch(`/api/professor-ratings/${id}`, {
+      method: 'POST',
+      body: JSON.stringify({ rating, comment, professor_id: professorId }),
+    });
+    setProfRatingsData(prev => ({
+      professors: prev.professors.map(p =>
+        p.id === professorId
+          ? { ...p, ratings: [r, ...p.ratings.filter(x => x.user_id !== user.id)] }
+          : p
+      ),
+    }));
   };
+
+  const deleteCourseRating = async (ratingId) => {
+    await fetch(`${BASE}/api/course-ratings/${ratingId}`, { method: 'DELETE', headers: authHeaders() });
+    setCourseRatings(prev => prev.filter(r => r.id !== ratingId));
+  };
+
+  const deleteProfRating = async (ratingId) => {
+    await fetch(`${BASE}/api/professor-ratings/${ratingId}`, { method: 'DELETE', headers: authHeaders() });
+    setProfRatingsData(prev => ({
+      professors: prev.professors.map(p => ({
+        ...p, ratings: p.ratings.filter(r => r.id !== ratingId),
+      })),
+    }));
+  };
+
+  // All comments (course + professors), newest first
+  const allComments = [
+    ...courseRatings.filter(r => r.comment).map(r => ({ ...r, _source: 'Course' })),
+    ...profRatingsData.professors.flatMap(p =>
+      p.ratings.filter(r => r.comment).map(r => ({ ...r, _source: p.name }))
+    ),
+  ].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+
+  const totalRatings = courseRatings.length +
+    profRatingsData.professors.reduce((s, p) => s + p.ratings.length, 0);
 
   // ── Not found ─────────────────────────────────────────────────────────────
   if (allCourses.length > 0 && !course) {
@@ -166,22 +276,18 @@ export default function CoursePage({
     </div>
   );
 
-  const color     = AREA_COLORS[course.area] || '#64748b';
-  const inBasket  = basket.has(course.id);
-  const avgCourse = avg(reviews, 'courseRating');
-  const avgProf   = avg(reviews, 'profRating');
-  const detail    = courseDetails[String(course.id)];
+  const color    = AREA_COLORS[course.area] || '#64748b';
+  const inBasket = basket.has(course.id);
+  const detail   = courseDetails[String(course.id)];
 
   return (
     <>
       <Header total={allCourses.length} filtered={allCourses.length} user={user} onLogout={onLogout} />
 
       <div className="cp-wrap">
-        {/* ── Breadcrumb / back ── */}
+        {/* ── Breadcrumb ── */}
         <div className="cp-breadcrumb">
-          <button className="cp-back-btn" onClick={() => navigate(-1)}>
-            ← Back
-          </button>
+          <button className="cp-back-btn" onClick={() => navigate(-1)}>← Back</button>
           <span className="cp-breadcrumb-sep">/</span>
           <span className="cp-breadcrumb-current">{course.course}</span>
         </div>
@@ -196,12 +302,14 @@ export default function CoursePage({
               {isAdmin && !editing && (
                 <button className="cp-edit-btn" onClick={startEdit}>Edit Course</button>
               )}
-              <button
-                className={`cp-planner-btn ${inBasket ? 'in-basket' : ''}`}
-                onClick={() => toggleBasket(course)}
-              >
-                {inBasket ? '✓ In Planner' : '+ Add to Planner'}
-              </button>
+              {!isAdmin && (
+                <button
+                  className={`cp-planner-btn ${inBasket ? 'in-basket' : ''}`}
+                  onClick={() => toggleBasket(course)}
+                >
+                  {inBasket ? '✓ In Planner' : '+ Add to Planner'}
+                </button>
+              )}
             </div>
           </div>
 
@@ -247,13 +355,16 @@ export default function CoursePage({
               </div>
               <div className="cp-edit-row full">
                 <label>Description</label>
-                <textarea rows={3} value={editDraft.description} placeholder="Add a short course description…"
+                <textarea rows={3} value={editDraft.description}
+                  placeholder="Add a short course description…"
                   onChange={e => setEditDraft(d => ({ ...d, description: e.target.value }))} />
               </div>
               {saveErr && <p className="cp-err">{saveErr}</p>}
               <div className="cp-edit-actions">
                 <button className="cp-cancel-btn" onClick={() => setEditing(false)}>Cancel</button>
-                <button className="cp-save-btn" onClick={saveEdit} disabled={saving}>{saving ? 'Saving…' : 'Save Changes'}</button>
+                <button className="cp-save-btn" onClick={saveEdit} disabled={saving}>
+                  {saving ? 'Saving…' : 'Save Changes'}
+                </button>
               </div>
             </div>
           ) : (
@@ -277,26 +388,21 @@ export default function CoursePage({
           )}
         </div>
 
-        {/* ── Document-extracted details ── */}
+        {/* ── Static course details (from courseDetails.js) ── */}
         {detail && (
           <div className="cp-detail-grid">
-
-            {/* About This Course — full width */}
             {detail.intro && (
               <div className="cp-detail-card cp-detail-full">
                 <h3 className="cp-detail-heading">About This Course</h3>
                 <p className="cp-detail-text">{detail.intro}</p>
               </div>
             )}
-
-            {/* Course Curriculum — full width */}
             {detail.outline?.length > 0 && (
               <div className="cp-detail-card cp-detail-full cp-curriculum-card">
                 <h3 className="cp-detail-heading">Course Curriculum</h3>
                 <p className="cp-detail-text" style={{ marginBottom: 16 }}>
                   This course is structured across {detail.outline.length} topic{detail.outline.length > 1 ? 's' : ''},
-                  covering both foundational concepts and applied skills. The sessions are designed to build progressively,
-                  combining theory with real-world case discussions.
+                  covering both foundational concepts and applied skills.
                 </p>
                 <div className="cp-curriculum-grid">
                   {detail.outline.map((item, i) => (
@@ -308,20 +414,14 @@ export default function CoursePage({
                 </div>
               </div>
             )}
-
-            {/* Key Takeaways — half width */}
             {detail.keyTakeaways?.length > 0 && (
               <div className="cp-detail-card">
                 <h3 className="cp-detail-heading">Key Takeaways</h3>
                 <ul className="cp-detail-list cp-takeaway-list">
-                  {detail.keyTakeaways.map((item, i) => (
-                    <li key={i}>{item}</li>
-                  ))}
+                  {detail.keyTakeaways.map((item, i) => <li key={i}>{item}</li>)}
                 </ul>
               </div>
             )}
-
-            {/* Prerequisites — half width */}
             <div className="cp-detail-card cp-prereq-card">
               <h3 className="cp-detail-heading">Prerequisites</h3>
               <p className="cp-detail-text cp-prereq-text">{detail.prerequisites || 'None mentioned'}</p>
@@ -329,134 +429,100 @@ export default function CoursePage({
           </div>
         )}
 
-        {/* ── Content grid ── */}
-        <div className="cp-content">
+        {/* ── Reviews & Ratings — full width ── */}
+        <div className="cp-reviews-section">
+          <h2 className="cp-reviews-heading">
+            Reviews &amp; Ratings
+            {totalRatings > 0 && <span className="cp-review-count-badge">{totalRatings}</span>}
+          </h2>
 
-          {/* ── Left: Ratings aggregate + Review form ── */}
-          <div className="cp-left">
+          {/* Two-column rating tiles */}
+          <div className="cp-ratings-grid">
 
-            {/* Aggregate */}
-            {reviews.length > 0 && (
-              <div className="cp-agg-card">
-                <h2 className="cp-section-title">Overall Ratings</h2>
-                <div className="cp-agg-row">
-                  <div className="cp-agg-item">
-                    <span className="cp-agg-num">{avgCourse.toFixed(1)}</span>
-                    <StarRating value={Math.round(avgCourse)} readOnly size={20} />
-                    <span className="cp-agg-label">Course</span>
-                  </div>
-                  <div className="cp-agg-divider" />
-                  <div className="cp-agg-item">
-                    <span className="cp-agg-num">{avgProf.toFixed(1)}</span>
-                    <StarRating value={Math.round(avgProf)} readOnly size={20} />
-                    <span className="cp-agg-label">Professor</span>
-                  </div>
-                  <div className="cp-agg-divider" />
-                  <div className="cp-agg-item">
-                    <span className="cp-agg-num">{reviews.length}</span>
-                    <span className="cp-agg-label">Reviews</span>
-                  </div>
-                </div>
-              </div>
-            )}
+            {/* Course rating */}
+            <div className="cp-rating-tile">
+              <h3 className="cp-rating-tile-title">Course Rating</h3>
+              <RatingSummaryRow
+                ratings={courseRatings}
+                loading={ratingsLoading}
+                showLabel={false}
+              />
+              {!isAdmin && (
+                <RatingForm
+                  myRating={courseRatings.find(r => r.user_id === user?.id)}
+                  onSubmit={submitCourseRating}
+                />
+              )}
+            </div>
 
-            {/* Review form — students only */}
-            {!isAdmin && (
-              <div className="cp-card">
-                <h2 className="cp-section-title">Rate This Course</h2>
-                <form className="cp-review-form" onSubmit={submitReview}>
-                  <div className="cp-rating-row">
-                    <div className="cp-rating-group">
-                      <span className="cp-rating-label">Course</span>
-                      <StarRating value={cRating} onChange={setCRating} size={26} />
-                      <span className="cp-rating-hint">{cRating ? `${cRating}/5` : 'Tap to rate'}</span>
-                    </div>
-                    <div className="cp-rating-group">
-                      <span className="cp-rating-label">Professor</span>
-                      <StarRating value={pRating} onChange={setPRating} size={26} />
-                      <span className="cp-rating-hint">{pRating ? `${pRating}/5` : 'Tap to rate'}</span>
-                    </div>
+            {/* Professor ratings — one row per professor */}
+            <div className="cp-rating-tile">
+              <h3 className="cp-rating-tile-title">Professor Ratings</h3>
+              {ratingsLoading ? (
+                <p className="cp-muted" style={{ fontSize: 13 }}>Loading…</p>
+              ) : profRatingsData.professors.length === 0 ? (
+                <p className="cp-rsr-none">No professor assigned.</p>
+              ) : (
+                profRatingsData.professors.map((prof, idx) => (
+                  <div key={prof.id} className={`cp-prof-rating-block${idx > 0 ? ' cp-prof-rating-block--sep' : ''}`}>
+                    <RatingSummaryRow
+                      label={prof.name}
+                      ratings={prof.ratings}
+                      loading={false}
+                      showLabel={true}
+                    />
+                    {!isAdmin && (
+                      <RatingForm
+                        formLabel={`Rate ${prof.name}`}
+                        myRating={prof.ratings.find(r => r.user_id === user?.id)}
+                        onSubmit={(payload) => submitProfRating(prof.id, payload)}
+                      />
+                    )}
                   </div>
-                  <textarea
-                    className="cp-comment-input"
-                    rows={4}
-                    placeholder="Share your thoughts about this course, workload, learning outcomes…"
-                    value={comment}
-                    onChange={e => setComment(e.target.value)}
-                  />
-                  {formErr && <p className="cp-err">{formErr}</p>}
-                  <button className="cp-submit-btn" type="submit" disabled={submitting}>
-                    {submitting ? 'Submitting…' : 'Submit Review'}
-                  </button>
-                </form>
-              </div>
-            )}
+                ))
+              )}
+            </div>
           </div>
 
-          {/* ── Right: Reviews list ── */}
-          <div className="cp-right">
-            <h2 className="cp-section-title" style={{ marginBottom: 16 }}>
-              Student Reviews
-              {reviews.length > 0 && <span className="cp-review-count">{reviews.length}</span>}
-            </h2>
-
-            {revLoad ? (
-              <p className="cp-muted">Loading reviews…</p>
-            ) : reviews.length === 0 ? (
-              <div className="cp-no-reviews">
-                <p style={{ fontSize: 36, marginBottom: 10 }}>💬</p>
-                <p>No reviews yet.</p>
-                {!isAdmin && <p style={{ marginTop: 4 }}>Be the first to rate this course!</p>}
-              </div>
+          {/* Comments — full width below tiles */}
+          <div className="cp-comments-section">
+            <h3 className="cp-comments-heading">
+              Comments
+              {allComments.length > 0 && <span className="cp-review-count-badge">{allComments.length}</span>}
+            </h3>
+            {allComments.length === 0 ? (
+              <p className="cp-rsr-none" style={{ padding: '8px 0' }}>No comments yet.</p>
             ) : (
-              <div className="cp-reviews-list">
-                {reviews.map(r => (
-                  <div className="cp-review-card" key={r.id}>
-                    <div className="cp-review-top">
-                      <div className="cp-reviewer-info">
-                        <div className="cp-avatar">{r.name?.[0]?.toUpperCase() || '?'}</div>
-                        <div>
-                          <span className="cp-reviewer-name">{r.name}</span>
-                          <span className="cp-review-date">{fmtDate(r.timestamp)}</span>
-                        </div>
-                      </div>
-                      {isAdmin && (
-                        <button className="cp-delete-review" onClick={() => deleteReview(r.id)} title="Delete">🗑</button>
-                      )}
-                    </div>
-                    {(r.courseRating > 0 || r.profRating > 0) && (
-                      <div className="cp-review-ratings">
-                        {r.courseRating > 0 && (
-                          <span className="cp-mini-rating">Course <StarRating value={r.courseRating} readOnly size={13} /></span>
-                        )}
-                        {r.profRating > 0 && (
-                          <span className="cp-mini-rating">Prof <StarRating value={r.profRating} readOnly size={13} /></span>
-                        )}
-                      </div>
-                    )}
-                    {r.comment && <p className="cp-review-comment">{r.comment}</p>}
-                  </div>
+              <div className="cp-comments-grid">
+                {allComments.map(r => (
+                  <CommentCard
+                    key={`${r._source}-${r.id}`}
+                    review={r}
+                    source={r._source}
+                    isAdmin={isAdmin}
+                    onDelete={r._source === 'Course' ? deleteCourseRating : deleteProfRating}
+                  />
                 ))}
               </div>
             )}
           </div>
         </div>
-
-        {/* ── Validation modal (credit violations from this page) ── */}
-        {validationMsg && (
-          <div className="modal-backdrop" onClick={() => setValidationMsg(null)}>
-            <div className="modal-box" onClick={e => e.stopPropagation()}>
-              <div className="modal-icon">⚠️</div>
-              <h3 className="modal-title">Credit Limit Violated</h3>
-              <ul className="modal-list">
-                {validationMsg.map((m, i) => <li key={i}>{m}</li>)}
-              </ul>
-              <p className="modal-hint">Remove a course from your planner to fix the issue.</p>
-              <button className="modal-close-btn" onClick={() => setValidationMsg(null)}>Got it</button>
-            </div>
-          </div>
-        )}
       </div>
+
+      {/* ── Validation modal ── */}
+      {validationMsg && (
+        <div className="modal-backdrop" onClick={() => setValidationMsg(null)}>
+          <div className="modal-box" onClick={e => e.stopPropagation()}>
+            <div className="modal-icon">⚠️</div>
+            <h3 className="modal-title">Credit Limit Violated</h3>
+            <ul className="modal-list">
+              {validationMsg.map((m, i) => <li key={i}>{m}</li>)}
+            </ul>
+            <p className="modal-hint">Remove a course from your planner to fix the issue.</p>
+            <button className="modal-close-btn" onClick={() => setValidationMsg(null)}>Got it</button>
+          </div>
+        </div>
+      )}
     </>
   );
 }
