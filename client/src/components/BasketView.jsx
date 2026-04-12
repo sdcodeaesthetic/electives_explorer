@@ -20,11 +20,11 @@ const TERM_LABELS = {
   'X':       'Flexible / Cross-Term',
 };
 
-const fmtCr = (v) => (v % 1 === 0 ? v : v.toFixed(1));
+const fmtCr = (v) => { const n = parseFloat(v); return n % 1 === 0 ? n : n.toFixed(1); };
 
 export default function BasketView({ basketCourses, toggleBasket, clearBasket, onDownloadPDF, canDownload }) {
   const [confirming, setConfirming] = useState(false);
-  const totalCredits = basketCourses.reduce((sum, c) => sum + (c.credits || 0), 0);
+  const totalCredits = basketCourses.reduce((sum, c) => sum + (parseFloat(c.credits) || 0), 0);
   const totalCourses = basketCourses.length;
 
   // Group by term → area

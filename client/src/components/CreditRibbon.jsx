@@ -29,7 +29,7 @@ export default function CreditRibbon({ basketCourses }) {
   TERMS.forEach(t => {
     termCr[t.key] = basketCourses
       .filter(c => c.term === t.key)
-      .reduce((s, c) => s + (c.credits || 0), 0);
+      .reduce((s, c) => s + (parseFloat(c.credits) || 0), 0);
   });
 
   const total       = Object.values(termCr).reduce((s, v) => s + v, 0);

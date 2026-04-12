@@ -315,9 +315,9 @@ export default function CoursePage({
   };
 
   // ── Ratings (DB) ──────────────────────────────────────────────────────────
-  const [courseRatings,    setCourseRatings]    = useState([]);
-  const [profRatingsData,  setProfRatingsData]  = useState({ professors: [] });
-  const [ratingsLoading,   setRatingsLoading]   = useState(true);
+  const [courseRatings,   setCourseRatings]   = useState([]);
+  const [profRatingsData, setProfRatingsData] = useState({ professors: [] });
+  const [ratingsLoading,  setRatingsLoading]  = useState(true);
 
   const fetchRatings = useCallback(() => {
     if (!id) return;
@@ -575,7 +575,6 @@ export default function CoursePage({
             <div className="cp-rating-tile">
               <h3 className="cp-rating-tile-title">Course Rating</h3>
               <RatingSummaryRow
-                label="Course"
                 ratings={courseRatings}
                 loading={ratingsLoading}
                 showLabel={false}
