@@ -7,7 +7,7 @@ const TERMS = [
 ];
 
 const TOTAL_MIN = 48;
-const TOTAL_MAX = 52;
+const TOTAL_MAX = 54;
 
 function getStatus(credits, min, max) {
   if (credits === 0)   return 'empty';

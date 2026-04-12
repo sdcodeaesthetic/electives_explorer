@@ -20,7 +20,7 @@ const TERM_RULES = {
   'Term VI':  { min: 12, max: 12, label: 'Term 6' },
 };
 const TOTAL_MIN = 48;
-const TOTAL_MAX = 52;
+const TOTAL_MAX = 54;
 
 function getTermCredits(courses, term) {
   return courses.filter(c => c.term === term).reduce((s, c) => s + (c.credits || 0), 0);
@@ -433,7 +433,7 @@ function buildPrintHTML(courses, { t4, t5, t6, total }) {
     <tr><td>Term 4</td><td>${t4}</td><td>18 – 21</td><td class="${t4>=18&&t4<=21?'ok':'bad'}">${t4>=18&&t4<=21?'✓ OK':'✗ Violation'}</td></tr>
     <tr><td>Term 5</td><td>${t5}</td><td>18 – 21</td><td class="${t5>=18&&t5<=21?'ok':'bad'}">${t5>=18&&t5<=21?'✓ OK':'✗ Violation'}</td></tr>
     <tr><td>Term 6</td><td>${t6}</td><td>= 12</td><td class="${t6===12?'ok':'bad'}">${t6===12?'✓ OK':'✗ Violation'}</td></tr>
-    <tr><td><strong>Total</strong></td><td>${total}</td><td>48 – 52</td><td class="${total>=48&&total<=52?'ok':'bad'}">${total>=48&&total<=52?'✓ OK':'✗ Violation'}</td></tr>
+    <tr><td><strong>Total</strong></td><td>${total}</td><td>48 – 54</td><td class="${total>=48&&total<=54?'ok':'bad'}">${total>=48&&total<=54?'✓ OK':'✗ Violation'}</td></tr>
   </tbody>
 </table>
 </body></html>`;

@@ -142,6 +142,49 @@
 .login-mode-tab:hover  { color: var(--text-primary); }
 .login-mode-tab.active { color: var(--accent); border-bottom-color: var(--accent); font-weight: 700; }
 
+/* Forgot password link */
+.forgot-link {
+  background: none;
+  border: none;
+  color: var(--accent);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 0;
+  text-decoration: underline;
+  opacity: 0.8;
+  transition: opacity 0.15s;
+}
+.forgot-link:hover { opacity: 1; }
+
+/* Forgot password modal */
+.forgot-modal { max-width: 400px; text-align: left; }
+.forgot-modal .modal-title { text-align: center; }
+.forgot-modal .modal-icon  { text-align: center; }
+.forgot-modal .modal-body  { text-align: center; color: var(--text-muted); font-size: 14px; line-height: 1.6; margin: 0 0 16px; }
+.forgot-modal .modal-close-btn { display: block; margin: 0 auto; }
+
+.forgot-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 4px;
+}
+
+.forgot-cancel-btn {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 13px;
+  padding: 4px;
+  text-align: center;
+  transition: color 0.15s;
+}
+.forgot-cancel-btn:hover { color: var(--text-primary); }
+
 /* Field hint */
 .login-field-hint {
   font-size: 11px;

@@ -10,7 +10,7 @@ const INST_DOMAIN = 'iimsambalpur.ac.in';
 
 function signToken(user) {
   return jwt.sign(
-    { id: user.id, username: user.username, email: user.email, role: user.role, name: user.name },
+    { id: user.id, email: user.email, role: user.role, name: user.name },
     process.env.JWT_SECRET,
     { expiresIn: '7d' }
   );
@@ -46,35 +46,56 @@ router.post('/register', async (req, res) => {
   }
 });
 
-// POST /api/auth/login
-// Students  → send { email, password }
-// Admins    → send { username, password }
+// POST /api/auth/login  — both students and admins use email
 router.post('/login', async (req, res) => {
   try {
-    const { username, email, password } = req.body;
-    if (!password) return res.status(400).json({ error: 'Password is required' });
+    const { email, password } = req.body;
+    if (!email || !password) return res.status(400).json({ error: 'Email and password are required' });
 
-    let user;
-    if (email) {
-      const normalised = email.trim().toLowerCase();
-      if (!normalised.endsWith(`@${INST_DOMAIN}`))
-        return res.status(400).json({ error: `Only @${INST_DOMAIN} email addresses are allowed` });
-      const { rows } = await pool.query('SELECT * FROM users WHERE email = $1', [normalised]);
-      user = rows[0];
-    } else if (username) {
-      const { rows } = await pool.query('SELECT * FROM users WHERE username = $1', [username.trim().toLowerCase()]);
-      user = rows[0];
-    } else {
-      return res.status(400).json({ error: 'Email or username is required' });
-    }
+    const normalised = email.trim().toLowerCase();
+    const { rows } = await pool.query('SELECT * FROM users WHERE email = $1', [normalised]);
+    const user = rows[0];
 
-    if (!user) return res.status(401).json({ error: 'Invalid credentials' });
+    if (!user) return res.status(404).json({
+      error: 'No account found for this email address. Please create an account first.',
+    });
 
     const match = await bcrypt.compare(password, user.password);
-    if (!match) return res.status(401).json({ error: 'Invalid credentials' });
+    if (!match) return res.status(401).json({ error: 'Incorrect password. Please try again.' });
 
     const token = signToken(user);
-    res.json({ id: user.id, username: user.username, email: user.email, name: user.name, role: user.role, token });
+    res.json({ id: user.id, email: user.email, name: user.name, role: user.role, token });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// POST /api/auth/reset-password  — students only
+// Body: { name, email, password }
+router.post('/reset-password', async (req, res) => {
+  try {
+    const { name, email, password } = req.body;
+    if (!name || !email || !password)
+      return res.status(400).json({ error: 'Name, email and new password are required.' });
+
+    const normalised = email.trim().toLowerCase();
+    if (!normalised.endsWith(`@${INST_DOMAIN}`))
+      return res.status(400).json({ error: `Only @${INST_DOMAIN} email addresses are allowed.` });
+
+    if (password.length < 6)
+      return res.status(400).json({ error: 'Password must be at least 6 characters.' });
+
+    const { rows } = await pool.query(
+      'SELECT id FROM users WHERE email = $1 AND role = $2',
+      [normalised, 'student']
+    );
+    if (!rows.length)
+      return res.status(404).json({ error: 'No student account found with this email address.' });
+
+    const hashed = await bcrypt.hash(password, 10);
+    await pool.query('UPDATE users SET password = $1 WHERE id = $2', [hashed, rows[0].id]);
+
+    res.json({ message: 'Password updated successfully.' });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

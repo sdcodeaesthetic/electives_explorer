@@ -56,7 +56,7 @@ export default function Header({ total, filtered, user, onLogout }) {
         Electives{' '}
         <span style={{ color: 'var(--accent)' }}>Explorer</span>
       </h1>
-      <p style={{ fontSize: '15px', color: 'var(--text-muted)', maxWidth: '480px', margin: '0 auto 20px', lineHeight: 1.6 }}>
+      <p style={{ fontSize: '14px', color: 'var(--text-muted)', margin: '0 auto 20px', whiteSpace: 'nowrap' }}>
         Browse and filter MBA elective courses by specialization, faculty, and credits.
       </p>
       <div style={{ display: 'inline-flex', gap: '6px', alignItems: 'center',

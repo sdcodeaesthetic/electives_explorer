@@ -17,11 +17,8 @@ export function AuthProvider({ children }) {
     return safeUser;
   }
 
-  // Students log in with email; admins with username
   const login = async (identifier, password, role) => {
-    const body = role === 'admin'
-      ? { username: identifier.trim(), password }
-      : { email: identifier.trim(), password };
+    const body = { email: identifier.trim(), password };
 
     const data = await apiFetch('/api/auth/login', {
       method: 'POST',
