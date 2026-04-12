@@ -9,6 +9,7 @@ const professorRatingsRouter = require('./routes/professorRatings');
 const professorsRouter       = require('./routes/professors');
 const suggestionsRouter      = require('./routes/suggestions');
 const sessionRouter          = require('./routes/session');
+const parseCourseRouter      = require('./routes/parseCourse');
 
 const app = express();
 
@@ -37,6 +38,7 @@ app.use('/api/professor-ratings',  professorRatingsRouter);
 app.use('/api/professors',         professorsRouter);
 app.use('/api/suggestions',        suggestionsRouter);
 app.use('/api/session',            sessionRouter);
+app.use('/api/parse-course',       parseCourseRouter);
 
 app.get('/api/health', (_req, res) => res.json({ status: 'ok' }));
 

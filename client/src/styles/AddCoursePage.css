@@ -1,0 +1,254 @@
+.acp-wrap {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 24px 24px 72px;
+}
+
+/* ── Page header ── */
+.acp-page-header {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin-bottom: 28px;
+}
+.acp-page-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+/* ── Form layout ── */
+.acp-form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* ── File upload card ── */
+.acp-upload-card {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  background: rgba(240,165,0,0.06);
+  border: 1.5px dashed rgba(240,165,0,0.4);
+  border-radius: var(--radius);
+  padding: 20px 24px;
+  flex-wrap: wrap;
+}
+.acp-upload-icon {
+  font-size: 36px;
+  flex-shrink: 0;
+}
+.acp-upload-content {
+  flex: 1;
+  min-width: 200px;
+}
+.acp-upload-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 4px;
+}
+.acp-upload-sub {
+  font-size: 12.5px;
+  color: var(--text-muted);
+  margin: 0;
+}
+.acp-upload-file {
+  font-size: 12.5px;
+  color: #4ade80;
+  margin: 6px 0 0;
+}
+.acp-upload-err {
+  font-size: 12.5px;
+  color: #f87171;
+  margin: 6px 0 0;
+}
+.acp-upload-actions {
+  flex-shrink: 0;
+}
+.acp-file-input {
+  display: none;
+}
+.acp-upload-btn {
+  display: inline-block;
+  background: rgba(240,165,0,0.15);
+  border: 1px solid rgba(240,165,0,0.4);
+  border-radius: 8px;
+  color: var(--accent);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 9px 20px;
+  transition: background 0.15s, opacity 0.15s;
+  user-select: none;
+}
+.acp-upload-btn:hover      { background: rgba(240,165,0,0.25); }
+.acp-upload-btn.loading    { opacity: 0.65; cursor: not-allowed; pointer-events: none; }
+
+/* ── Sections ── */
+.acp-section {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius);
+  padding: 24px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+.acp-section-title {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin: 0 0 4px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+}
+
+/* ── Fields ── */
+.acp-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.acp-field label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+}
+.acp-field input,
+.acp-field select,
+.acp-field textarea {
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.13);
+  border-radius: 8px;
+  color: var(--text-primary);
+  font-family: inherit;
+  font-size: 13.5px;
+  outline: none;
+  padding: 10px 13px;
+  transition: border-color 0.15s;
+  width: 100%;
+  box-sizing: border-box;
+}
+.acp-field textarea { resize: vertical; line-height: 1.55; }
+.acp-field input:focus,
+.acp-field select:focus,
+.acp-field textarea:focus { border-color: var(--accent); }
+.acp-field select option   { background: #0c1e38; }
+
+.acp-field-hint {
+  font-size: 11.5px;
+  color: var(--text-dim);
+}
+
+.acp-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+@media (max-width: 600px) { .acp-grid-2 { grid-template-columns: 1fr; } }
+
+/* ── Bullet form ── */
+.acp-bullets-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.acp-bullet-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.acp-bullet-dot {
+  font-size: 18px;
+  color: var(--accent);
+  flex-shrink: 0;
+  line-height: 1;
+  margin-top: 1px;
+}
+.acp-bullet-input {
+  flex: 1;
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.13);
+  border-radius: 8px;
+  color: var(--text-primary);
+  font-family: inherit;
+  font-size: 13.5px;
+  outline: none;
+  padding: 9px 12px;
+  transition: border-color 0.15s;
+}
+.acp-bullet-input:focus { border-color: var(--accent); }
+.acp-bullet-remove {
+  background: rgba(239,68,68,0.08);
+  border: 1px solid rgba(239,68,68,0.2);
+  border-radius: 6px;
+  color: #f87171;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 700;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: background 0.15s;
+}
+.acp-bullet-remove:hover { background: rgba(239,68,68,0.18); }
+
+.acp-add-bullet-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: transparent;
+  border: 1px dashed rgba(240,165,0,0.4);
+  border-radius: 7px;
+  color: var(--accent);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 12.5px;
+  font-weight: 600;
+  padding: 7px 14px;
+  transition: background 0.15s, border-color 0.15s;
+  align-self: flex-start;
+  margin-top: 4px;
+}
+.acp-add-bullet-btn:hover { background: rgba(240,165,0,0.08); border-color: var(--accent); }
+
+/* ── Bottom actions ── */
+.acp-err {
+  background: rgba(248,113,113,0.1);
+  border: 1px solid rgba(248,113,113,0.25);
+  border-radius: 8px;
+  color: #fca5a5;
+  font-size: 13px;
+  padding: 10px 14px;
+}
+.acp-form-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  padding-top: 4px;
+}
+.acp-submit-btn {
+  background: var(--accent);
+  border: none;
+  border-radius: 9px;
+  color: #000;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  padding: 12px 32px;
+  transition: background 0.15s, opacity 0.15s;
+}
+.acp-submit-btn:hover    { background: #ffd166; }
+.acp-submit-btn:disabled { opacity: 0.6; cursor: not-allowed; }

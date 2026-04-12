@@ -12,7 +12,7 @@ import CoursePage from './components/CoursePage';
 import LoginPage from './components/LoginPage';
 import SuggestionsTab from './components/SuggestionsTab';
 import CreditRibbon from './components/CreditRibbon';
-import AddCourseModal from './components/AddCourseModal';
+import AddCoursePage from './components/AddCoursePage';
 
 const TERM_RULES = {
   'Term IV':  { min: 18, max: 21, label: 'Term 4' },
@@ -55,7 +55,6 @@ function AppInner({ logout, user }) {
   const [basket,    setBasket]        = useState(new Set());
   const [validationMsg, setValidationMsg] = useState(null);
   const [courseOverrides, setCourseOverrides] = useState({});
-  const [addCourseOpen, setAddCourseOpen] = useState(false);
 
   const saveTimer    = useRef(null);
   const isRestored   = useRef(false);
@@ -89,12 +88,12 @@ function AppInner({ logout, user }) {
     setCourseOverrides(prev => ({ ...prev, [updated.id]: updated }));
   };
 
-  // When admin creates a new course, refresh the full list from DB
+  // When admin creates a new course (from AddCoursePage), refresh the full list
   const handleCourseCreated = () => {
     refetchCourses();
   };
 
-  // When admin deletes a course from grid or modal
+  // When admin deletes a course from the grid tile
   const handleDeleteCourse = async (course) => {
     try {
       await apiFetch(`/api/courses/${course.id}`, { method: 'DELETE' });
@@ -102,6 +101,12 @@ function AppInner({ logout, user }) {
     } catch (e) {
       setValidationMsg([e.message]);
     }
+  };
+
+  // When admin deletes a course from inside CoursePage
+  const handleCourseDeleted = (courseId) => {
+    setCourseOverrides(prev => { const next = { ...prev }; delete next[courseId]; return next; });
+    refetchCourses();
   };
 
   const clearBasket = () => setBasket(new Set());
@@ -256,7 +261,7 @@ function AppInner({ logout, user }) {
           toggleBasket={toggleBasket}
           onExpand={course => navigate(`/course/${course.id}`)}
           isAdmin={user.role === 'admin'}
-          onAddCourse={() => setAddCourseOpen(true)}
+          onAddCourse={() => navigate('/admin/add-course')}
           onDeleteCourse={handleDeleteCourse}
         />
       )}
@@ -290,6 +295,7 @@ function AppInner({ logout, user }) {
               allCourses={allCourses}
               courseOverrides={courseOverrides}
               onCourseUpdated={handleCourseUpdated}
+              onCourseDeleted={handleCourseDeleted}
               basket={basket}
               toggleBasket={toggleBasket}
               validationMsg={validationMsg}
@@ -299,15 +305,18 @@ function AppInner({ logout, user }) {
             />
           }
         />
-      </Routes>
-
-      {/* ── Add Course modal (admin) ── */}
-      {addCourseOpen && (
-        <AddCourseModal
-          onClose={() => setAddCourseOpen(false)}
-          onCreated={handleCourseCreated}
+        <Route
+          path="/admin/add-course"
+          element={
+            <AddCoursePage
+              onCreated={handleCourseCreated}
+              user={user}
+              onLogout={logout}
+              allCourses={allCourses}
+            />
+          }
         />
-      )}
+      </Routes>
 
       {/* ── Validation modal ── */}
       {validationMsg && (

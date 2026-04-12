@@ -2,12 +2,10 @@ import { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import StarRating from './StarRating';
 import Header from './Header';
-import { apiFetch } from '../lib/api';
+import ProfessorSelect from './ProfessorSelect';
+import { apiFetch, authHeaders } from '../lib/api';
 import BASE from '../lib/api';
-import courseDetails from '../data/courseDetails.js';
 import '../styles/CoursePage.css';
-
-const reviewsKey = (id) => `elective_reviews_${id}`;
 
 const AREA_COLORS = {
   Finance: '#3b82f6', GMPP: '#8b5cf6', ISM: '#14b8a6',
@@ -18,18 +16,203 @@ const AREAS   = ['Finance','GMPP','ISM','Marketing','OB/HR','Operations','Strate
 const TERMS   = ['Term IV','Term V','Term VI'];
 const CREDITS = [1.5, 2, 2.5, 3, 4, 6];
 
-function avg(reviews, field) {
-  const valid = reviews.filter(r => r[field] > 0);
-  if (!valid.length) return 0;
-  return valid.reduce((s, r) => s + r[field], 0) / valid.length;
+function avg(ratings) {
+  if (!ratings.length) return 0;
+  return ratings.reduce((s, r) => s + r.rating, 0) / ratings.length;
 }
-
 function fmtDate(iso) {
   return new Date(iso).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
 }
 
+// ── Inline-editable content section ──────────────────────────────────────────
+function ContentSection({ title, value, fieldKey, onSave, isAdmin, type = 'text' }) {
+  const [editing, setEditing] = useState(false);
+  const [draft,   setDraft]   = useState('');
+  const [saving,  setSaving]  = useState(false);
+
+  function startEdit() { setDraft(value || ''); setEditing(true); }
+  async function save() {
+    setSaving(true);
+    try { await onSave(fieldKey, draft); setEditing(false); }
+    finally { setSaving(false); }
+  }
+
+  if (!isAdmin && !value) return null;
+
+  const lines = value ? value.split('\n').filter(l => l.trim()) : [];
+
+  return (
+    <div className="cp-section-card">
+      <div className="cp-section-header">
+        <h3 className="cp-section-heading">{title}</h3>
+        {isAdmin && !editing && (
+          <button className="cp-inline-edit-btn" onClick={startEdit}>Edit</button>
+        )}
+      </div>
+
+      {editing ? (
+        <div>
+          <textarea
+            className="cp-edit-textarea"
+            rows={type === 'curriculum' ? 12 : type === 'bullets' ? 8 : 6}
+            value={draft}
+            placeholder={
+              type === 'bullets'    ? 'One bullet per line…' :
+              type === 'curriculum' ? 'One curriculum topic per line…' :
+              `Enter ${title.toLowerCase()}…`
+            }
+            onChange={e => setDraft(e.target.value)}
+            autoFocus
+          />
+          {(type === 'bullets' || type === 'curriculum') && (
+            <p className="cp-edit-hint">
+              {type === 'bullets' ? 'Each line becomes a separate bullet point.' : 'Each line becomes a separate curriculum item.'}
+            </p>
+          )}
+          <div className="cp-section-edit-actions">
+            <button className="cp-cancel-btn" onClick={() => setEditing(false)}>Cancel</button>
+            <button className="cp-save-btn"   onClick={save} disabled={saving}>
+              {saving ? 'Saving…' : 'Save'}
+            </button>
+          </div>
+        </div>
+      ) : !value ? (
+        <p className="cp-muted cp-empty-hint">Not set — click Edit to add.</p>
+      ) : type === 'curriculum' ? (
+        <div className="cp-curriculum-grid">
+          {lines.map((item, i) => (
+            <div className="cp-curriculum-item" key={i}>
+              <span className="cp-curriculum-num">{String(i + 1).padStart(2, '0')}</span>
+              <span className="cp-curriculum-text">{item}</span>
+            </div>
+          ))}
+        </div>
+      ) : type === 'bullets' ? (
+        <ul className="cp-bullets-list">
+          {lines.map((item, i) => <li key={i}>{item}</li>)}
+        </ul>
+      ) : (
+        <p className="cp-section-text">{value}</p>
+      )}
+    </div>
+  );
+}
+
+// ── Delete confirmation modal ─────────────────────────────────────────────────
+function DeleteCourseModal({ courseName, onConfirm, onCancel, deleting }) {
+  return (
+    <div className="clear-modal-backdrop" onClick={onCancel}>
+      <div className="clear-modal" onClick={e => e.stopPropagation()}>
+        <div className="clear-modal-icon">🗑️</div>
+        <h3 className="clear-modal-title">Delete Course?</h3>
+        <p className="clear-modal-body">
+          This will permanently delete <strong>{courseName}</strong>. This action cannot be undone.
+        </p>
+        <div className="clear-modal-actions">
+          <button className="clear-confirm-no"  onClick={onCancel} disabled={deleting}>Cancel</button>
+          <button className="clear-confirm-yes" onClick={onConfirm} disabled={deleting}>
+            {deleting ? 'Deleting…' : 'Yes, delete'}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── Rating tile ───────────────────────────────────────────────────────────────
+function RatingTile({ title, ratings, loading, isAdmin, user, onDelete, onSubmit }) {
+  const [rating,     setRating]     = useState(0);
+  const [comment,    setComment]    = useState('');
+  const [submitting, setSubmitting] = useState(false);
+  const [err,        setErr]        = useState('');
+
+  const average  = avg(ratings);
+  const myRating = ratings.find(r => r.user_id === user?.id);
+
+  useEffect(() => {
+    if (myRating) { setRating(myRating.rating); setComment(myRating.comment || ''); }
+  }, [myRating]);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!rating) { setErr('Please select a star rating.'); return; }
+    setErr(''); setSubmitting(true);
+    try { await onSubmit({ rating, comment }); }
+    catch (e) { setErr(e.message); }
+    finally { setSubmitting(false); }
+  };
+
+  return (
+    <div className="cp-rating-tile">
+      <div className="cp-rating-tile-header">
+        <h3 className="cp-section-heading">{title}</h3>
+        {ratings.length > 0 && (
+          <div className="cp-tile-avg">
+            <StarRating value={Math.round(average)} readOnly size={15} />
+            <span className="cp-avg-val">{average.toFixed(1)}</span>
+            <span className="cp-avg-count">({ratings.length})</span>
+          </div>
+        )}
+      </div>
+
+      {!isAdmin && (
+        <form className="cp-rate-form" onSubmit={handleSubmit}>
+          <div className="cp-rating-group">
+            <StarRating value={rating} onChange={setRating} size={24} />
+            <span className="cp-rating-hint">{rating ? `${rating}/5` : 'Tap to rate'}</span>
+            {myRating && <span className="cp-edit-hint-inline">Editing your previous rating</span>}
+          </div>
+          <textarea
+            className="cp-comment-input"
+            rows={2}
+            placeholder="Add a comment (optional)…"
+            value={comment}
+            onChange={e => setComment(e.target.value)}
+          />
+          {err && <p className="cp-err">{err}</p>}
+          <button className="cp-submit-btn" type="submit" disabled={submitting}>
+            {submitting ? 'Saving…' : myRating ? 'Update Rating' : 'Submit Rating'}
+          </button>
+        </form>
+      )}
+
+      {loading ? (
+        <p className="cp-muted">Loading…</p>
+      ) : ratings.length === 0 ? (
+        <div className="cp-no-reviews">
+          <p>No ratings yet.{!isAdmin && ' Be the first!'}</p>
+        </div>
+      ) : (
+        <div className="cp-reviews-list">
+          {ratings.map(r => (
+            <div className="cp-review-card" key={r.id}>
+              <div className="cp-review-top">
+                <div className="cp-reviewer-info">
+                  <div className="cp-avatar">{r.user_name?.[0]?.toUpperCase() || '?'}</div>
+                  <div>
+                    <span className="cp-reviewer-name">{r.user_name}</span>
+                    <span className="cp-review-date">{fmtDate(r.created_at)}</span>
+                  </div>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <StarRating value={r.rating} readOnly size={13} />
+                  {isAdmin && (
+                    <button className="cp-delete-review" onClick={() => onDelete(r.id)} title="Delete review">🗑</button>
+                  )}
+                </div>
+              </div>
+              {r.comment && <p className="cp-review-comment">{r.comment}</p>}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ── Main page ─────────────────────────────────────────────────────────────────
 export default function CoursePage({
-  allCourses, courseOverrides, onCourseUpdated,
+  allCourses, courseOverrides, onCourseUpdated, onCourseDeleted,
   basket, toggleBasket, validationMsg, setValidationMsg,
   user, onLogout,
 }) {
@@ -37,11 +220,9 @@ export default function CoursePage({
   const navigate = useNavigate();
   const isAdmin  = user?.role === 'admin';
 
-  // Resolve course from allCourses + any admin overrides
-  const base   = allCourses.find(c => String(c.id) === id);
+  const base = allCourses.find(c => String(c.id) === id);
   const [course, setCourse] = useState(base ? (courseOverrides[base.id] || base) : null);
 
-  // Sync if allCourses loads after mount (first render)
   useEffect(() => {
     if (!course && allCourses.length) {
       const found = allCourses.find(c => String(c.id) === id);
@@ -49,7 +230,7 @@ export default function CoursePage({
     }
   }, [allCourses, id, courseOverrides, course]);
 
-  // ── Admin edit state ──────────────────────────────────────────────────────
+  // ── Admin: header edit ────────────────────────────────────────────────────
   const [editing,    setEditing]    = useState(false);
   const [editDraft,  setEditDraft]  = useState({});
   const [saving,     setSaving]     = useState(false);
@@ -68,94 +249,116 @@ export default function CoursePage({
       area:          course.area,
       term:          course.term,
       credits:       course.credits,
-      description:   course.description || '',
     });
-    setSaveErr('');
-    setEditing(true);
+    setSaveErr(''); setEditing(true);
   };
 
   const saveEdit = async () => {
     setSaving(true); setSaveErr('');
     try {
-      const payload = {
-        ...editDraft,
-        professor1_id: editDraft.professor1_id ? parseInt(editDraft.professor1_id) : null,
-        professor2_id: editDraft.professor2_id ? parseInt(editDraft.professor2_id) : null,
-      };
       const updated = await apiFetch(`/api/courses/${course.id}`, {
         method: 'PUT',
-        body: JSON.stringify(payload),
+        body: JSON.stringify({
+          ...editDraft,
+          professor1_id: editDraft.professor1_id ? parseInt(editDraft.professor1_id) : null,
+          professor2_id: editDraft.professor2_id ? parseInt(editDraft.professor2_id) : null,
+        }),
       });
-      setCourse(updated);
-      setEditing(false);
+      setCourse(updated); setEditing(false);
       onCourseUpdated && onCourseUpdated(updated);
+    } catch (e) { setSaveErr(e.message); }
+    finally { setSaving(false); }
+  };
+
+  const handleProfCreated = (p) =>
+    setProfessors(prev => [...prev, p].sort((a, b) => a.name.localeCompare(b.name)));
+
+  // ── Admin: save individual content section ────────────────────────────────
+  const saveSection = async (field, value) => {
+    const updated = await apiFetch(`/api/courses/${course.id}`, {
+      method: 'PUT',
+      body: JSON.stringify({ [field]: value }),
+    });
+    setCourse(updated);
+    onCourseUpdated && onCourseUpdated(updated);
+  };
+
+  // ── Admin: delete course ──────────────────────────────────────────────────
+  const [showDelete, setShowDelete] = useState(false);
+  const [deleting,   setDeleting]   = useState(false);
+
+  const confirmDelete = async () => {
+    setDeleting(true);
+    try {
+      await apiFetch(`/api/courses/${course.id}`, { method: 'DELETE' });
+      onCourseDeleted && onCourseDeleted(course.id);
+      navigate('/');
     } catch (e) {
       setSaveErr(e.message);
-    } finally {
-      setSaving(false);
+      setDeleting(false);
+      setShowDelete(false);
     }
   };
 
-  // ── Reviews ───────────────────────────────────────────────────────────────
-  const [reviews,    setReviews]    = useState([]);
-  const [revLoad,    setRevLoad]    = useState(true);
-  const [cRating,    setCRating]    = useState(0);
-  const [pRating,    setPRating]    = useState(0);
-  const [comment,    setComment]    = useState('');
-  const [submitting, setSubmitting] = useState(false);
-  const [formErr,    setFormErr]    = useState('');
+  // ── Ratings (DB) ──────────────────────────────────────────────────────────
+  const [courseRatings,  setCourseRatings]  = useState([]);
+  const [profRatings,    setProfRatings]    = useState([]);
+  const [ratingsLoading, setRatingsLoading] = useState(true);
 
-  const fetchReviews = useCallback(() => {
+  const fetchRatings = useCallback(() => {
     if (!id) return;
-    setRevLoad(true);
-    try {
-      const stored = JSON.parse(localStorage.getItem(reviewsKey(id))) || [];
-      setReviews(Array.isArray(stored) ? stored : []);
-    } catch {
-      setReviews([]);
-    }
-    setRevLoad(false);
+    setRatingsLoading(true);
+    Promise.all([
+      fetch(`${BASE}/api/course-ratings/${id}`).then(r => r.json()),
+      fetch(`${BASE}/api/professor-ratings/by-course/${id}`).then(r => r.json()),
+    ])
+      .then(([cr, pr]) => {
+        setCourseRatings(Array.isArray(cr) ? cr : []);
+        setProfRatings(Array.isArray(pr?.ratings) ? pr.ratings : []);
+      })
+      .catch(() => {})
+      .finally(() => setRatingsLoading(false));
   }, [id]);
 
-  useEffect(() => { fetchReviews(); }, [fetchReviews]);
+  useEffect(() => { fetchRatings(); }, [fetchRatings]);
 
-  const submitReview = (e) => {
-    e.preventDefault();
-    if (!cRating && !pRating && !comment.trim()) {
-      setFormErr('Please provide at least a rating or a comment.');
-      return;
-    }
-    setFormErr(''); setSubmitting(true);
-    const newReview = {
-      id: Date.now(),
-      username: user.username,
-      name: user.name,
-      courseRating: cRating,
-      profRating: pRating,
-      comment,
-      timestamp: new Date().toISOString(),
-    };
-    const updated = [...reviews, newReview];
-    localStorage.setItem(reviewsKey(id), JSON.stringify(updated));
-    setReviews(updated);
-    setCRating(0); setPRating(0); setComment('');
-    setSubmitting(false);
+  const submitCourseRating = async ({ rating, comment }) => {
+    const r = await apiFetch(`/api/course-ratings/${id}`, {
+      method: 'POST',
+      body: JSON.stringify({ rating, comment }),
+    });
+    setCourseRatings(prev => [r, ...prev.filter(x => x.user_id !== user.id)]);
   };
 
-  const deleteReview = (reviewId) => {
-    const updated = reviews.filter(r => r.id !== reviewId);
-    localStorage.setItem(reviewsKey(id), JSON.stringify(updated));
-    setReviews(updated);
+  const submitProfRating = async ({ rating, comment }) => {
+    const r = await apiFetch(`/api/professor-ratings/${id}`, {
+      method: 'POST',
+      body: JSON.stringify({ rating, comment }),
+    });
+    setProfRatings(prev => [r, ...prev.filter(x => x.user_id !== user.id)]);
   };
 
-  // ── Not found ─────────────────────────────────────────────────────────────
+  const deleteCourseRating = async (ratingId) => {
+    await fetch(`${BASE}/api/course-ratings/${ratingId}`, { method: 'DELETE', headers: authHeaders() });
+    setCourseRatings(prev => prev.filter(r => r.id !== ratingId));
+  };
+
+  const deleteProfRating = async (ratingId) => {
+    await fetch(`${BASE}/api/professor-ratings/${ratingId}`, { method: 'DELETE', headers: authHeaders() });
+    setProfRatings(prev => prev.filter(r => r.id !== ratingId));
+  };
+
+  // ── Loading / not-found ───────────────────────────────────────────────────
   if (allCourses.length > 0 && !course) {
     return (
-      <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 16 }}>
-        <p style={{ fontSize: 40 }}>🔍</p>
-        <p style={{ color: 'var(--text-muted)' }}>Course not found.</p>
-        <button className="cp-back-btn" onClick={() => navigate('/')}>← Back to Browse</button>
-      </div>
+      <>
+        <Header total={allCourses.length} filtered={allCourses.length} user={user} onLogout={onLogout} />
+        <div style={{ minHeight: '60vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 16 }}>
+          <p style={{ fontSize: 40 }}>🔍</p>
+          <p style={{ color: 'var(--text-muted)' }}>Course not found.</p>
+          <button className="cp-back-btn" onClick={() => navigate('/')}>← Back to Browse</button>
+        </div>
+      </>
     );
   }
 
@@ -166,22 +369,18 @@ export default function CoursePage({
     </div>
   );
 
-  const color     = AREA_COLORS[course.area] || '#64748b';
-  const inBasket  = basket.has(course.id);
-  const avgCourse = avg(reviews, 'courseRating');
-  const avgProf   = avg(reviews, 'profRating');
-  const detail    = courseDetails[String(course.id)];
+  const color    = AREA_COLORS[course.area] || '#64748b';
+  const inBasket = basket.has(course.id);
+  const totalReviews = courseRatings.length + profRatings.length;
 
   return (
     <>
       <Header total={allCourses.length} filtered={allCourses.length} user={user} onLogout={onLogout} />
 
       <div className="cp-wrap">
-        {/* ── Breadcrumb / back ── */}
+        {/* ── Breadcrumb ── */}
         <div className="cp-breadcrumb">
-          <button className="cp-back-btn" onClick={() => navigate(-1)}>
-            ← Back
-          </button>
+          <button className="cp-back-btn" onClick={() => navigate(-1)}>← Back</button>
           <span className="cp-breadcrumb-sep">/</span>
           <span className="cp-breadcrumb-current">{course.course}</span>
         </div>
@@ -192,16 +391,23 @@ export default function CoursePage({
             <span className="cp-area-badge" style={{ background: `${color}22`, color, border: `1px solid ${color}44` }}>
               {course.area}
             </span>
-            <div style={{ display: 'flex', gap: 8 }}>
+            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
               {isAdmin && !editing && (
-                <button className="cp-edit-btn" onClick={startEdit}>Edit Course</button>
+                <>
+                  <button className="cp-edit-btn"   onClick={startEdit}>Edit Course</button>
+                  <button className="cp-delete-btn" onClick={() => setShowDelete(true)} disabled={deleting}>
+                    {deleting ? 'Deleting…' : 'Delete Course'}
+                  </button>
+                </>
               )}
-              <button
-                className={`cp-planner-btn ${inBasket ? 'in-basket' : ''}`}
-                onClick={() => toggleBasket(course)}
-              >
-                {inBasket ? '✓ In Planner' : '+ Add to Planner'}
-              </button>
+              {!isAdmin && (
+                <button
+                  className={`cp-planner-btn ${inBasket ? 'in-basket' : ''}`}
+                  onClick={() => toggleBasket(course)}
+                >
+                  {inBasket ? '✓ In Planner' : '+ Add to Planner'}
+                </button>
+              )}
             </div>
           </div>
 
@@ -209,22 +415,32 @@ export default function CoursePage({
             <div className="cp-edit-form">
               <div className="cp-edit-row full">
                 <label>Course Name</label>
-                <input value={editDraft.course} onChange={e => setEditDraft(d => ({ ...d, course: e.target.value }))} />
+                <input
+                  value={editDraft.course}
+                  onChange={e => setEditDraft(d => ({ ...d, course: e.target.value }))}
+                />
               </div>
               <div className="cp-edit-grid">
                 <div className="cp-edit-row">
                   <label>Professor 1 *</label>
-                  <select value={editDraft.professor1_id} onChange={e => setEditDraft(d => ({ ...d, professor1_id: e.target.value }))}>
-                    <option value="">— Select professor —</option>
-                    {professors.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
-                  </select>
+                  <ProfessorSelect
+                    professors={professors}
+                    value={editDraft.professor1_id}
+                    onChange={id => setEditDraft(d => ({ ...d, professor1_id: id }))}
+                    onProfessorCreated={handleProfCreated}
+                    placeholder="— Select professor —"
+                    required
+                  />
                 </div>
                 <div className="cp-edit-row">
                   <label>Professor 2</label>
-                  <select value={editDraft.professor2_id} onChange={e => setEditDraft(d => ({ ...d, professor2_id: e.target.value }))}>
-                    <option value="">— None —</option>
-                    {professors.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
-                  </select>
+                  <ProfessorSelect
+                    professors={professors}
+                    value={editDraft.professor2_id}
+                    onChange={id => setEditDraft(d => ({ ...d, professor2_id: id }))}
+                    onProfessorCreated={handleProfCreated}
+                    placeholder="— None —"
+                  />
                 </div>
                 <div className="cp-edit-row">
                   <label>Area</label>
@@ -245,15 +461,12 @@ export default function CoursePage({
                   </select>
                 </div>
               </div>
-              <div className="cp-edit-row full">
-                <label>Description</label>
-                <textarea rows={3} value={editDraft.description} placeholder="Add a short course description…"
-                  onChange={e => setEditDraft(d => ({ ...d, description: e.target.value }))} />
-              </div>
               {saveErr && <p className="cp-err">{saveErr}</p>}
               <div className="cp-edit-actions">
                 <button className="cp-cancel-btn" onClick={() => setEditing(false)}>Cancel</button>
-                <button className="cp-save-btn" onClick={saveEdit} disabled={saving}>{saving ? 'Saving…' : 'Save Changes'}</button>
+                <button className="cp-save-btn" onClick={saveEdit} disabled={saving}>
+                  {saving ? 'Saving…' : 'Save Changes'}
+                </button>
               </div>
             </div>
           ) : (
@@ -272,191 +485,99 @@ export default function CoursePage({
                   {course.credits ? `${course.credits} Credits` : 'Credits TBD'}
                 </span>
               </div>
-              {course.description && <p className="cp-description">{course.description}</p>}
+              {saveErr && <p className="cp-err">{saveErr}</p>}
             </>
           )}
         </div>
 
-        {/* ── Document-extracted details ── */}
-        {detail && (
-          <div className="cp-detail-grid">
-
-            {/* About This Course — full width */}
-            {detail.intro && (
-              <div className="cp-detail-card cp-detail-full">
-                <h3 className="cp-detail-heading">About This Course</h3>
-                <p className="cp-detail-text">{detail.intro}</p>
-              </div>
-            )}
-
-            {/* Course Curriculum — full width */}
-            {detail.outline?.length > 0 && (
-              <div className="cp-detail-card cp-detail-full cp-curriculum-card">
-                <h3 className="cp-detail-heading">Course Curriculum</h3>
-                <p className="cp-detail-text" style={{ marginBottom: 16 }}>
-                  This course is structured across {detail.outline.length} topic{detail.outline.length > 1 ? 's' : ''},
-                  covering both foundational concepts and applied skills. The sessions are designed to build progressively,
-                  combining theory with real-world case discussions.
-                </p>
-                <div className="cp-curriculum-grid">
-                  {detail.outline.map((item, i) => (
-                    <div className="cp-curriculum-item" key={i}>
-                      <span className="cp-curriculum-num">{String(i + 1).padStart(2, '0')}</span>
-                      <span className="cp-curriculum-text">{item}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Key Takeaways — half width */}
-            {detail.keyTakeaways?.length > 0 && (
-              <div className="cp-detail-card">
-                <h3 className="cp-detail-heading">Key Takeaways</h3>
-                <ul className="cp-detail-list cp-takeaway-list">
-                  {detail.keyTakeaways.map((item, i) => (
-                    <li key={i}>{item}</li>
-                  ))}
-                </ul>
-              </div>
-            )}
-
-            {/* Prerequisites — half width */}
-            <div className="cp-detail-card cp-prereq-card">
-              <h3 className="cp-detail-heading">Prerequisites</h3>
-              <p className="cp-detail-text cp-prereq-text">{detail.prerequisites || 'None mentioned'}</p>
-            </div>
-          </div>
-        )}
-
-        {/* ── Content grid ── */}
-        <div className="cp-content">
-
-          {/* ── Left: Ratings aggregate + Review form ── */}
-          <div className="cp-left">
-
-            {/* Aggregate */}
-            {reviews.length > 0 && (
-              <div className="cp-agg-card">
-                <h2 className="cp-section-title">Overall Ratings</h2>
-                <div className="cp-agg-row">
-                  <div className="cp-agg-item">
-                    <span className="cp-agg-num">{avgCourse.toFixed(1)}</span>
-                    <StarRating value={Math.round(avgCourse)} readOnly size={20} />
-                    <span className="cp-agg-label">Course</span>
-                  </div>
-                  <div className="cp-agg-divider" />
-                  <div className="cp-agg-item">
-                    <span className="cp-agg-num">{avgProf.toFixed(1)}</span>
-                    <StarRating value={Math.round(avgProf)} readOnly size={20} />
-                    <span className="cp-agg-label">Professor</span>
-                  </div>
-                  <div className="cp-agg-divider" />
-                  <div className="cp-agg-item">
-                    <span className="cp-agg-num">{reviews.length}</span>
-                    <span className="cp-agg-label">Reviews</span>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* Review form — students only */}
-            {!isAdmin && (
-              <div className="cp-card">
-                <h2 className="cp-section-title">Rate This Course</h2>
-                <form className="cp-review-form" onSubmit={submitReview}>
-                  <div className="cp-rating-row">
-                    <div className="cp-rating-group">
-                      <span className="cp-rating-label">Course</span>
-                      <StarRating value={cRating} onChange={setCRating} size={26} />
-                      <span className="cp-rating-hint">{cRating ? `${cRating}/5` : 'Tap to rate'}</span>
-                    </div>
-                    <div className="cp-rating-group">
-                      <span className="cp-rating-label">Professor</span>
-                      <StarRating value={pRating} onChange={setPRating} size={26} />
-                      <span className="cp-rating-hint">{pRating ? `${pRating}/5` : 'Tap to rate'}</span>
-                    </div>
-                  </div>
-                  <textarea
-                    className="cp-comment-input"
-                    rows={4}
-                    placeholder="Share your thoughts about this course, workload, learning outcomes…"
-                    value={comment}
-                    onChange={e => setComment(e.target.value)}
-                  />
-                  {formErr && <p className="cp-err">{formErr}</p>}
-                  <button className="cp-submit-btn" type="submit" disabled={submitting}>
-                    {submitting ? 'Submitting…' : 'Submit Review'}
-                  </button>
-                </form>
-              </div>
-            )}
-          </div>
-
-          {/* ── Right: Reviews list ── */}
-          <div className="cp-right">
-            <h2 className="cp-section-title" style={{ marginBottom: 16 }}>
-              Student Reviews
-              {reviews.length > 0 && <span className="cp-review-count">{reviews.length}</span>}
-            </h2>
-
-            {revLoad ? (
-              <p className="cp-muted">Loading reviews…</p>
-            ) : reviews.length === 0 ? (
-              <div className="cp-no-reviews">
-                <p style={{ fontSize: 36, marginBottom: 10 }}>💬</p>
-                <p>No reviews yet.</p>
-                {!isAdmin && <p style={{ marginTop: 4 }}>Be the first to rate this course!</p>}
-              </div>
-            ) : (
-              <div className="cp-reviews-list">
-                {reviews.map(r => (
-                  <div className="cp-review-card" key={r.id}>
-                    <div className="cp-review-top">
-                      <div className="cp-reviewer-info">
-                        <div className="cp-avatar">{r.name?.[0]?.toUpperCase() || '?'}</div>
-                        <div>
-                          <span className="cp-reviewer-name">{r.name}</span>
-                          <span className="cp-review-date">{fmtDate(r.timestamp)}</span>
-                        </div>
-                      </div>
-                      {isAdmin && (
-                        <button className="cp-delete-review" onClick={() => deleteReview(r.id)} title="Delete">🗑</button>
-                      )}
-                    </div>
-                    {(r.courseRating > 0 || r.profRating > 0) && (
-                      <div className="cp-review-ratings">
-                        {r.courseRating > 0 && (
-                          <span className="cp-mini-rating">Course <StarRating value={r.courseRating} readOnly size={13} /></span>
-                        )}
-                        {r.profRating > 0 && (
-                          <span className="cp-mini-rating">Prof <StarRating value={r.profRating} readOnly size={13} /></span>
-                        )}
-                      </div>
-                    )}
-                    {r.comment && <p className="cp-review-comment">{r.comment}</p>}
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
+        {/* ── Inline-editable content sections ── */}
+        <div className="cp-sections-grid">
+          <ContentSection
+            title="About This Course"
+            value={course.description}
+            fieldKey="description"
+            onSave={saveSection}
+            isAdmin={isAdmin}
+            type="text"
+          />
+          <ContentSection
+            title="Course Curriculum"
+            value={course.course_curriculum}
+            fieldKey="course_curriculum"
+            onSave={saveSection}
+            isAdmin={isAdmin}
+            type="curriculum"
+          />
+          <ContentSection
+            title="Key Takeaways"
+            value={course.key_takeaways}
+            fieldKey="key_takeaways"
+            onSave={saveSection}
+            isAdmin={isAdmin}
+            type="bullets"
+          />
+          <ContentSection
+            title="Prerequisites"
+            value={course.prerequisites}
+            fieldKey="prerequisites"
+            onSave={saveSection}
+            isAdmin={isAdmin}
+            type="text"
+          />
         </div>
 
-        {/* ── Validation modal (credit violations from this page) ── */}
-        {validationMsg && (
-          <div className="modal-backdrop" onClick={() => setValidationMsg(null)}>
-            <div className="modal-box" onClick={e => e.stopPropagation()}>
-              <div className="modal-icon">⚠️</div>
-              <h3 className="modal-title">Credit Limit Violated</h3>
-              <ul className="modal-list">
-                {validationMsg.map((m, i) => <li key={i}>{m}</li>)}
-              </ul>
-              <p className="modal-hint">Remove a course from your planner to fix the issue.</p>
-              <button className="modal-close-btn" onClick={() => setValidationMsg(null)}>Got it</button>
-            </div>
+        {/* ── Reviews — full width ── */}
+        <div className="cp-reviews-section">
+          <h2 className="cp-reviews-heading">
+            Reviews &amp; Ratings
+            {totalReviews > 0 && <span className="cp-review-count-badge">{totalReviews}</span>}
+          </h2>
+
+          <div className="cp-ratings-grid">
+            <RatingTile
+              title="Course Rating"
+              ratings={courseRatings}
+              loading={ratingsLoading}
+              isAdmin={isAdmin}
+              user={user}
+              onDelete={deleteCourseRating}
+              onSubmit={submitCourseRating}
+            />
+            <RatingTile
+              title={`Professor — ${course.faculty}`}
+              ratings={profRatings}
+              loading={ratingsLoading}
+              isAdmin={isAdmin}
+              user={user}
+              onDelete={deleteProfRating}
+              onSubmit={submitProfRating}
+            />
           </div>
-        )}
+        </div>
       </div>
+
+      {/* ── Modals ── */}
+      {showDelete && (
+        <DeleteCourseModal
+          courseName={course.course}
+          onConfirm={confirmDelete}
+          onCancel={() => setShowDelete(false)}
+          deleting={deleting}
+        />
+      )}
+      {validationMsg && (
+        <div className="modal-backdrop" onClick={() => setValidationMsg(null)}>
+          <div className="modal-box" onClick={e => e.stopPropagation()}>
+            <div className="modal-icon">⚠️</div>
+            <h3 className="modal-title">Credit Limit Violated</h3>
+            <ul className="modal-list">
+              {validationMsg.map((m, i) => <li key={i}>{m}</li>)}
+            </ul>
+            <p className="modal-hint">Remove a course from your planner to fix the issue.</p>
+            <button className="modal-close-btn" onClick={() => setValidationMsg(null)}>Got it</button>
+          </div>
+        </div>
+      )}
     </>
   );
 }
