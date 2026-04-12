@@ -54,7 +54,7 @@ router.get('/', async (req, res) => {
       `${COURSE_SELECT} ${where} ORDER BY c.id ASC`,
       params
     );
-    res.json(rows);
+    res.json(rows.map(r => ({ ...r, credits: r.credits != null ? parseFloat(r.credits) : null })));
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -87,7 +87,8 @@ router.get('/:id', async (req, res) => {
       [parseInt(req.params.id)]
     );
     if (!rows.length) return res.status(404).json({ error: 'Course not found' });
-    res.json(rows[0]);
+    const r = rows[0];
+    res.json({ ...r, credits: r.credits != null ? parseFloat(r.credits) : null });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -107,7 +108,8 @@ router.post('/', requireAuth, requireAdmin, async (req, res) => {
     );
 
     const { rows: full } = await pool.query(`${COURSE_SELECT} WHERE c.id = $1`, [rows[0].id]);
-    res.status(201).json(full[0]);
+    const f = full[0];
+    res.status(201).json({ ...f, credits: f.credits != null ? parseFloat(f.credits) : null });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -135,7 +137,8 @@ router.put('/:id', requireAuth, requireAdmin, async (req, res) => {
 
     const { rows } = await pool.query(`${COURSE_SELECT} WHERE c.id = $1`, [id]);
     if (!rows.length) return res.status(404).json({ error: 'Course not found' });
-    res.json(rows[0]);
+    const r = rows[0];
+    res.json({ ...r, credits: r.credits != null ? parseFloat(r.credits) : null });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
