@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import StarRating from './StarRating';
 import Header from './Header';
-import { apiFetch, authHeaders } from '../lib/api';
+import { apiFetch } from '../lib/api';
 import BASE from '../lib/api';
 import courseDetails from '../data/courseDetails.js';
 import '../styles/CoursePage.css';
@@ -22,6 +22,35 @@ function calcAvg(ratings) {
 }
 function fmtDate(iso) {
   return new Date(iso).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+}
+
+/**
+ * Determines whether a student's email is from a batch that is eligible
+ * to submit ratings and comments.
+ *
+ * Eligibility rules (MBA programme, IIM Sambalpur):
+ *  - Email pattern: mba{YY}{name}@iimsambalpur.ac.in  (e.g. mba25swarnadip@...)
+ *  - Batch YY = programme start year 20YY, end year 20(YY+2)
+ *  - First year: July 20YY → March 20(YY+1)
+ *  - Promoted to second year (senior): June 20(YY+1)
+ *  - Can rate: senior batch (≥ June 1 of 20(YY+1)) OR alumni (passout)
+ *  - Cannot rate: still in first year (< June 1 of 20(YY+1))
+ */
+function getBatchEligibility(email) {
+  if (!email) return { canRate: false, reason: 'not_logged_in', eligibleFrom: null };
+
+  const match = email.toLowerCase().match(/^mba(\d{2})/);
+  if (!match) return { canRate: false, reason: 'non_mba', eligibleFrom: null };
+
+  const batchStartYear = 2000 + parseInt(match[1], 10);
+  // Senior promotion: around June 1 of the second calendar year
+  const seniorDate = new Date(batchStartYear + 1, 5, 1); // month is 0-indexed; 5 = June
+  const now = new Date();
+
+  if (now >= seniorDate) {
+    return { canRate: true, reason: 'eligible', eligibleFrom: null };
+  }
+  return { canRate: false, reason: 'junior', eligibleFrom: seniorDate };
 }
 
 // ── Static filled-star display (supports float averages) ─────────────────────
@@ -104,7 +133,7 @@ function RatingForm({ formLabel, myRating, onSubmit }) {
 }
 
 // ── Comment card ──────────────────────────────────────────────────────────────
-function CommentCard({ review, source, isAdmin, onDelete }) {
+function CommentCard({ review, source }) {
   return (
     <div className="cp-comment-card">
       <div className="cp-comment-card-top">
@@ -118,9 +147,6 @@ function CommentCard({ review, source, isAdmin, onDelete }) {
         <div className="cp-comment-card-right">
           <StarDisplay value={review.rating} size={13} />
           <span className="cp-comment-source">{source}</span>
-          {isAdmin && (
-            <button className="cp-delete-review" onClick={() => onDelete(review.id)} title="Delete">🗑</button>
-          )}
         </div>
       </div>
       <p className="cp-review-comment">{review.comment}</p>
@@ -137,6 +163,10 @@ export default function CoursePage({
   const { id }   = useParams();
   const navigate = useNavigate();
   const isAdmin  = user?.role === 'admin';
+
+  // Batch-based rating eligibility (students only; admins bypass this)
+  const eligibility = isAdmin ? { canRate: false } : getBatchEligibility(user?.email);
+  const canRate     = !isAdmin && eligibility.canRate;
 
   const base = allCourses.find(c => String(c.id) === id);
   const [course, setCourse] = useState(base ? (courseOverrides[base.id] || base) : null);
@@ -230,20 +260,6 @@ export default function CoursePage({
           ? { ...p, ratings: [r, ...p.ratings.filter(x => x.user_id !== user.id)] }
           : p
       ),
-    }));
-  };
-
-  const deleteCourseRating = async (ratingId) => {
-    await fetch(`${BASE}/api/course-ratings/${ratingId}`, { method: 'DELETE', headers: authHeaders() });
-    setCourseRatings(prev => prev.filter(r => r.id !== ratingId));
-  };
-
-  const deleteProfRating = async (ratingId) => {
-    await fetch(`${BASE}/api/professor-ratings/${ratingId}`, { method: 'DELETE', headers: authHeaders() });
-    setProfRatingsData(prev => ({
-      professors: prev.professors.map(p => ({
-        ...p, ratings: p.ratings.filter(r => r.id !== ratingId),
-      })),
     }));
   };
 
@@ -436,6 +452,21 @@ export default function CoursePage({
             {totalRatings > 0 && <span className="cp-review-count-badge">{totalRatings}</span>}
           </h2>
 
+          {/* Locked notice for first-year students */}
+          {!isAdmin && !canRate && (
+            <div className="cp-rate-locked">
+              <span className="cp-rate-locked-icon">🔒</span>
+              <span>
+                Rating &amp; commenting is available for <strong>senior and alumni batch</strong> students only.
+                {eligibility.eligibleFrom && (
+                  <> You will be eligible from <strong>
+                    {eligibility.eligibleFrom.toLocaleDateString('en-IN', { month: 'long', year: 'numeric' })}
+                  </strong>.</>
+                )}
+              </span>
+            </div>
+          )}
+
           {/* Two-column rating tiles */}
           <div className="cp-ratings-grid">
 
@@ -447,7 +478,7 @@ export default function CoursePage({
                 loading={ratingsLoading}
                 showLabel={false}
               />
-              {!isAdmin && (
+              {canRate && (
                 <RatingForm
                   myRating={courseRatings.find(r => r.user_id === user?.id)}
                   onSubmit={submitCourseRating}
@@ -471,7 +502,7 @@ export default function CoursePage({
                       loading={false}
                       showLabel={true}
                     />
-                    {!isAdmin && (
+                    {canRate && (
                       <RatingForm
                         formLabel={`Rate ${prof.name}`}
                         myRating={prof.ratings.find(r => r.user_id === user?.id)}
@@ -499,8 +530,6 @@ export default function CoursePage({
                     key={`${r._source}-${r.id}`}
                     review={r}
                     source={r._source}
-                    isAdmin={isAdmin}
-                    onDelete={r._source === 'Course' ? deleteCourseRating : deleteProfRating}
                   />
                 ))}
               </div>
