@@ -1,10 +1,10 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { apiFetch, authHeaders } from '../lib/api';
-import StarRating from './StarRating';
-import '../styles/CourseDetailModal.css';
-
 import BASE from '../lib/api';
+import StarRating from './StarRating';
+import ProfessorSelect from './ProfessorSelect';
+import '../styles/CourseDetailModal.css';
 
 async function fetchProfessors() {
   const r = await fetch(`${BASE}/api/professors`);
@@ -31,7 +31,7 @@ function fmtDate(iso) {
   return new Date(iso).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
 }
 
-// ── Reusable rating tile ─────────────────────────────────────────────────────
+// ── Rating tile ──────────────────────────────────────────────────────────────
 function RatingTile({ title, ratings, loading, isAdmin, onDelete, user, onSubmit }) {
   const [rating,     setRating]     = useState(0);
   const [comment,    setComment]    = useState('');
@@ -49,13 +49,9 @@ function RatingTile({ title, ratings, loading, isAdmin, onDelete, user, onSubmit
     e.preventDefault();
     if (!rating) { setErr('Please select a star rating.'); return; }
     setErr(''); setSubmitting(true);
-    try {
-      await onSubmit({ rating, comment });
-    } catch (e) {
-      setErr(e.message);
-    } finally {
-      setSubmitting(false);
-    }
+    try { await onSubmit({ rating, comment }); }
+    catch (e) { setErr(e.message); }
+    finally { setSubmitting(false); }
   };
 
   return (
@@ -126,8 +122,173 @@ function RatingTile({ title, ratings, loading, isAdmin, onDelete, user, onSubmit
   );
 }
 
+// ── Key Takeaways section (tick marks, no bullets) ───────────────────────────
+function KeyTakeawaysSection({ value, fieldKey, onSave, isAdmin }) {
+  const [editing, setEditing] = useState(false);
+  const [draft,   setDraft]   = useState('');
+  const [saving,  setSaving]  = useState(false);
+
+  function startEdit() { setDraft(value || ''); setEditing(true); }
+  async function save() {
+    setSaving(true);
+    try { await onSave(fieldKey, draft); setEditing(false); }
+    finally { setSaving(false); }
+  }
+
+  // Strip leading bullet chars and blank lines
+  const lines = (value || '')
+    .split('\n')
+    .map(l => l.replace(/^[•\-\*]\s*/, '').trim())
+    .filter(Boolean);
+
+  if (!isAdmin && lines.length === 0) return null;
+
+  return (
+    <section className="cdm-section cdm-content-section">
+      <div className="cdm-content-header">
+        <h3 className="cdm-section-title">Key Takeaways</h3>
+        {isAdmin && !editing && (
+          <button className="cdm-inline-edit-btn" onClick={startEdit}>Edit</button>
+        )}
+      </div>
+
+      {editing ? (
+        <div className="cdm-content-edit">
+          <textarea
+            className="cdm-comment-input"
+            rows={6}
+            value={draft}
+            placeholder="Enter key takeaways…"
+            onChange={e => setDraft(e.target.value)}
+            autoFocus
+          />
+          <div className="cdm-edit-actions" style={{ marginTop: 8 }}>
+            <button className="cdm-cancel-btn" onClick={() => setEditing(false)}>Cancel</button>
+            <button className="cdm-save-btn" onClick={save} disabled={saving}>
+              {saving ? 'Saving…' : 'Save'}
+            </button>
+          </div>
+        </div>
+      ) : lines.length > 0 ? (
+        <div className="cdm-takeaways-list">
+          {lines.map((line, i) => (
+            <div key={i} className="cdm-takeaway-item">{line}</div>
+          ))}
+        </div>
+      ) : (
+        <p className="cdm-muted" style={{ fontStyle: 'italic' }}>Not set — click Edit to add.</p>
+      )}
+    </section>
+  );
+}
+
+// ── Complementary Courses section ─────────────────────────────────────────────
+function ComplementarySection({ courses: raw }) {
+  // pg returns JSONB as object; guard against string-encoded JSON
+  let courses = raw;
+  if (typeof raw === 'string') {
+    try { courses = JSON.parse(raw); } catch { courses = []; }
+  }
+  if (!Array.isArray(courses) || courses.length === 0) return null;
+
+  return (
+    <section className="cdm-section cdm-complementary-section">
+      <h3 className="cdm-section-title">Complementary Courses</h3>
+      <div className="cdm-comp-list">
+        {courses.map((c, i) => (
+          <div key={i} className="cdm-comp-card">
+            <div className="cdm-comp-header">
+              <span className="cdm-comp-name">{c.course}</span>
+              <div className="cdm-comp-pills">
+                <span className="cdm-comp-pill">{c.term}</span>
+                <span className="cdm-comp-pill">{c.credits} cr</span>
+                <span className="cdm-comp-pill">{c.area}</span>
+              </div>
+            </div>
+            <p className="cdm-comp-faculty">{c.faculty}</p>
+            <p className="cdm-comp-why">{c.why}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+// ── Inline editable content section (admin) ──────────────────────────────────
+function ContentSection({ title, value, fieldKey, onSave, isAdmin }) {
+  const [editing, setEditing] = useState(false);
+  const [draft,   setDraft]   = useState('');
+  const [saving,  setSaving]  = useState(false);
+
+  function startEdit() { setDraft(value || ''); setEditing(true); }
+
+  async function save() {
+    setSaving(true);
+    try { await onSave(fieldKey, draft); setEditing(false); }
+    finally { setSaving(false); }
+  }
+
+  if (!isAdmin && !value) return null;
+
+  return (
+    <section className="cdm-section cdm-content-section">
+      <div className="cdm-content-header">
+        <h3 className="cdm-section-title">{title}</h3>
+        {isAdmin && !editing && (
+          <button className="cdm-inline-edit-btn" onClick={startEdit}>Edit</button>
+        )}
+      </div>
+
+      {editing ? (
+        <div className="cdm-content-edit">
+          <textarea
+            className="cdm-comment-input"
+            rows={5}
+            value={draft}
+            placeholder={`Enter ${title.toLowerCase()}…`}
+            onChange={e => setDraft(e.target.value)}
+            autoFocus
+          />
+          <div className="cdm-edit-actions" style={{ marginTop: 8 }}>
+            <button className="cdm-cancel-btn" onClick={() => setEditing(false)}>Cancel</button>
+            <button className="cdm-save-btn" onClick={save} disabled={saving}>
+              {saving ? 'Saving…' : 'Save'}
+            </button>
+          </div>
+        </div>
+      ) : (
+        value
+          ? <p className="cdm-content-text">{value}</p>
+          : <p className="cdm-muted" style={{ fontStyle: 'italic' }}>Not set — click Edit to add.</p>
+      )}
+    </section>
+  );
+}
+
+// ── Delete confirmation modal ─────────────────────────────────────────────────
+function DeleteCourseModal({ courseName, onConfirm, onCancel }) {
+  return (
+    <div className="clear-modal-backdrop" onClick={onCancel}>
+      <div className="clear-modal" onClick={e => e.stopPropagation()}>
+        <div className="clear-modal-icon">🗑️</div>
+        <h3 className="clear-modal-title">Delete Course?</h3>
+        <p className="clear-modal-body">
+          This will permanently delete <strong>{courseName}</strong>. This action cannot be undone.
+        </p>
+        <div className="clear-modal-actions">
+          <button className="clear-confirm-no"  onClick={onCancel}>Cancel</button>
+          <button className="clear-confirm-yes" onClick={onConfirm}>Yes, delete</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ── Main modal ───────────────────────────────────────────────────────────────
-export default function CourseDetailModal({ course: initialCourse, onClose, onCourseUpdated, inBasket, onToggleBasket }) {
+export default function CourseDetailModal({
+  course: initialCourse, onClose, onCourseUpdated, onCourseDeleted,
+  inBasket, onToggleBasket,
+}) {
   const { user } = useAuth();
   const isAdmin  = user?.role === 'admin';
 
@@ -137,6 +298,8 @@ export default function CourseDetailModal({ course: initialCourse, onClose, onCo
   const [saving,      setSaving]      = useState(false);
   const [saveErr,     setSaveErr]     = useState('');
   const [professors,  setProfessors]  = useState([]);
+  const [showDelete,  setShowDelete]  = useState(false);
+  const [deleting,    setDeleting]    = useState(false);
 
   const [courseRatings,  setCourseRatings]  = useState([]);
   const [profRatings,    setProfRatings]    = useState([]);
@@ -167,7 +330,7 @@ export default function CourseDetailModal({ course: initialCourse, onClose, onCo
 
   useEffect(() => { fetchRatings(); }, [fetchRatings]);
 
-  // ── admin edit ────────────────────────────────────────────────────────────
+  // ── Admin header edit ─────────────────────────────────────────────────────
   const startEdit = () => {
     setEditDraft({
       course:        course.course,
@@ -176,7 +339,6 @@ export default function CourseDetailModal({ course: initialCourse, onClose, onCo
       area:          course.area,
       term:          course.term,
       credits:       course.credits,
-      description:   course.description || '',
     });
     setSaveErr(''); setEditing(true);
   };
@@ -198,7 +360,32 @@ export default function CourseDetailModal({ course: initialCourse, onClose, onCo
     }
   };
 
-  // ── submit ratings ────────────────────────────────────────────────────────
+  // ── Admin content section save ────────────────────────────────────────────
+  const saveSection = async (field, value) => {
+    const updated = await apiFetch(`/api/courses/${course.id}`, {
+      method: 'PUT',
+      body: JSON.stringify({ [field]: value }),
+    });
+    setCourse(updated);
+    onCourseUpdated && onCourseUpdated(updated);
+  };
+
+  // ── Admin delete course ───────────────────────────────────────────────────
+  const confirmDelete = async () => {
+    setDeleting(true);
+    try {
+      await apiFetch(`/api/courses/${course.id}`, { method: 'DELETE' });
+      onCourseDeleted && onCourseDeleted(course.id);
+      onClose();
+    } catch (e) {
+      setSaveErr(e.message);
+    } finally {
+      setDeleting(false);
+      setShowDelete(false);
+    }
+  };
+
+  // ── Submit ratings ────────────────────────────────────────────────────────
   const submitCourseRating = async ({ rating, comment }) => {
     const r = await apiFetch(`/api/course-ratings/${course.id}`, {
       method: 'POST',
@@ -215,7 +402,7 @@ export default function CourseDetailModal({ course: initialCourse, onClose, onCo
     setProfRatings(prev => [r, ...prev.filter(x => x.user_id !== user.id)]);
   };
 
-  // ── admin delete ratings ──────────────────────────────────────────────────
+  // ── Admin delete ratings ──────────────────────────────────────────────────
   const deleteCourseRating = async (id) => {
     await fetch(`${BASE}/api/course-ratings/${id}`, { method: 'DELETE', headers: authHeaders() });
     setCourseRatings(prev => prev.filter(r => r.id !== id));
@@ -226,11 +413,17 @@ export default function CourseDetailModal({ course: initialCourse, onClose, onCo
     setProfRatings(prev => prev.filter(r => r.id !== id));
   };
 
+  const handleProfCreated = (p) =>
+    setProfessors(prev => [...prev, p].sort((a, b) => a.name.localeCompare(b.name)));
+
   const color = AREA_COLORS[course.area] || '#64748b';
 
   return (
     <div className="cdm-backdrop" onClick={onClose}>
-      <div className="cdm-panel" onClick={e => e.stopPropagation()}>
+      <div
+        className={`cdm-panel ${isAdmin ? 'cdm-panel--admin' : ''}`}
+        onClick={e => e.stopPropagation()}
+      >
 
         {/* ── Header ── */}
         <div className="cdm-header" style={{ borderTopColor: color }}>
@@ -240,7 +433,12 @@ export default function CourseDetailModal({ course: initialCourse, onClose, onCo
             </span>
             <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
               {isAdmin && !editing && (
-                <button className="cdm-edit-btn" onClick={startEdit}>Edit Course</button>
+                <>
+                  <button className="cdm-edit-btn" onClick={startEdit}>Edit Course</button>
+                  <button className="cdm-delete-btn" onClick={() => setShowDelete(true)} disabled={deleting}>
+                    {deleting ? 'Deleting…' : 'Delete Course'}
+                  </button>
+                </>
               )}
               <button className="cdm-close" onClick={onClose}>✕</button>
             </div>
@@ -250,22 +448,32 @@ export default function CourseDetailModal({ course: initialCourse, onClose, onCo
             <div className="cdm-edit-form">
               <div className="cdm-edit-row">
                 <label>Course Name</label>
-                <input value={editDraft.course} onChange={e => setEditDraft(d => ({ ...d, course: e.target.value }))} />
+                <input
+                  value={editDraft.course}
+                  onChange={e => setEditDraft(d => ({ ...d, course: e.target.value }))}
+                />
               </div>
               <div className="cdm-edit-grid">
                 <div className="cdm-edit-row">
                   <label>Professor 1 *</label>
-                  <select value={editDraft.professor1_id} onChange={e => setEditDraft(d => ({ ...d, professor1_id: e.target.value ? parseInt(e.target.value) : '' }))}>
-                    <option value="">— Select professor —</option>
-                    {professors.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
-                  </select>
+                  <ProfessorSelect
+                    professors={professors}
+                    value={editDraft.professor1_id}
+                    onChange={id => setEditDraft(d => ({ ...d, professor1_id: id }))}
+                    onProfessorCreated={handleProfCreated}
+                    placeholder="— Select professor —"
+                    required
+                  />
                 </div>
                 <div className="cdm-edit-row">
                   <label>Professor 2</label>
-                  <select value={editDraft.professor2_id} onChange={e => setEditDraft(d => ({ ...d, professor2_id: e.target.value ? parseInt(e.target.value) : '' }))}>
-                    <option value="">— None —</option>
-                    {professors.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
-                  </select>
+                  <ProfessorSelect
+                    professors={professors}
+                    value={editDraft.professor2_id}
+                    onChange={id => setEditDraft(d => ({ ...d, professor2_id: id }))}
+                    onProfessorCreated={handleProfCreated}
+                    placeholder="— None —"
+                  />
                 </div>
                 <div className="cdm-edit-row">
                   <label>Area</label>
@@ -285,11 +493,6 @@ export default function CourseDetailModal({ course: initialCourse, onClose, onCo
                     {CREDITS.map(c => <option key={c} value={c}>{c}</option>)}
                   </select>
                 </div>
-              </div>
-              <div className="cdm-edit-row">
-                <label>Description</label>
-                <textarea rows={3} value={editDraft.description} placeholder="Add a short course description…"
-                  onChange={e => setEditDraft(d => ({ ...d, description: e.target.value }))} />
               </div>
               {saveErr && <p className="cdm-err">{saveErr}</p>}
               <div className="cdm-edit-actions">
@@ -315,13 +518,13 @@ export default function CourseDetailModal({ course: initialCourse, onClose, onCo
                   {course.credits ? `${course.credits} Credits` : 'Credits TBD'}
                 </span>
               </div>
-              {course.description && <p className="cdm-description">{course.description}</p>}
+              {saveErr && <p className="cdm-err">{saveErr}</p>}
             </>
           )}
         </div>
 
-        {/* ── Add-to-planner button ── */}
-        {!editing && (
+        {/* ── Add to Planner (students only) ── */}
+        {!isAdmin && !editing && (
           <div className="cdm-planner-row">
             <button
               className={`cdm-planner-btn ${inBasket ? 'in-basket' : ''}`}
@@ -332,9 +535,34 @@ export default function CourseDetailModal({ course: initialCourse, onClose, onCo
           </div>
         )}
 
-        {/* ── Two separate rating tiles side by side ── */}
+        {/* ── Body ── */}
         <div className="cdm-body">
-          <div className="cdm-ratings-grid">
+
+          {/* Content sections */}
+          <ContentSection
+            title="About This Course"
+            value={course.description}
+            fieldKey="description"
+            onSave={saveSection}
+            isAdmin={isAdmin}
+          />
+          <KeyTakeawaysSection
+            value={course.key_takeaways}
+            fieldKey="key_takeaways"
+            onSave={saveSection}
+            isAdmin={isAdmin}
+          />
+          <ContentSection
+            title="Prerequisites"
+            value={course.prerequisites}
+            fieldKey="prerequisites"
+            onSave={saveSection}
+            isAdmin={isAdmin}
+          />
+          <ComplementarySection courses={course.complementary_courses} />
+
+          {/* Reviews */}
+          <div className={`cdm-ratings-grid ${isAdmin ? 'cdm-ratings-grid--full' : ''}`}>
             <RatingTile
               title="Course Rating"
               ratings={courseRatings}
@@ -356,6 +584,15 @@ export default function CourseDetailModal({ course: initialCourse, onClose, onCo
           </div>
         </div>
       </div>
+
+      {/* Delete confirmation */}
+      {showDelete && (
+        <DeleteCourseModal
+          courseName={course.course}
+          onConfirm={confirmDelete}
+          onCancel={() => setShowDelete(false)}
+        />
+      )}
     </div>
   );
 }

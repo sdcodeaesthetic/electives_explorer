@@ -358,6 +358,8 @@
 
 .cdm-muted { font-size: 13px; color: var(--text-dim); }
 
+/* prof-sel styles live in ProfessorSelect.css (imported by ProfessorSelect.jsx) */
+
 /* ── Admin edit form ── */
 .cdm-edit-form { display: flex; flex-direction: column; gap: 14px; }
 .cdm-edit-grid {
@@ -463,6 +465,152 @@
   font-size: 11px;
   color: var(--accent);
   margin-left: 8px;
+}
+
+/* ── Admin: wider panel ── */
+.cdm-panel--admin {
+  max-width: 860px;
+}
+
+/* ── Admin: delete course button (beside Edit Course) ── */
+.cdm-delete-btn {
+  background: rgba(239,68,68,0.1);
+  border: 1px solid rgba(239,68,68,0.35);
+  border-radius: 8px;
+  color: #f87171;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 5px 14px;
+  transition: background 0.15s, opacity 0.15s;
+}
+.cdm-delete-btn:hover    { background: rgba(239,68,68,0.2); }
+.cdm-delete-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+/* ── Inline-editable content sections ── */
+.cdm-content-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.cdm-content-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+/* Override section-title margin-bottom when inside content-header */
+.cdm-content-header .cdm-section-title {
+  margin-bottom: 0;
+  padding-bottom: 0;
+  border-bottom: none;
+  flex: 1;
+}
+
+/* Full-width separator below the header row */
+.cdm-content-section > .cdm-content-header {
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+}
+
+.cdm-inline-edit-btn {
+  background: rgba(240,165,0,0.1);
+  border: 1px solid rgba(240,165,0,0.3);
+  border-radius: 6px;
+  color: var(--accent);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 12px;
+  transition: background 0.15s;
+  flex-shrink: 0;
+}
+.cdm-inline-edit-btn:hover { background: rgba(240,165,0,0.2); }
+
+.cdm-content-text {
+  font-size: 13.5px;
+  color: var(--text-muted);
+  line-height: 1.7;
+  white-space: pre-wrap;
+  margin: 0;
+}
+
+/* ── Admin reviews: full-width single-column ── */
+.cdm-ratings-grid--full {
+  grid-template-columns: 1fr;
+}
+
+/* ── Key Takeaways list ── */
+.cdm-takeaways-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.cdm-takeaway-item {
+  font-size: 13.5px;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+/* ── Complementary Courses ── */
+.cdm-complementary-section {}
+.cdm-comp-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.cdm-comp-card {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 10px;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.cdm-comp-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.cdm-comp-name {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--text-primary);
+  line-height: 1.4;
+}
+.cdm-comp-pills {
+  display: flex;
+  gap: 5px;
+  flex-shrink: 0;
+  flex-wrap: wrap;
+}
+.cdm-comp-pill {
+  font-size: 10.5px;
+  font-weight: 600;
+  color: var(--accent);
+  background: rgba(240,165,0,0.1);
+  border: 1px solid rgba(240,165,0,0.25);
+  border-radius: 10px;
+  padding: 2px 8px;
+  white-space: nowrap;
+}
+.cdm-comp-faculty {
+  font-size: 11.5px;
+  color: var(--text-dim);
+  margin: 0;
+}
+.cdm-comp-why {
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.6;
+  margin: 2px 0 0;
 }
 
 /* ── Responsive ── */

@@ -203,6 +203,55 @@
   color: #4ade80;
 }
 
+/* Admin delete button on card */
+.card-delete-btn {
+  width: 100%;
+  background: rgba(239,68,68,0.08);
+  border: 1px solid rgba(239,68,68,0.25);
+  border-radius: 7px;
+  color: #f87171;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 11.5px;
+  font-weight: 600;
+  padding: 7px;
+  transition: background 0.15s;
+}
+.card-delete-btn:hover { background: rgba(239,68,68,0.18); }
+
+/* Admin Add Course tile */
+.add-course-tile {
+  width: 100%;
+  height: 100%;
+  min-height: 170px;
+  background: rgba(240,165,0,0.06);
+  border: 2px dashed rgba(240,165,0,0.35);
+  border-radius: var(--radius);
+  color: var(--accent);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  font-family: inherit;
+  transition: background 0.2s, border-color 0.2s;
+}
+.add-course-tile:hover {
+  background: rgba(240,165,0,0.12);
+  border-color: var(--accent);
+}
+.add-course-icon {
+  font-size: 36px;
+  line-height: 1;
+  font-weight: 300;
+}
+.add-course-label {
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
 /* No results */
 .no-results {
   text-align: center;

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { apiFetch } from '../lib/api';
 import BASE from '../lib/api';
+import ProfessorSelect from './ProfessorSelect';
 import '../styles/CourseDetailModal.css';
 
 const AREAS   = ['Finance','GMPP','ISM','Marketing','OB/HR','Operations','Strategy','Inter-Area'];
@@ -20,6 +21,9 @@ export default function AddCourseModal({ onClose, onCreated }) {
   }, []);
 
   const set = (field, val) => setForm(f => ({ ...f, [field]: val }));
+
+  const handleProfCreated = (p) =>
+    setProfessors(prev => [...prev, p].sort((a, b) => a.name.localeCompare(b.name)));
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -78,17 +82,24 @@ export default function AddCourseModal({ onClose, onCreated }) {
             <div className="cdm-edit-grid">
               <div className="cdm-edit-row">
                 <label>Professor 1 *</label>
-                <select value={form.professor1_id} onChange={e => set('professor1_id', e.target.value)}>
-                  <option value="">— Select professor —</option>
-                  {professors.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
-                </select>
+                <ProfessorSelect
+                  professors={professors}
+                  value={form.professor1_id}
+                  onChange={id => set('professor1_id', id)}
+                  onProfessorCreated={handleProfCreated}
+                  placeholder="— Select professor —"
+                  required
+                />
               </div>
               <div className="cdm-edit-row">
                 <label>Professor 2</label>
-                <select value={form.professor2_id} onChange={e => set('professor2_id', e.target.value)}>
-                  <option value="">— None —</option>
-                  {professors.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
-                </select>
+                <ProfessorSelect
+                  professors={professors}
+                  value={form.professor2_id}
+                  onChange={id => set('professor2_id', id)}
+                  onProfessorCreated={handleProfCreated}
+                  placeholder="— None —"
+                />
               </div>
               <div className="cdm-edit-row">
                 <label>Area</label>

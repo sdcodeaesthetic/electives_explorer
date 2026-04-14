@@ -12,7 +12,7 @@ import CoursePage from './components/CoursePage';
 import LoginPage from './components/LoginPage';
 import SuggestionsTab from './components/SuggestionsTab';
 import CreditRibbon from './components/CreditRibbon';
-import AddCourseModal from './components/AddCourseModal';
+import AddCoursePage from './components/AddCoursePage';
 
 const TERM_RULES = {
   'Term IV':  { min: 18, max: 21, label: 'Term 4' },
@@ -55,7 +55,6 @@ function AppInner({ logout, user }) {
   const [basket,    setBasket]        = useState(new Set());
   const [validationMsg, setValidationMsg] = useState(null);
   const [courseOverrides, setCourseOverrides] = useState({});
-  const [addCourseOpen, setAddCourseOpen] = useState(false);
 
   const saveTimer    = useRef(null);
   const isRestored   = useRef(false);
@@ -89,8 +88,24 @@ function AppInner({ logout, user }) {
     setCourseOverrides(prev => ({ ...prev, [updated.id]: updated }));
   };
 
-  // When admin creates a new course, refresh the full list from DB
+  // When admin creates a new course (from AddCoursePage), refresh the full list
   const handleCourseCreated = () => {
+    refetchCourses();
+  };
+
+  // When admin deletes a course from the grid tile
+  const handleDeleteCourse = async (course) => {
+    try {
+      await apiFetch(`/api/courses/${course.id}`, { method: 'DELETE' });
+      refetchCourses();
+    } catch (e) {
+      setValidationMsg([e.message]);
+    }
+  };
+
+  // When admin deletes a course from inside CoursePage
+  const handleCourseDeleted = (courseId) => {
+    setCourseOverrides(prev => { const next = { ...prev }; delete next[courseId]; return next; });
     refetchCourses();
   };
 
@@ -191,33 +206,35 @@ function AppInner({ logout, user }) {
     <>
       <Header total={allCourses.length} filtered={filtered.length} user={user} onLogout={logout} />
 
-      {/* ── Sticky zone: tabs + filters + credit ribbon ── */}
+      {/* ── Sticky zone: tabs (students only) + filters + credit ribbon ── */}
       <div className="sticky-zone">
-        <div className="tab-bar">
-          <div className="tab-bar-inner">
-            <button
-              className={`tab-btn ${activeTab === 'browse' ? 'active' : ''}`}
-              onClick={() => setActiveTab('browse')}
-            >
-              Browse Courses
-            </button>
-            <button
-              className={`tab-btn ${activeTab === 'basket' ? 'active' : ''}`}
-              onClick={() => setActiveTab('basket')}
-            >
-              My Planner
-              {basket.size > 0 && <span className="tab-badge">{basket.size}</span>}
-            </button>
-            {user.role === 'student' && (
+        {user.role !== 'admin' && (
+          <div className="tab-bar">
+            <div className="tab-bar-inner">
               <button
-                className={`tab-btn ${activeTab === 'suggest' ? 'active' : ''}`}
-                onClick={() => setActiveTab('suggest')}
+                className={`tab-btn ${activeTab === 'browse' ? 'active' : ''}`}
+                onClick={() => setActiveTab('browse')}
               >
-                AI Suggestions
+                Browse Courses
               </button>
-            )}
+              <button
+                className={`tab-btn ${activeTab === 'basket' ? 'active' : ''}`}
+                onClick={() => setActiveTab('basket')}
+              >
+                My Planner
+                {basket.size > 0 && <span className="tab-badge">{basket.size}</span>}
+              </button>
+              {user.role === 'student' && (
+                <button
+                  className={`tab-btn ${activeTab === 'suggest' ? 'active' : ''}`}
+                  onClick={() => setActiveTab('suggest')}
+                >
+                  AI Suggestions
+                </button>
+              )}
+            </div>
           </div>
-        </div>
+        )}
 
         {activeTab === 'browse' && (
           <>
@@ -229,37 +246,24 @@ function AppInner({ logout, user }) {
               terms={terms} selectedTerm={selectedTerm} setSelectedTerm={setSelectedTerm}
               clearAll={clearAll} hasFilters={hasFilters}
             />
-            <CreditRibbon basketCourses={basketCourses} />
+            {user.role !== 'admin' && <CreditRibbon basketCourses={basketCourses} />}
           </>
         )}
       </div>
 
       {/* ── Scrollable content ── */}
       {activeTab === 'browse' && (
-        <>
-          {user.role === 'admin' && (
-            <div style={{ display: 'flex', justifyContent: 'flex-end', padding: '12px 24px 0' }}>
-              <button
-                onClick={() => setAddCourseOpen(true)}
-                style={{
-                  background: 'var(--accent)', color: '#000', border: 'none',
-                  borderRadius: 8, padding: '8px 18px', fontSize: 13, fontWeight: 700,
-                  cursor: 'pointer', fontFamily: 'inherit',
-                }}
-              >
-                + Add Course
-              </button>
-            </div>
-          )}
-          <CourseGrid
-            courses={displayCourses}
-            total={allCourses.length}
-            filterVersion={filterVersion}
-            basket={basket}
-            toggleBasket={toggleBasket}
-            onExpand={course => navigate(`/course/${course.id}`)}
-          />
-        </>
+        <CourseGrid
+          courses={displayCourses}
+          total={allCourses.length}
+          filterVersion={filterVersion}
+          basket={basket}
+          toggleBasket={toggleBasket}
+          onExpand={course => navigate(`/course/${course.id}`)}
+          isAdmin={user.role === 'admin'}
+          onAddCourse={() => navigate('/admin/add-course')}
+          onDeleteCourse={handleDeleteCourse}
+        />
       )}
       {activeTab === 'basket' && (
         <BasketView
@@ -291,6 +295,7 @@ function AppInner({ logout, user }) {
               allCourses={allCourses}
               courseOverrides={courseOverrides}
               onCourseUpdated={handleCourseUpdated}
+              onCourseDeleted={handleCourseDeleted}
               basket={basket}
               toggleBasket={toggleBasket}
               validationMsg={validationMsg}
@@ -300,15 +305,18 @@ function AppInner({ logout, user }) {
             />
           }
         />
-      </Routes>
-
-      {/* ── Add Course modal (admin) ── */}
-      {addCourseOpen && (
-        <AddCourseModal
-          onClose={() => setAddCourseOpen(false)}
-          onCreated={handleCourseCreated}
+        <Route
+          path="/admin/add-course"
+          element={
+            <AddCoursePage
+              onCreated={handleCourseCreated}
+              user={user}
+              onLogout={logout}
+              allCourses={allCourses}
+            />
+          }
         />
-      )}
+      </Routes>
 
       {/* ── Validation modal ── */}
       {validationMsg && (

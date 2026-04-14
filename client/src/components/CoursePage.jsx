@@ -2,9 +2,9 @@ import { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import StarRating from './StarRating';
 import Header from './Header';
+import ProfessorSelect from './ProfessorSelect';
 import { apiFetch, authHeaders } from '../lib/api';
 import BASE from '../lib/api';
-import courseDetails from '../data/courseDetails.js';
 import '../styles/CoursePage.css';
 
 const AREA_COLORS = {
@@ -24,7 +24,7 @@ function fmtDate(iso) {
   return new Date(iso).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
 }
 
-// ── Static filled-star display (supports float averages) ─────────────────────
+// ── Static star display (supports float averages) ─────────────────────────────
 function StarDisplay({ value, size = 17 }) {
   const rounded = Math.round(value);
   return (
@@ -39,7 +39,7 @@ function StarDisplay({ value, size = 17 }) {
   );
 }
 
-// ── One summary row:  [label]  ★★★★☆  4.2  (N ratings) ──────────────────────
+// ── One summary row: [label]  ★★★★☆  4.2  (N) ────────────────────────────────
 function RatingSummaryRow({ label, ratings, loading, showLabel = true }) {
   const average = calcAvg(ratings);
   return (
@@ -60,13 +60,14 @@ function RatingSummaryRow({ label, ratings, loading, showLabel = true }) {
   );
 }
 
-// ── Compact per-entity rating form ────────────────────────────────────────────
+// ── Compact rating submission form ────────────────────────────────────────────
 function RatingForm({ formLabel, myRating, onSubmit }) {
   const [rating,     setRating]     = useState(myRating?.rating  || 0);
   const [comment,    setComment]    = useState(myRating?.comment || '');
   const [submitting, setSubmitting] = useState(false);
   const [err,        setErr]        = useState('');
 
+  // Sync if myRating changes (e.g. after submit)
   useEffect(() => {
     if (myRating) { setRating(myRating.rating); setComment(myRating.comment || ''); }
   }, [myRating]);
@@ -103,7 +104,7 @@ function RatingForm({ formLabel, myRating, onSubmit }) {
   );
 }
 
-// ── Comment card ──────────────────────────────────────────────────────────────
+// ── Comment card (full-width grid below ratings) ──────────────────────────────
 function CommentCard({ review, source, isAdmin, onDelete }) {
   return (
     <div className="cp-comment-card">
@@ -128,9 +129,104 @@ function CommentCard({ review, source, isAdmin, onDelete }) {
   );
 }
 
+// ── Inline-editable content section ──────────────────────────────────────────
+function ContentSection({ title, value, fieldKey, onSave, isAdmin, type = 'text' }) {
+  const [editing, setEditing] = useState(false);
+  const [draft,   setDraft]   = useState('');
+  const [saving,  setSaving]  = useState(false);
+
+  function startEdit() { setDraft(value || ''); setEditing(true); }
+  async function save() {
+    setSaving(true);
+    try { await onSave(fieldKey, draft); setEditing(false); }
+    finally { setSaving(false); }
+  }
+
+  if (!isAdmin && !value) return null;
+
+  const lines = value ? value.split('\n').filter(l => l.trim()) : [];
+
+  return (
+    <div className="cp-section-card">
+      <div className="cp-section-header">
+        <h3 className="cp-section-heading">{title}</h3>
+        {isAdmin && !editing && (
+          <button className="cp-inline-edit-btn" onClick={startEdit}>Edit</button>
+        )}
+      </div>
+
+      {editing ? (
+        <div>
+          <textarea
+            className="cp-edit-textarea"
+            rows={type === 'curriculum' ? 12 : type === 'bullets' ? 8 : 6}
+            value={draft}
+            placeholder={
+              type === 'bullets'    ? 'One bullet per line…' :
+              type === 'curriculum' ? 'One curriculum topic per line…' :
+              `Enter ${title.toLowerCase()}…`
+            }
+            onChange={e => setDraft(e.target.value)}
+            autoFocus
+          />
+          {(type === 'bullets' || type === 'curriculum') && (
+            <p className="cp-edit-hint">
+              {type === 'bullets' ? 'Each line becomes a separate bullet point.' : 'Each line becomes a separate curriculum item.'}
+            </p>
+          )}
+          <div className="cp-section-edit-actions">
+            <button className="cp-cancel-btn" onClick={() => setEditing(false)}>Cancel</button>
+            <button className="cp-save-btn"   onClick={save} disabled={saving}>
+              {saving ? 'Saving…' : 'Save'}
+            </button>
+          </div>
+        </div>
+      ) : !value ? (
+        <p className="cp-muted cp-empty-hint">Not set — click Edit to add.</p>
+      ) : type === 'curriculum' ? (
+        <div className="cp-curriculum-grid">
+          {lines.map((item, i) => (
+            <div className="cp-curriculum-item" key={i}>
+              <span className="cp-curriculum-num">{String(i + 1).padStart(2, '0')}</span>
+              <span className="cp-curriculum-text">{item}</span>
+            </div>
+          ))}
+        </div>
+      ) : type === 'bullets' ? (
+        <ul className="cp-bullets-list">
+          {lines.map((item, i) => <li key={i}>{item}</li>)}
+        </ul>
+      ) : (
+        <p className="cp-section-text">{value}</p>
+      )}
+    </div>
+  );
+}
+
+// ── Delete confirmation modal ─────────────────────────────────────────────────
+function DeleteCourseModal({ courseName, onConfirm, onCancel, deleting }) {
+  return (
+    <div className="clear-modal-backdrop" onClick={onCancel}>
+      <div className="clear-modal" onClick={e => e.stopPropagation()}>
+        <div className="clear-modal-icon">🗑️</div>
+        <h3 className="clear-modal-title">Delete Course?</h3>
+        <p className="clear-modal-body">
+          This will permanently delete <strong>{courseName}</strong>. This action cannot be undone.
+        </p>
+        <div className="clear-modal-actions">
+          <button className="clear-confirm-no"  onClick={onCancel}  disabled={deleting}>Cancel</button>
+          <button className="clear-confirm-yes" onClick={onConfirm} disabled={deleting}>
+            {deleting ? 'Deleting…' : 'Yes, delete'}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ── Main page ─────────────────────────────────────────────────────────────────
 export default function CoursePage({
-  allCourses, courseOverrides, onCourseUpdated,
+  allCourses, courseOverrides, onCourseUpdated, onCourseDeleted,
   basket, toggleBasket, validationMsg, setValidationMsg,
   user, onLogout,
 }) {
@@ -148,7 +244,7 @@ export default function CoursePage({
     }
   }, [allCourses, id, courseOverrides, course]);
 
-  // ── Admin edit ────────────────────────────────────────────────────────────
+  // ── Admin: header edit ────────────────────────────────────────────────────
   const [editing,    setEditing]    = useState(false);
   const [editDraft,  setEditDraft]  = useState({});
   const [saving,     setSaving]     = useState(false);
@@ -167,7 +263,6 @@ export default function CoursePage({
       area:          course.area,
       term:          course.term,
       credits:       course.credits,
-      description:   course.description || '',
     });
     setSaveErr(''); setEditing(true);
   };
@@ -189,7 +284,37 @@ export default function CoursePage({
     finally { setSaving(false); }
   };
 
-  // ── DB-backed ratings ─────────────────────────────────────────────────────
+  const handleProfCreated = (p) =>
+    setProfessors(prev => [...prev, p].sort((a, b) => a.name.localeCompare(b.name)));
+
+  // ── Admin: save individual content section ────────────────────────────────
+  const saveSection = async (field, value) => {
+    const updated = await apiFetch(`/api/courses/${course.id}`, {
+      method: 'PUT',
+      body: JSON.stringify({ [field]: value }),
+    });
+    setCourse(updated);
+    onCourseUpdated && onCourseUpdated(updated);
+  };
+
+  // ── Admin: delete course ──────────────────────────────────────────────────
+  const [showDelete, setShowDelete] = useState(false);
+  const [deleting,   setDeleting]   = useState(false);
+
+  const confirmDelete = async () => {
+    setDeleting(true);
+    try {
+      await apiFetch(`/api/courses/${course.id}`, { method: 'DELETE' });
+      onCourseDeleted && onCourseDeleted(course.id);
+      navigate('/');
+    } catch (e) {
+      setSaveErr(e.message);
+      setDeleting(false);
+      setShowDelete(false);
+    }
+  };
+
+  // ── Ratings (DB) ──────────────────────────────────────────────────────────
   const [courseRatings,   setCourseRatings]   = useState([]);
   const [profRatingsData, setProfRatingsData] = useState({ professors: [] });
   const [ratingsLoading,  setRatingsLoading]  = useState(true);
@@ -242,12 +367,13 @@ export default function CoursePage({
     await fetch(`${BASE}/api/professor-ratings/${ratingId}`, { method: 'DELETE', headers: authHeaders() });
     setProfRatingsData(prev => ({
       professors: prev.professors.map(p => ({
-        ...p, ratings: p.ratings.filter(r => r.id !== ratingId),
+        ...p,
+        ratings: p.ratings.filter(r => r.id !== ratingId),
       })),
     }));
   };
 
-  // All comments (course + professors), newest first
+  // ── All comments (course + all professors), newest first ─────────────────
   const allComments = [
     ...courseRatings.filter(r => r.comment).map(r => ({ ...r, _source: 'Course' })),
     ...profRatingsData.professors.flatMap(p =>
@@ -258,14 +384,17 @@ export default function CoursePage({
   const totalRatings = courseRatings.length +
     profRatingsData.professors.reduce((s, p) => s + p.ratings.length, 0);
 
-  // ── Not found ─────────────────────────────────────────────────────────────
+  // ── Loading / not-found ───────────────────────────────────────────────────
   if (allCourses.length > 0 && !course) {
     return (
-      <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 16 }}>
-        <p style={{ fontSize: 40 }}>🔍</p>
-        <p style={{ color: 'var(--text-muted)' }}>Course not found.</p>
-        <button className="cp-back-btn" onClick={() => navigate('/')}>← Back to Browse</button>
-      </div>
+      <>
+        <Header total={allCourses.length} filtered={allCourses.length} user={user} onLogout={onLogout} />
+        <div style={{ minHeight: '60vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 16 }}>
+          <p style={{ fontSize: 40 }}>🔍</p>
+          <p style={{ color: 'var(--text-muted)' }}>Course not found.</p>
+          <button className="cp-back-btn" onClick={() => navigate('/')}>← Back to Browse</button>
+        </div>
+      </>
     );
   }
 
@@ -278,7 +407,6 @@ export default function CoursePage({
 
   const color    = AREA_COLORS[course.area] || '#64748b';
   const inBasket = basket.has(course.id);
-  const detail   = courseDetails[String(course.id)];
 
   return (
     <>
@@ -298,9 +426,14 @@ export default function CoursePage({
             <span className="cp-area-badge" style={{ background: `${color}22`, color, border: `1px solid ${color}44` }}>
               {course.area}
             </span>
-            <div style={{ display: 'flex', gap: 8 }}>
+            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
               {isAdmin && !editing && (
-                <button className="cp-edit-btn" onClick={startEdit}>Edit Course</button>
+                <>
+                  <button className="cp-edit-btn"   onClick={startEdit}>Edit Course</button>
+                  <button className="cp-delete-btn" onClick={() => setShowDelete(true)} disabled={deleting}>
+                    {deleting ? 'Deleting…' : 'Delete Course'}
+                  </button>
+                </>
               )}
               {!isAdmin && (
                 <button
@@ -317,22 +450,32 @@ export default function CoursePage({
             <div className="cp-edit-form">
               <div className="cp-edit-row full">
                 <label>Course Name</label>
-                <input value={editDraft.course} onChange={e => setEditDraft(d => ({ ...d, course: e.target.value }))} />
+                <input
+                  value={editDraft.course}
+                  onChange={e => setEditDraft(d => ({ ...d, course: e.target.value }))}
+                />
               </div>
               <div className="cp-edit-grid">
                 <div className="cp-edit-row">
                   <label>Professor 1 *</label>
-                  <select value={editDraft.professor1_id} onChange={e => setEditDraft(d => ({ ...d, professor1_id: e.target.value }))}>
-                    <option value="">— Select professor —</option>
-                    {professors.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
-                  </select>
+                  <ProfessorSelect
+                    professors={professors}
+                    value={editDraft.professor1_id}
+                    onChange={id => setEditDraft(d => ({ ...d, professor1_id: id }))}
+                    onProfessorCreated={handleProfCreated}
+                    placeholder="— Select professor —"
+                    required
+                  />
                 </div>
                 <div className="cp-edit-row">
                   <label>Professor 2</label>
-                  <select value={editDraft.professor2_id} onChange={e => setEditDraft(d => ({ ...d, professor2_id: e.target.value }))}>
-                    <option value="">— None —</option>
-                    {professors.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
-                  </select>
+                  <ProfessorSelect
+                    professors={professors}
+                    value={editDraft.professor2_id}
+                    onChange={id => setEditDraft(d => ({ ...d, professor2_id: id }))}
+                    onProfessorCreated={handleProfCreated}
+                    placeholder="— None —"
+                  />
                 </div>
                 <div className="cp-edit-row">
                   <label>Area</label>
@@ -352,12 +495,6 @@ export default function CoursePage({
                     {CREDITS.map(c => <option key={c} value={c}>{c}</option>)}
                   </select>
                 </div>
-              </div>
-              <div className="cp-edit-row full">
-                <label>Description</label>
-                <textarea rows={3} value={editDraft.description}
-                  placeholder="Add a short course description…"
-                  onChange={e => setEditDraft(d => ({ ...d, description: e.target.value }))} />
               </div>
               {saveErr && <p className="cp-err">{saveErr}</p>}
               <div className="cp-edit-actions">
@@ -383,63 +520,58 @@ export default function CoursePage({
                   {course.credits ? `${course.credits} Credits` : 'Credits TBD'}
                 </span>
               </div>
-              {course.description && <p className="cp-description">{course.description}</p>}
+              {saveErr && <p className="cp-err">{saveErr}</p>}
             </>
           )}
         </div>
 
-        {/* ── Static course details (from courseDetails.js) ── */}
-        {detail && (
-          <div className="cp-detail-grid">
-            {detail.intro && (
-              <div className="cp-detail-card cp-detail-full">
-                <h3 className="cp-detail-heading">About This Course</h3>
-                <p className="cp-detail-text">{detail.intro}</p>
-              </div>
-            )}
-            {detail.outline?.length > 0 && (
-              <div className="cp-detail-card cp-detail-full cp-curriculum-card">
-                <h3 className="cp-detail-heading">Course Curriculum</h3>
-                <p className="cp-detail-text" style={{ marginBottom: 16 }}>
-                  This course is structured across {detail.outline.length} topic{detail.outline.length > 1 ? 's' : ''},
-                  covering both foundational concepts and applied skills.
-                </p>
-                <div className="cp-curriculum-grid">
-                  {detail.outline.map((item, i) => (
-                    <div className="cp-curriculum-item" key={i}>
-                      <span className="cp-curriculum-num">{String(i + 1).padStart(2, '0')}</span>
-                      <span className="cp-curriculum-text">{item}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-            {detail.keyTakeaways?.length > 0 && (
-              <div className="cp-detail-card">
-                <h3 className="cp-detail-heading">Key Takeaways</h3>
-                <ul className="cp-detail-list cp-takeaway-list">
-                  {detail.keyTakeaways.map((item, i) => <li key={i}>{item}</li>)}
-                </ul>
-              </div>
-            )}
-            <div className="cp-detail-card cp-prereq-card">
-              <h3 className="cp-detail-heading">Prerequisites</h3>
-              <p className="cp-detail-text cp-prereq-text">{detail.prerequisites || 'None mentioned'}</p>
-            </div>
-          </div>
-        )}
+        {/* ── Inline-editable content sections ── */}
+        <div className="cp-sections-grid">
+          <ContentSection
+            title="About This Course"
+            value={course.description}
+            fieldKey="description"
+            onSave={saveSection}
+            isAdmin={isAdmin}
+            type="text"
+          />
+          <ContentSection
+            title="Course Curriculum"
+            value={course.course_curriculum}
+            fieldKey="course_curriculum"
+            onSave={saveSection}
+            isAdmin={isAdmin}
+            type="curriculum"
+          />
+          <ContentSection
+            title="Key Takeaways"
+            value={course.key_takeaways}
+            fieldKey="key_takeaways"
+            onSave={saveSection}
+            isAdmin={isAdmin}
+            type="bullets"
+          />
+          <ContentSection
+            title="Prerequisites"
+            value={course.prerequisites}
+            fieldKey="prerequisites"
+            onSave={saveSection}
+            isAdmin={isAdmin}
+            type="text"
+          />
+        </div>
 
-        {/* ── Reviews & Ratings — full width ── */}
+        {/* ── Reviews — full width ── */}
         <div className="cp-reviews-section">
           <h2 className="cp-reviews-heading">
             Reviews &amp; Ratings
             {totalRatings > 0 && <span className="cp-review-count-badge">{totalRatings}</span>}
           </h2>
 
-          {/* Two-column rating tiles */}
+          {/* ── Two-column rating tiles ── */}
           <div className="cp-ratings-grid">
 
-            {/* Course rating */}
+            {/* Course rating tile */}
             <div className="cp-rating-tile">
               <h3 className="cp-rating-tile-title">Course Rating</h3>
               <RatingSummaryRow
@@ -455,7 +587,7 @@ export default function CoursePage({
               )}
             </div>
 
-            {/* Professor ratings — one row per professor */}
+            {/* Professor rating tile */}
             <div className="cp-rating-tile">
               <h3 className="cp-rating-tile-title">Professor Ratings</h3>
               {ratingsLoading ? (
@@ -468,7 +600,7 @@ export default function CoursePage({
                     <RatingSummaryRow
                       label={prof.name}
                       ratings={prof.ratings}
-                      loading={false}
+                      loading={ratingsLoading}
                       showLabel={true}
                     />
                     {!isAdmin && (
@@ -484,7 +616,7 @@ export default function CoursePage({
             </div>
           </div>
 
-          {/* Comments — full width below tiles */}
+          {/* ── Comments — always visible, full width below the two tiles ── */}
           <div className="cp-comments-section">
             <h3 className="cp-comments-heading">
               Comments
@@ -509,7 +641,15 @@ export default function CoursePage({
         </div>
       </div>
 
-      {/* ── Validation modal ── */}
+      {/* ── Modals ── */}
+      {showDelete && (
+        <DeleteCourseModal
+          courseName={course.course}
+          onConfirm={confirmDelete}
+          onCancel={() => setShowDelete(false)}
+          deleting={deleting}
+        />
+      )}
       {validationMsg && (
         <div className="modal-backdrop" onClick={() => setValidationMsg(null)}>
           <div className="modal-box" onClick={e => e.stopPropagation()}>

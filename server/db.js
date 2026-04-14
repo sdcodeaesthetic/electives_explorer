@@ -176,6 +176,11 @@ async function connectDB() {
         ADD COLUMN IF NOT EXISTS professor1_id INTEGER REFERENCES professors(id),
         ADD COLUMN IF NOT EXISTS professor2_id INTEGER REFERENCES professors(id);
 
+      ALTER TABLE courses
+        ADD COLUMN IF NOT EXISTS key_takeaways TEXT NOT NULL DEFAULT '',
+        ADD COLUMN IF NOT EXISTS prerequisites TEXT NOT NULL DEFAULT '',
+        ADD COLUMN IF NOT EXISTS course_curriculum TEXT NOT NULL DEFAULT '';
+
       -- Fix credits from NUMERIC (returns as string) to REAL (returns as number)
       DO $$ BEGIN
         IF EXISTS (

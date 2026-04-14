@@ -1,8 +1,38 @@
+import { useState } from 'react';
 import CourseCard from './CourseCard';
 import '../styles/CourseCard.css';
 
-export default function CourseGrid({ courses, total, filterVersion, basket, toggleBasket, onExpand }) {
+function DeleteConfirmModal({ course, onConfirm, onCancel }) {
+  return (
+    <div className="clear-modal-backdrop" onClick={onCancel}>
+      <div className="clear-modal" onClick={e => e.stopPropagation()}>
+        <div className="clear-modal-icon">🗑️</div>
+        <h3 className="clear-modal-title">Delete Course?</h3>
+        <p className="clear-modal-body">
+          This will permanently delete <strong>{course.course}</strong>. This action cannot be undone.
+        </p>
+        <div className="clear-modal-actions">
+          <button className="clear-confirm-no"  onClick={onCancel}>Cancel</button>
+          <button className="clear-confirm-yes" onClick={onConfirm}>Yes, delete</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default function CourseGrid({
+  courses, total, filterVersion,
+  basket, toggleBasket, onExpand,
+  isAdmin, onAddCourse, onDeleteCourse,
+}) {
   const version = filterVersion.current;
+  const [pendingDelete, setPendingDelete] = useState(null);
+
+  function handleDeleteClick(course) { setPendingDelete(course); }
+  function handleConfirmDelete() {
+    onDeleteCourse && onDeleteCourse(pendingDelete);
+    setPendingDelete(null);
+  }
 
   return (
     <main className="course-grid-wrap">
@@ -10,17 +40,29 @@ export default function CourseGrid({ courses, total, filterVersion, basket, togg
         <p className="results-count">
           Showing <span>{courses.length}</span> of {total} courses
         </p>
-        {basket.size > 0 && (
+        {!isAdmin && basket.size > 0 && (
           <p className="results-count">
             <span>{basket.size}</span> courses in planner
           </p>
         )}
-        {basket.size === 0 && (
-          <p className="results-count" style={{ fontStyle: 'italic' }}>Click a card to view details & add to planner</p>
+        {!isAdmin && basket.size === 0 && (
+          <p className="results-count" style={{ fontStyle: 'italic' }}>
+            Click a card to view details &amp; add to planner
+          </p>
         )}
       </div>
 
       <div className="course-grid">
+        {/* Admin: Add Course tile (first position) */}
+        {isAdmin && (
+          <div className="card-wrapper">
+            <button className="add-course-tile" onClick={onAddCourse}>
+              <div className="add-course-icon">＋</div>
+              <span className="add-course-label">Add Course</span>
+            </button>
+          </div>
+        )}
+
         {courses.length === 0 ? (
           <div className="no-results">
             <div className="no-results-icon">🔍</div>
@@ -34,11 +76,26 @@ export default function CourseGrid({ courses, total, filterVersion, basket, togg
               className={`card-wrapper ${version === 0 ? 'anim-initial' : 'anim-filter'}`}
               style={{ animationDelay: `${Math.min(i * 0.03, 0.4)}s` }}
             >
-              <CourseCard course={c} selected={basket.has(c.id)} onToggle={toggleBasket} onExpand={onExpand} />
+              <CourseCard
+                course={c}
+                selected={basket.has(c.id)}
+                onToggle={toggleBasket}
+                onExpand={onExpand}
+                isAdmin={isAdmin}
+                onDelete={handleDeleteClick}
+              />
             </div>
           ))
         )}
       </div>
+
+      {pendingDelete && (
+        <DeleteConfirmModal
+          course={pendingDelete}
+          onConfirm={handleConfirmDelete}
+          onCancel={() => setPendingDelete(null)}
+        />
+      )}
     </main>
   );
 }
