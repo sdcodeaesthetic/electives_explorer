@@ -122,6 +122,98 @@ function RatingTile({ title, ratings, loading, isAdmin, onDelete, user, onSubmit
   );
 }
 
+// ── Key Takeaways section (tick marks, no bullets) ───────────────────────────
+function KeyTakeawaysSection({ value, fieldKey, onSave, isAdmin }) {
+  const [editing, setEditing] = useState(false);
+  const [draft,   setDraft]   = useState('');
+  const [saving,  setSaving]  = useState(false);
+
+  function startEdit() { setDraft(value || ''); setEditing(true); }
+  async function save() {
+    setSaving(true);
+    try { await onSave(fieldKey, draft); setEditing(false); }
+    finally { setSaving(false); }
+  }
+
+  // Strip leading bullet chars and blank lines
+  const lines = (value || '')
+    .split('\n')
+    .map(l => l.replace(/^[•\-\*]\s*/, '').trim())
+    .filter(Boolean);
+
+  if (!isAdmin && lines.length === 0) return null;
+
+  return (
+    <section className="cdm-section cdm-content-section">
+      <div className="cdm-content-header">
+        <h3 className="cdm-section-title">Key Takeaways</h3>
+        {isAdmin && !editing && (
+          <button className="cdm-inline-edit-btn" onClick={startEdit}>Edit</button>
+        )}
+      </div>
+
+      {editing ? (
+        <div className="cdm-content-edit">
+          <textarea
+            className="cdm-comment-input"
+            rows={6}
+            value={draft}
+            placeholder="Enter key takeaways…"
+            onChange={e => setDraft(e.target.value)}
+            autoFocus
+          />
+          <div className="cdm-edit-actions" style={{ marginTop: 8 }}>
+            <button className="cdm-cancel-btn" onClick={() => setEditing(false)}>Cancel</button>
+            <button className="cdm-save-btn" onClick={save} disabled={saving}>
+              {saving ? 'Saving…' : 'Save'}
+            </button>
+          </div>
+        </div>
+      ) : lines.length > 0 ? (
+        <div className="cdm-takeaways-list">
+          {lines.map((line, i) => (
+            <div key={i} className="cdm-takeaway-item">{line}</div>
+          ))}
+        </div>
+      ) : (
+        <p className="cdm-muted" style={{ fontStyle: 'italic' }}>Not set — click Edit to add.</p>
+      )}
+    </section>
+  );
+}
+
+// ── Complementary Courses section ─────────────────────────────────────────────
+function ComplementarySection({ courses: raw }) {
+  // pg returns JSONB as object; guard against string-encoded JSON
+  let courses = raw;
+  if (typeof raw === 'string') {
+    try { courses = JSON.parse(raw); } catch { courses = []; }
+  }
+  if (!Array.isArray(courses) || courses.length === 0) return null;
+
+  return (
+    <section className="cdm-section cdm-complementary-section">
+      <h3 className="cdm-section-title">Complementary Courses</h3>
+      <div className="cdm-comp-list">
+        {courses.map((c, i) => (
+          <div key={i} className="cdm-comp-card">
+            <div className="cdm-comp-header">
+              <span className="cdm-comp-name">{c.course}</span>
+              <div className="cdm-comp-pills">
+                <span className="cdm-comp-pill">{c.term}</span>
+                <span className="cdm-comp-pill">{c.credits} cr</span>
+                <span className="cdm-comp-pill">{c.area}</span>
+              </div>
+            </div>
+            <p className="cdm-comp-faculty">{c.faculty}</p>
+            <p className="cdm-comp-why">{c.why}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
 // ── Inline editable content section (admin) ──────────────────────────────────
 function ContentSection({ title, value, fieldKey, onSave, isAdmin }) {
   const [editing, setEditing] = useState(false);
@@ -454,8 +546,7 @@ export default function CourseDetailModal({
             onSave={saveSection}
             isAdmin={isAdmin}
           />
-          <ContentSection
-            title="Key Takeaways"
+          <KeyTakeawaysSection
             value={course.key_takeaways}
             fieldKey="key_takeaways"
             onSave={saveSection}
@@ -468,6 +559,7 @@ export default function CourseDetailModal({
             onSave={saveSection}
             isAdmin={isAdmin}
           />
+          <ComplementarySection courses={course.complementary_courses} />
 
           {/* Reviews */}
           <div className={`cdm-ratings-grid ${isAdmin ? 'cdm-ratings-grid--full' : ''}`}>

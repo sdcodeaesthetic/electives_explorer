@@ -59,14 +59,6 @@ export default function Header({ total, filtered, user, onLogout }) {
       <p style={{ fontSize: '14px', color: 'var(--text-muted)', margin: '0 auto 20px', whiteSpace: 'nowrap' }}>
         Browse and filter MBA elective courses by specialization, faculty, and credits.
       </p>
-      <div style={{ display: 'inline-flex', gap: '6px', alignItems: 'center',
-        background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)',
-        borderRadius: '20px', padding: '6px 16px', fontSize: '13px' }}>
-        <span style={{ color: 'var(--accent)', fontWeight: 700 }}>{filtered}</span>
-        <span style={{ color: 'var(--text-muted)' }}>of</span>
-        <span style={{ fontWeight: 600 }}>{total}</span>
-        <span style={{ color: 'var(--text-muted)' }}>courses</span>
-      </div>
     </header>
   );
 }

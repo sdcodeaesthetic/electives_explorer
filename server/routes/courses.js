@@ -9,6 +9,7 @@ const COURSE_SELECT = `
   SELECT
     c.id, c.area, c.term, c.course, c.credits, c.description,
     c.key_takeaways, c.prerequisites, c.course_curriculum,
+    c.summary, c.complementary_courses,
     c.professor1_id, c.professor2_id,
     p1.name AS professor1_name,
     p2.name AS professor2_name,
