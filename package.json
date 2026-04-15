@@ -10,7 +10,8 @@
     "build": "cd client && npm install && npm run build",
     "start": "node server/index.js",
     "seed": "node server/seed.js",
-    "seed:details": "node scripts/seed-course-details.js"
+    "seed:details": "node scripts/seed-course-details.js",
+    "migrate:anonymous": "node server/migrations/add_anonymous_flag.js"
   },
   "engines": {
     "node": "24.x"

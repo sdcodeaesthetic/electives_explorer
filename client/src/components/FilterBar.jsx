@@ -165,41 +165,43 @@ export default function FilterBar({
 
           <div className="filter-divider" />
 
-          {/* Credits */}
-          <div className="credits-group">
-            <span className="credits-label">Credits</span>
-            <div className="credits-toggle">
-              {['all', '1.5', '3'].map(val => (
-                <button
-                  key={val}
-                  className={`credits-btn ${selectedCredit === val ? 'active' : ''}`}
-                  onClick={() => setSelectedCredit(val)}
-                >
-                  {val === 'all' ? 'All' : val}
-                </button>
-              ))}
+          <div className="credit-term-row">
+            {/* Credits */}
+            <div className="credits-group">
+              <span className="credits-label">Credits</span>
+              <div className="credits-toggle">
+                {['all', '1.5', '3'].map(val => (
+                  <button
+                    key={val}
+                    className={`credits-btn ${selectedCredit === val ? 'active' : ''}`}
+                    onClick={() => setSelectedCredit(val)}
+                  >
+                    {val === 'all' ? 'All' : val}
+                  </button>
+                ))}
+              </div>
             </div>
-          </div>
 
-          <div className="filter-divider" />
+            <div className="filter-divider" />
 
-          {/* Term */}
-          <div className="credits-group">
-            <span className="credits-label">Term</span>
-            <div className="credits-toggle">
-              <button
-                className={`credits-btn ${selectedTerm === 'all' ? 'active' : ''}`}
-                onClick={() => setSelectedTerm('all')}
-              >All</button>
-              {terms.map(t => (
+            {/* Term */}
+            <div className="credits-group">
+              <span className="credits-label">Term</span>
+              <div className="credits-toggle">
                 <button
-                  key={t}
-                  className={`credits-btn ${selectedTerm === t ? 'active' : ''}`}
-                  onClick={() => setSelectedTerm(t)}
-                >
-                  {t === 'X' ? 'N/A' : t.replace('Term ', '')}
-                </button>
-              ))}
+                  className={`credits-btn ${selectedTerm === 'all' ? 'active' : ''}`}
+                  onClick={() => setSelectedTerm('all')}
+                >All</button>
+                {terms.map(t => (
+                  <button
+                    key={t}
+                    className={`credits-btn ${selectedTerm === t ? 'active' : ''}`}
+                    onClick={() => setSelectedTerm(t)}
+                  >
+                    {t === 'X' ? 'N/A' : t.replace('Term ', '')}
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
 

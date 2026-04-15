@@ -9,6 +9,11 @@
   padding: 12px 24px;
 }
 
+/* On desktop the sticky-zone handles sticking; filter-bar is a plain block inside it */
+@media (min-width: 901px) {
+  .filter-bar { position: static; }
+}
+
 .filter-inner {
   max-width: 1400px;
   margin: 0 auto;
@@ -260,6 +265,10 @@
   flex-shrink: 0;
 }
 
+/* ── Credit + Term same-row wrapper ── */
+/* On desktop: transparent so children join parent flex directly */
+.credit-term-row { display: contents; }
+
 /* ── Mobile ── */
 .mobile-toggle {
   display: none;
@@ -299,4 +308,12 @@
   .fac-dropdown { width: 100%; }
   .fac-trigger  { width: 100%; max-width: 100%; box-sizing: border-box; }
   .fac-menu     { width: 100%; }
+
+  /* Credits + Term side by side on mobile */
+  .credit-term-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
 }

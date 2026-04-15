@@ -121,23 +121,25 @@ router.post('/', requireAuth, requireAdmin, async (req, res) => {
 router.put('/:id', requireAuth, requireAdmin, async (req, res) => {
   try {
     const id = parseInt(req.params.id);
-    const { area, term, course, professor1_id, professor2_id, credits, description, key_takeaways, prerequisites, course_curriculum } = req.body;
+    const { area, term, course, professor1_id, professor2_id, credits, description, key_takeaways, prerequisites, course_curriculum, complementary_courses } = req.body;
 
     await pool.query(
       `UPDATE courses
-          SET area              = COALESCE($1, area),
-              term              = COALESCE($2, term),
-              course            = COALESCE($3, course),
-              professor1_id     = COALESCE($4, professor1_id),
-              professor2_id     = $5,
-              credits           = COALESCE($6, credits),
-              description       = COALESCE($7, description),
-              key_takeaways     = COALESCE($8, key_takeaways),
-              prerequisites     = COALESCE($9, prerequisites),
-              course_curriculum = COALESCE($10, course_curriculum),
-              updated_at        = NOW()
-        WHERE id = $11`,
-      [area, term, course, professor1_id, professor2_id ?? null, credits ?? null, description, key_takeaways ?? null, prerequisites ?? null, course_curriculum ?? null, id]
+          SET area                  = COALESCE($1, area),
+              term                  = COALESCE($2, term),
+              course                = COALESCE($3, course),
+              professor1_id         = COALESCE($4, professor1_id),
+              professor2_id         = $5,
+              credits               = COALESCE($6, credits),
+              description           = COALESCE($7, description),
+              key_takeaways         = COALESCE($8, key_takeaways),
+              prerequisites         = COALESCE($9, prerequisites),
+              course_curriculum     = COALESCE($10, course_curriculum),
+              complementary_courses = COALESCE($11::jsonb, complementary_courses),
+              updated_at            = NOW()
+        WHERE id = $12`,
+      [area, term, course, professor1_id, professor2_id ?? null, credits ?? null, description, key_takeaways ?? null, prerequisites ?? null, course_curriculum ?? null,
+       complementary_courses !== undefined ? JSON.stringify(complementary_courses) : null, id]
     );
 
     const { rows } = await pool.query(`${COURSE_SELECT} WHERE c.id = $1`, [id]);

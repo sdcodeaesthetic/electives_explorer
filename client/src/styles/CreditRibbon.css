@@ -172,6 +172,157 @@
 .crb-total-over .crb-total-label,
 .crb-total-over .crb-total-num { color: #f87171; }
 
+/* ── Hide full ribbon on mobile (replaced by badge) ── */
+.crb-desktop-only { display: block; }
+@media (max-width: 900px) {
+  .crb-desktop-only { display: none; }
+}
+
+/* ── Mobile Credit Badge ── */
+.mcb-widget {
+  display: none;
+  position: fixed;
+  top: 62px;
+  right: 6px;
+  z-index: 150;
+  flex-direction: column;
+  align-items: stretch;
+  background: rgba(7, 14, 28, 0.93);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(240,165,0,0.35);
+  border-radius: 8px;
+  padding: 5px 8px 6px;
+  width: 68px;
+  gap: 3px;
+  pointer-events: none;
+}
+
+/* Total row: label left, number right */
+.mcb-total-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 2px;
+}
+.mcb-label {
+  font-size: 7px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.45);
+}
+.mcb-num {
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 1;
+  color: var(--accent);
+}
+.mcb-range {
+  font-size: 7px;
+  font-weight: 400;
+  color: rgba(255,255,255,0.3);
+  margin-left: 1px;
+}
+
+/* Total progress bar */
+.mcb-bar-track {
+  position: relative;
+  width: 100%;
+  height: 2px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 2px;
+  overflow: visible;
+}
+.mcb-bar-fill {
+  height: 100%;
+  border-radius: 2px;
+  background: var(--accent);
+  transition: width 0.4s cubic-bezier(0.22,1,0.36,1);
+}
+.mcb-bar-min {
+  position: absolute;
+  top: -2px;
+  width: 1px;
+  height: 6px;
+  background: rgba(255,255,255,0.35);
+  border-radius: 1px;
+  transform: translateX(-50%);
+}
+
+/* Per-term mini bars */
+.mcb-terms {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-top: 1px;
+}
+.mcb-term-row {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+.mcb-term-label {
+  font-size: 7px;
+  font-weight: 700;
+  color: rgba(255,255,255,0.4);
+  width: 12px;
+  flex-shrink: 0;
+}
+.mcb-term-track {
+  position: relative;
+  flex: 1;
+  height: 2px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 2px;
+  overflow: visible;
+}
+.mcb-term-fill {
+  height: 100%;
+  border-radius: 2px;
+  background: var(--accent);
+  transition: width 0.35s cubic-bezier(0.22,1,0.36,1);
+}
+.mcb-term-min {
+  position: absolute;
+  top: -2px;
+  width: 1px;
+  height: 6px;
+  background: rgba(255,255,255,0.3);
+  border-radius: 1px;
+  transform: translateX(-50%);
+}
+.mcb-term-cr {
+  font-size: 7px;
+  font-weight: 700;
+  color: rgba(255,255,255,0.4);
+  width: 10px;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+/* Term track status colours */
+.mcb-t-ok   .mcb-term-fill  { background: #4ade80; }
+.mcb-t-ok.mcb-term-cr       { color: #4ade80; }
+.mcb-t-over .mcb-term-fill  { background: #f87171; }
+.mcb-t-over.mcb-term-cr     { color: #f87171; }
+.mcb-t-empty .mcb-term-fill { background: rgba(255,255,255,0.12); }
+
+/* Total status colour variants */
+.mcb-ok   { border-color: rgba(74,222,128,0.45); }
+.mcb-ok   .mcb-num  { color: #4ade80; }
+.mcb-ok   .mcb-bar-fill { background: #4ade80; }
+.mcb-over { border-color: rgba(248,113,113,0.45); }
+.mcb-over .mcb-num  { color: #f87171; }
+.mcb-over .mcb-bar-fill { background: #f87171; }
+.mcb-empty .mcb-num { color: rgba(255,255,255,0.4); }
+.mcb-empty .mcb-bar-fill { background: rgba(255,255,255,0.15); }
+.mcb-empty { border-color: rgba(255,255,255,0.1); }
+
+@media (max-width: 900px) {
+  .mcb-widget { display: flex; }
+}
+
 /* ── Responsive ── */
 @media (max-width: 768px) {
   .crb-ribbon { padding: 0 12px; }

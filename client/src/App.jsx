@@ -14,6 +14,55 @@ import SuggestionsTab from './components/SuggestionsTab';
 import CreditRibbon from './components/CreditRibbon';
 import AddCoursePage from './components/AddCoursePage';
 
+// ── Mobile credit progress badge (Browse tab, mobile only) ───────────────────
+const MCB_TERMS = [
+  { key: 'Term IV',  label: 'T4', min: 18, max: 21 },
+  { key: 'Term V',   label: 'T5', min: 18, max: 21 },
+  { key: 'Term VI',  label: 'T6', min: 12, max: 12 },
+];
+
+function MobileCreditBadge({ basketCourses }) {
+  const TOTAL_MIN = 48, TOTAL_MAX = 54;
+  const total   = basketCourses.reduce((s, c) => s + (parseFloat(c.credits) || 0), 0);
+  const pct     = Math.min(100, (total / TOTAL_MAX) * 100);
+  const minMark = (TOTAL_MIN / TOTAL_MAX) * 100;
+  const status  = total === 0 ? 'empty' : total > TOTAL_MAX ? 'over' : total >= TOTAL_MIN ? 'ok' : 'under';
+
+  return (
+    <div className={`mcb-widget mcb-${status}`}>
+      {/* Total row */}
+      <div className="mcb-total-row">
+        <span className="mcb-label">Credits</span>
+        <span className="mcb-num">{total}<span className="mcb-range">/{TOTAL_MAX}</span></span>
+      </div>
+      <div className="mcb-bar-track">
+        <div className="mcb-bar-fill" style={{ width: `${pct}%` }} />
+        <div className="mcb-bar-min"  style={{ left: `${minMark}%` }} />
+      </div>
+
+      {/* Per-term mini bars */}
+      <div className="mcb-terms">
+        {MCB_TERMS.map(({ key, label, min, max }) => {
+          const cr  = basketCourses.filter(c => c.term === key).reduce((s, c) => s + (parseFloat(c.credits) || 0), 0);
+          const tp  = Math.min(100, (cr / max) * 100);
+          const tm  = (min / max) * 100;
+          const ts  = cr === 0 ? 'empty' : cr > max ? 'over' : cr >= min ? 'ok' : 'under';
+          return (
+            <div key={key} className="mcb-term-row">
+              <span className="mcb-term-label">{label}</span>
+              <div className={`mcb-term-track mcb-t-${ts}`}>
+                <div className="mcb-term-fill" style={{ width: `${tp}%` }} />
+                <div className="mcb-term-min"  style={{ left: `${tm}%` }} />
+              </div>
+              <span className={`mcb-term-cr mcb-t-${ts}`}>{cr}</span>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 const TERM_RULES = {
   'Term IV':  { min: 18, max: 21, label: 'Term 4' },
   'Term V':   { min: 18, max: 21, label: 'Term 5' },
@@ -246,10 +295,19 @@ function AppInner({ logout, user }) {
               terms={terms} selectedTerm={selectedTerm} setSelectedTerm={setSelectedTerm}
               clearAll={clearAll} hasFilters={hasFilters}
             />
-            {user.role !== 'admin' && <CreditRibbon basketCourses={basketCourses} />}
+            {user.role !== 'admin' && (
+              <div className="crb-desktop-only">
+                <CreditRibbon basketCourses={basketCourses} />
+              </div>
+            )}
           </>
         )}
       </div>
+
+      {/* ── Mobile credit badge (Browse tab only, hidden on desktop via CSS) ── */}
+      {user.role !== 'admin' && activeTab === 'browse' && (
+        <MobileCreditBadge basketCourses={basketCourses} />
+      )}
 
       {/* ── Scrollable content ── */}
       {activeTab === 'browse' && (

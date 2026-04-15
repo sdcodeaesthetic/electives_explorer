@@ -64,19 +64,24 @@ function RatingSummaryRow({ label, ratings, loading, showLabel = true }) {
 function RatingForm({ formLabel, myRating, onSubmit }) {
   const [rating,     setRating]     = useState(myRating?.rating  || 0);
   const [comment,    setComment]    = useState(myRating?.comment || '');
+  const [anonymous,  setAnonymous]  = useState(myRating?.anonymous || false);
   const [submitting, setSubmitting] = useState(false);
   const [err,        setErr]        = useState('');
 
   // Sync if myRating changes (e.g. after submit)
   useEffect(() => {
-    if (myRating) { setRating(myRating.rating); setComment(myRating.comment || ''); }
+    if (myRating) {
+      setRating(myRating.rating);
+      setComment(myRating.comment || '');
+      setAnonymous(myRating.anonymous || false);
+    }
   }, [myRating]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!rating) { setErr('Please select a star rating.'); return; }
     setErr(''); setSubmitting(true);
-    try { await onSubmit({ rating, comment }); }
+    try { await onSubmit({ rating, comment, anonymous }); }
     catch (e) { setErr(e.message); }
     finally { setSubmitting(false); }
   };
@@ -96,6 +101,14 @@ function RatingForm({ formLabel, myRating, onSubmit }) {
         value={comment}
         onChange={e => setComment(e.target.value)}
       />
+      <label className="cp-anon-label">
+        <input
+          type="checkbox"
+          checked={anonymous}
+          onChange={e => setAnonymous(e.target.checked)}
+        />
+        Anonymous
+      </label>
       {err && <p className="cp-err">{err}</p>}
       <button className="cp-submit-btn" type="submit" disabled={submitting}>
         {submitting ? 'Saving…' : myRating ? 'Update Rating' : 'Submit Rating'}
@@ -110,9 +123,11 @@ function CommentCard({ review, source, isAdmin, onDelete }) {
     <div className="cp-comment-card">
       <div className="cp-comment-card-top">
         <div className="cp-reviewer-info">
-          <div className="cp-avatar">{review.user_name?.[0]?.toUpperCase() || '?'}</div>
+          <div className="cp-avatar cp-avatar--anon" data-anon={review.anonymous}>
+            {review.anonymous ? 'A' : (review.user_name?.[0]?.toUpperCase() || '?')}
+          </div>
           <div>
-            <span className="cp-reviewer-name">{review.user_name}</span>
+            <span className="cp-reviewer-name">{review.anonymous ? 'Anonymous' : review.user_name}</span>
             <span className="cp-review-date">{fmtDate(review.created_at)}</span>
           </div>
         </div>
@@ -198,6 +213,84 @@ function ContentSection({ title, value, fieldKey, onSave, isAdmin, type = 'text'
         </ul>
       ) : (
         <p className="cp-section-text">{value}</p>
+      )}
+    </div>
+  );
+}
+
+// ── Complementary Courses section ────────────────────────────────────────────
+function ComplementarySection({ courses: raw, isAdmin, onSave }) {
+  const [editing, setEditing] = useState(false);
+  const [draft,   setDraft]   = useState('');
+  const [jsonErr, setJsonErr] = useState('');
+  const [saving,  setSaving]  = useState(false);
+
+  let courses = raw;
+  if (typeof raw === 'string') {
+    try { courses = JSON.parse(raw); } catch { courses = []; }
+  }
+  if (!Array.isArray(courses)) courses = [];
+
+  function startEdit() { setDraft(JSON.stringify(courses, null, 2)); setJsonErr(''); setEditing(true); }
+
+  async function save() {
+    let parsed;
+    try {
+      parsed = JSON.parse(draft);
+      if (!Array.isArray(parsed)) { setJsonErr('Value must be a JSON array.'); return; }
+    } catch (e) { setJsonErr('Invalid JSON: ' + e.message); return; }
+    setSaving(true);
+    try { await onSave('complementary_courses', parsed); setEditing(false); }
+    catch (e) { setJsonErr(e.message); }
+    finally { setSaving(false); }
+  }
+
+  if (!isAdmin && courses.length === 0) return null;
+
+  return (
+    <div className="cp-section-card">
+      <div className="cp-section-header">
+        <h3 className="cp-section-heading">Complementary Courses</h3>
+        {isAdmin && !editing && (
+          <button className="cp-inline-edit-btn" onClick={startEdit}>Edit</button>
+        )}
+      </div>
+
+      {editing ? (
+        <div>
+          <textarea
+            className="cp-edit-textarea cp-json-editor"
+            rows={14}
+            value={draft}
+            placeholder='[{"course":"...","term":"...","credits":3,"area":"...","faculty":"...","why":"..."}]'
+            onChange={e => { setDraft(e.target.value); setJsonErr(''); }}
+            autoFocus
+          />
+          {jsonErr && <p className="cp-err">{jsonErr}</p>}
+          <div className="cp-section-edit-actions">
+            <button className="cp-cancel-btn" onClick={() => { setEditing(false); setJsonErr(''); }}>Cancel</button>
+            <button className="cp-save-btn" onClick={save} disabled={saving}>{saving ? 'Saving…' : 'Save'}</button>
+          </div>
+        </div>
+      ) : courses.length > 0 ? (
+        <div className="cp-comp-list">
+          {courses.map((c, i) => (
+            <div key={i} className="cp-comp-card">
+              <div className="cp-comp-header">
+                <span className="cp-comp-name">{c.course}</span>
+                <div className="cp-comp-pills">
+                  <span className="cp-comp-pill">{c.term}</span>
+                  <span className="cp-comp-pill">{c.credits} cr</span>
+                  <span className="cp-comp-pill">{c.area}</span>
+                </div>
+              </div>
+              <p className="cp-comp-faculty">{c.faculty}</p>
+              <p className="cp-comp-why">{c.why}</p>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <p className="cp-muted cp-empty-hint">Not set — click Edit to add.</p>
       )}
     </div>
   );
@@ -336,18 +429,18 @@ export default function CoursePage({
 
   useEffect(() => { fetchRatings(); }, [fetchRatings]);
 
-  const submitCourseRating = async ({ rating, comment }) => {
+  const submitCourseRating = async ({ rating, comment, anonymous }) => {
     const r = await apiFetch(`/api/course-ratings/${id}`, {
       method: 'POST',
-      body: JSON.stringify({ rating, comment }),
+      body: JSON.stringify({ rating, comment, anonymous }),
     });
     setCourseRatings(prev => [r, ...prev.filter(x => x.user_id !== user.id)]);
   };
 
-  const submitProfRating = async (professorId, { rating, comment }) => {
+  const submitProfRating = async (professorId, { rating, comment, anonymous }) => {
     const r = await apiFetch(`/api/professor-ratings/${id}`, {
       method: 'POST',
-      body: JSON.stringify({ rating, comment, professor_id: professorId }),
+      body: JSON.stringify({ rating, comment, anonymous, professor_id: professorId }),
     });
     setProfRatingsData(prev => ({
       professors: prev.professors.map(p =>
@@ -558,6 +651,11 @@ export default function CoursePage({
             onSave={saveSection}
             isAdmin={isAdmin}
             type="text"
+          />
+          <ComplementarySection
+            courses={course.complementary_courses}
+            isAdmin={isAdmin}
+            onSave={saveSection}
           />
         </div>
 

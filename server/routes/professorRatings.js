@@ -69,7 +69,7 @@ router.get('/by-name/:professorName', async (req, res) => {
 router.post('/:courseId', requireAuth, async (req, res) => {
   try {
     const courseId    = parseInt(req.params.courseId);
-    const { rating, comment, professor_id } = req.body;
+    const { rating, comment, professor_id, anonymous } = req.body;
 
     if (!rating || rating < 1 || rating > 5)
       return res.status(400).json({ error: 'rating must be between 1 and 5' });
@@ -91,12 +91,12 @@ router.post('/:courseId', requireAuth, async (req, res) => {
     }
 
     const { rows } = await pool.query(
-      `INSERT INTO professor_ratings (professor_name, course_id, user_id, user_name, rating, comment)
-       VALUES ($1, $2, $3, $4, $5, $6)
+      `INSERT INTO professor_ratings (professor_name, course_id, user_id, user_name, rating, comment, anonymous)
+       VALUES ($1, $2, $3, $4, $5, $6, $7)
        ON CONFLICT (professor_name, user_id, course_id)
-       DO UPDATE SET rating = EXCLUDED.rating, comment = EXCLUDED.comment, created_at = NOW()
+       DO UPDATE SET rating = EXCLUDED.rating, comment = EXCLUDED.comment, anonymous = EXCLUDED.anonymous, created_at = NOW()
        RETURNING *`,
-      [professorName, courseId, req.user.id, req.user.name, parseInt(rating), (comment || '').trim()]
+      [professorName, courseId, req.user.id, req.user.name, parseInt(rating), (comment || '').trim(), anonymous === true]
     );
     res.status(201).json(rows[0]);
   } catch (err) {

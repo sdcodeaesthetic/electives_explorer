@@ -373,3 +373,43 @@ body::after {
   .download-pdf-btn { width: 100%; justify-content: center; }
   .clear-all-btn { width: 100%; justify-content: center; }
 }
+
+/* ── Header subtitle: single line on desktop, wraps on mobile ── */
+.header-subtitle { white-space: nowrap; }
+
+/* ── Header mobile: prevent user-bar overlap ── */
+@media (max-width: 600px) {
+  .site-header {
+    padding-top: 68px !important;
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+  }
+  .site-header-userbar {
+    right: 12px !important;
+    top: 10px !important;
+    gap: 6px !important;
+  }
+  .header-subtitle { white-space: normal; }
+}
+
+/* ── Tab bar mobile: prevent overflow ── */
+@media (max-width: 520px) {
+  .tab-bar { padding: 0 10px; }
+  .tab-btn { font-size: 12px; padding: 11px 10px 9px; gap: 4px; }
+  .tab-badge { font-size: 9px; padding: 1px 5px; }
+}
+
+/* ── Tab bar: leave space for credit badge on mobile ── */
+@media (max-width: 900px) {
+  .tab-bar-inner { padding-right: 80px; }
+}
+
+/* ── Sticky zone: whole block sticks on desktop so CreditRibbon sticks too ── */
+@media (min-width: 901px) {
+  .sticky-zone {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(7, 14, 28, 0.97);
+  }
+}

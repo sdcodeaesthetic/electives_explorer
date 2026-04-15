@@ -644,20 +644,9 @@
   gap: 8px;
 }
 .cp-bullets-list li {
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
   font-size: 13.5px;
   color: var(--text-muted);
   line-height: 1.55;
-}
-.cp-bullets-list li::before {
-  content: '✓';
-  color: #4ade80;
-  font-weight: 700;
-  font-size: 12px;
-  flex-shrink: 0;
-  margin-top: 2px;
 }
 
 /* ── Full-width reviews section ── */
@@ -835,4 +824,88 @@
   .cp-hero     { padding: 20px 18px 18px; }
   .cp-edit-grid { grid-template-columns: 1fr; }
   .cp-section-card { padding: 18px 18px; }
+}
+
+/* ── Complementary Courses ── */
+.cp-comp-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.cp-comp-card {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 10px;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.cp-comp-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.cp-comp-name {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--text-primary);
+  line-height: 1.4;
+}
+.cp-comp-pills {
+  display: flex;
+  gap: 5px;
+  flex-shrink: 0;
+  flex-wrap: wrap;
+}
+.cp-comp-pill {
+  font-size: 10.5px;
+  font-weight: 600;
+  color: var(--accent);
+  background: rgba(240,165,0,0.1);
+  border: 1px solid rgba(240,165,0,0.25);
+  border-radius: 10px;
+  padding: 2px 8px;
+  white-space: nowrap;
+}
+.cp-comp-faculty {
+  font-size: 11.5px;
+  color: var(--text-dim);
+  margin: 0;
+}
+.cp-comp-why {
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.6;
+  margin: 2px 0 0;
+}
+
+/* JSON editor textarea */
+.cp-json-editor {
+  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
+  font-size: 11.5px;
+  line-height: 1.55;
+}
+
+/* ── Anonymous checkbox ── */
+.cp-anon-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12.5px;
+  color: var(--text-muted);
+  cursor: pointer;
+  user-select: none;
+}
+.cp-anon-label input[type="checkbox"] {
+  accent-color: var(--accent);
+  width: 14px;
+  height: 14px;
+  cursor: pointer;
+}
+.cp-avatar--anon[data-anon="true"] {
+  background: rgba(100,116,139,0.25);
+  color: var(--text-muted);
 }

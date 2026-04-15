@@ -1,6 +1,6 @@
 export default function Header({ total, filtered, user, onLogout }) {
   return (
-    <header style={{
+    <header className="site-header" style={{
       padding: '40px 24px 32px',
       textAlign: 'center',
       background: 'linear-gradient(180deg, rgba(10,22,40,0.6) 0%, transparent 100%)',
@@ -8,7 +8,7 @@ export default function Header({ total, filtered, user, onLogout }) {
     }}>
       {/* User bar top-right */}
       {user && (
-        <div style={{
+        <div className="site-header-userbar" style={{
           position: 'absolute', top: 16, right: 20,
           display: 'flex', alignItems: 'center', gap: 10,
         }}>
@@ -56,7 +56,7 @@ export default function Header({ total, filtered, user, onLogout }) {
         Electives{' '}
         <span style={{ color: 'var(--accent)' }}>Explorer</span>
       </h1>
-      <p style={{ fontSize: '14px', color: 'var(--text-muted)', margin: '0 auto 20px', whiteSpace: 'nowrap' }}>
+      <p className="header-subtitle" style={{ fontSize: '14px', color: 'var(--text-muted)', margin: '0 auto 20px' }}>
         Browse and filter MBA elective courses by specialization, faculty, and credits.
       </p>
     </header>
