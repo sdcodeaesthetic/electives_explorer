@@ -35,6 +35,7 @@ function fmtDate(iso) {
 function RatingTile({ title, ratings, loading, isAdmin, onDelete, user, onSubmit }) {
   const [rating,     setRating]     = useState(0);
   const [comment,    setComment]    = useState('');
+  const [anonymous,  setAnonymous]  = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [err,        setErr]        = useState('');
 
@@ -42,14 +43,18 @@ function RatingTile({ title, ratings, loading, isAdmin, onDelete, user, onSubmit
   const myRating = ratings.find(r => r.user_id === user?.id);
 
   useEffect(() => {
-    if (myRating) { setRating(myRating.rating); setComment(myRating.comment || ''); }
+    if (myRating) {
+      setRating(myRating.rating);
+      setComment(myRating.comment || '');
+      setAnonymous(myRating.anonymous || false);
+    }
   }, [myRating]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!rating) { setErr('Please select a star rating.'); return; }
     setErr(''); setSubmitting(true);
-    try { await onSubmit({ rating, comment }); }
+    try { await onSubmit({ rating, comment, anonymous }); }
     catch (e) { setErr(e.message); }
     finally { setSubmitting(false); }
   };
@@ -81,6 +86,14 @@ function RatingTile({ title, ratings, loading, isAdmin, onDelete, user, onSubmit
             value={comment}
             onChange={e => setComment(e.target.value)}
           />
+          <label className="cdm-anon-label">
+            <input
+              type="checkbox"
+              checked={anonymous}
+              onChange={e => setAnonymous(e.target.checked)}
+            />
+            Anonymous
+          </label>
           {err && <p className="cdm-err">{err}</p>}
           <button className="cdm-submit-btn" type="submit" disabled={submitting}>
             {submitting ? 'Saving…' : myRating ? 'Update Rating' : 'Submit Rating'}
@@ -100,9 +113,11 @@ function RatingTile({ title, ratings, loading, isAdmin, onDelete, user, onSubmit
             <div className="cdm-review-card" key={r.id}>
               <div className="cdm-review-top">
                 <div className="cdm-reviewer-info">
-                  <div className="cdm-avatar">{r.user_name?.[0]?.toUpperCase() || '?'}</div>
+                  <div className="cdm-avatar cdm-avatar--anon" data-anon={r.anonymous}>
+                    {r.anonymous ? 'A' : (r.user_name?.[0]?.toUpperCase() || '?')}
+                  </div>
                   <div>
-                    <span className="cdm-reviewer-name">{r.user_name}</span>
+                    <span className="cdm-reviewer-name">{r.anonymous ? 'Anonymous' : r.user_name}</span>
                     <span className="cdm-review-date">{fmtDate(r.created_at)}</span>
                   </div>
                 </div>
@@ -183,33 +198,89 @@ function KeyTakeawaysSection({ value, fieldKey, onSave, isAdmin }) {
 }
 
 // ── Complementary Courses section ─────────────────────────────────────────────
-function ComplementarySection({ courses: raw }) {
+function ComplementarySection({ courses: raw, isAdmin, onSave }) {
+  const [editing, setEditing] = useState(false);
+  const [draft,   setDraft]   = useState('');
+  const [jsonErr, setJsonErr] = useState('');
+  const [saving,  setSaving]  = useState(false);
+
   // pg returns JSONB as object; guard against string-encoded JSON
   let courses = raw;
   if (typeof raw === 'string') {
     try { courses = JSON.parse(raw); } catch { courses = []; }
   }
-  if (!Array.isArray(courses) || courses.length === 0) return null;
+  if (!Array.isArray(courses)) courses = [];
+
+  function startEdit() {
+    setDraft(JSON.stringify(courses, null, 2));
+    setJsonErr('');
+    setEditing(true);
+  }
+
+  async function save() {
+    let parsed;
+    try {
+      parsed = JSON.parse(draft);
+      if (!Array.isArray(parsed)) { setJsonErr('Value must be a JSON array.'); return; }
+    } catch (e) {
+      setJsonErr('Invalid JSON: ' + e.message);
+      return;
+    }
+    setSaving(true);
+    try { await onSave('complementary_courses', parsed); setEditing(false); }
+    catch (e) { setJsonErr(e.message); }
+    finally { setSaving(false); }
+  }
+
+  if (!isAdmin && courses.length === 0) return null;
 
   return (
-    <section className="cdm-section cdm-complementary-section">
-      <h3 className="cdm-section-title">Complementary Courses</h3>
-      <div className="cdm-comp-list">
-        {courses.map((c, i) => (
-          <div key={i} className="cdm-comp-card">
-            <div className="cdm-comp-header">
-              <span className="cdm-comp-name">{c.course}</span>
-              <div className="cdm-comp-pills">
-                <span className="cdm-comp-pill">{c.term}</span>
-                <span className="cdm-comp-pill">{c.credits} cr</span>
-                <span className="cdm-comp-pill">{c.area}</span>
-              </div>
-            </div>
-            <p className="cdm-comp-faculty">{c.faculty}</p>
-            <p className="cdm-comp-why">{c.why}</p>
-          </div>
-        ))}
+    <section className="cdm-section cdm-content-section cdm-complementary-section">
+      <div className="cdm-content-header">
+        <h3 className="cdm-section-title">Complementary Courses</h3>
+        {isAdmin && !editing && (
+          <button className="cdm-inline-edit-btn" onClick={startEdit}>Edit</button>
+        )}
       </div>
+
+      {editing ? (
+        <div className="cdm-content-edit">
+          <textarea
+            className="cdm-comment-input cdm-json-editor"
+            rows={14}
+            value={draft}
+            placeholder='[{"course":"...","term":"...","credits":3,"area":"...","faculty":"...","why":"..."}]'
+            onChange={e => { setDraft(e.target.value); setJsonErr(''); }}
+            autoFocus
+          />
+          {jsonErr && <p className="cdm-err">{jsonErr}</p>}
+          <div className="cdm-edit-actions" style={{ marginTop: 8 }}>
+            <button className="cdm-cancel-btn" onClick={() => { setEditing(false); setJsonErr(''); }}>Cancel</button>
+            <button className="cdm-save-btn" onClick={save} disabled={saving}>
+              {saving ? 'Saving…' : 'Save'}
+            </button>
+          </div>
+        </div>
+      ) : courses.length > 0 ? (
+        <div className="cdm-comp-list">
+          {courses.map((c, i) => (
+            <div key={i} className="cdm-comp-card">
+              <div className="cdm-comp-header">
+                <span className="cdm-comp-name">{c.course}</span>
+                <div className="cdm-comp-pills">
+                  <span className="cdm-comp-pill">{c.term}</span>
+                  <span className="cdm-comp-pill">{c.credits} cr</span>
+                  <span className="cdm-comp-pill">{c.area}</span>
+                </div>
+              </div>
+              <p className="cdm-comp-faculty">{c.faculty}</p>
+              <p className="cdm-comp-why">{c.why}</p>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <p className="cdm-muted" style={{ fontStyle: 'italic' }}>Not set — click Edit to add.</p>
+      )}
     </section>
   );
 }
@@ -386,18 +457,18 @@ export default function CourseDetailModal({
   };
 
   // ── Submit ratings ────────────────────────────────────────────────────────
-  const submitCourseRating = async ({ rating, comment }) => {
+  const submitCourseRating = async ({ rating, comment, anonymous }) => {
     const r = await apiFetch(`/api/course-ratings/${course.id}`, {
       method: 'POST',
-      body: JSON.stringify({ rating, comment }),
+      body: JSON.stringify({ rating, comment, anonymous }),
     });
     setCourseRatings(prev => [r, ...prev.filter(x => x.user_id !== user.id)]);
   };
 
-  const submitProfRating = async ({ rating, comment }) => {
+  const submitProfRating = async ({ rating, comment, anonymous }) => {
     const r = await apiFetch(`/api/professor-ratings/${course.id}`, {
       method: 'POST',
-      body: JSON.stringify({ rating, comment }),
+      body: JSON.stringify({ rating, comment, anonymous }),
     });
     setProfRatings(prev => [r, ...prev.filter(x => x.user_id !== user.id)]);
   };
@@ -559,7 +630,11 @@ export default function CourseDetailModal({
             onSave={saveSection}
             isAdmin={isAdmin}
           />
-          <ComplementarySection courses={course.complementary_courses} />
+          <ComplementarySection
+            courses={course.complementary_courses}
+            isAdmin={isAdmin}
+            onSave={saveSection}
+          />
 
           {/* Reviews */}
           <div className={`cdm-ratings-grid ${isAdmin ? 'cdm-ratings-grid--full' : ''}`}>
