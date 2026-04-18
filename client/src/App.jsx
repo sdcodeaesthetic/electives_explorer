@@ -102,35 +102,40 @@ function AppInner({ logout, user }) {
 
   const [activeTab, setActiveTab]     = useState('browse');
   const [basket,    setBasket]        = useState(new Set());
+  const [backupCourses, setBackupCourses] = useState(new Set());
   const [validationMsg, setValidationMsg] = useState(null);
   const [courseOverrides, setCourseOverrides] = useState({});
+  const [planners, setPlanners] = useState([]);
 
   const saveTimer    = useRef(null);
   const isRestored   = useRef(false);
 
-  // Restore basket from DB on login (students only)
+  // Restore basket + backup from DB on login (students only)
   useEffect(() => {
     if (user.role !== 'student') return;
     apiFetch('/api/session')
       .then(data => {
         if (data.basket?.length) setBasket(new Set(data.basket));
+        if (data.backup?.length) setBackupCourses(new Set(data.backup));
         isRestored.current = true;
       })
       .catch(() => { isRestored.current = true; });
+    // Load saved planners
+    apiFetch('/api/planners').then(data => setPlanners(data)).catch(() => {});
   }, [user]);
 
-  // Auto-save basket to DB whenever it changes (students only, debounced 800ms)
+  // Auto-save basket + backup to DB whenever either changes (students only, debounced 800ms)
   useEffect(() => {
     if (user.role !== 'student' || !isRestored.current) return;
     clearTimeout(saveTimer.current);
     saveTimer.current = setTimeout(() => {
       apiFetch('/api/session', {
         method: 'PUT',
-        body: JSON.stringify({ basket: [...basket] }),
+        body: JSON.stringify({ basket: [...basket], backup: [...backupCourses] }),
       }).catch(() => {});
     }, 800);
     return () => clearTimeout(saveTimer.current);
-  }, [basket, user]);
+  }, [basket, backupCourses, user]);
 
   // When admin saves an edit, sync overrides back to browse view
   const handleCourseUpdated = (updated) => {
@@ -159,6 +164,77 @@ function AppInner({ logout, user }) {
   };
 
   const clearBasket = () => setBasket(new Set());
+
+  // Toggle backup: a course can be in backup OR primary basket, not both
+  const toggleBackup = (course) => {
+    setBackupCourses(prev => {
+      const next = new Set(prev);
+      if (next.has(course.id)) {
+        next.delete(course.id);
+      } else {
+        next.add(course.id);
+        // If it was in primary basket, remove it from there
+        setBasket(b => { const nb = new Set(b); nb.delete(course.id); return nb; });
+      }
+      return next;
+    });
+  };
+
+  // Promote a backup course to the primary basket (with credit validation)
+  const promoteBackup = (course) => {
+    setBackupCourses(prev => { const n = new Set(prev); n.delete(course.id); return n; });
+    toggleBasket(course);
+  };
+
+  // ── Planners API helpers ──────────────────────────────────────────────────
+  const savePlan = async (name) => {
+    try {
+      const created = await apiFetch('/api/planners', {
+        method: 'POST',
+        body: JSON.stringify({ name, basket: [...basket] }),
+      });
+      setPlanners(prev => [...prev, created]);
+    } catch (e) {
+      setValidationMsg([e.message]);
+    }
+  };
+
+  const renamePlan = async (id, name) => {
+    try {
+      const updated = await apiFetch(`/api/planners/${id}`, {
+        method: 'PUT',
+        body: JSON.stringify({ name }),
+      });
+      setPlanners(prev => prev.map(p => p.id === id ? updated : p));
+    } catch (e) {
+      setValidationMsg([e.message]);
+    }
+  };
+
+  const updatePlanBasket = async (id) => {
+    try {
+      const updated = await apiFetch(`/api/planners/${id}`, {
+        method: 'PUT',
+        body: JSON.stringify({ basket: [...basket] }),
+      });
+      setPlanners(prev => prev.map(p => p.id === id ? updated : p));
+    } catch (e) {
+      setValidationMsg([e.message]);
+    }
+  };
+
+  const deletePlan = async (id) => {
+    try {
+      await apiFetch(`/api/planners/${id}`, { method: 'DELETE' });
+      setPlanners(prev => prev.filter(p => p.id !== id));
+    } catch (e) {
+      setValidationMsg([e.message]);
+    }
+  };
+
+  const loadPlan = (plan) => {
+    setBasket(new Set(plan.basket));
+  };
 
   const toggleBasket = (course) => {
     setBasket(prev => {
@@ -316,7 +392,9 @@ function AppInner({ logout, user }) {
           total={allCourses.length}
           filterVersion={filterVersion}
           basket={basket}
+          backupCourses={backupCourses}
           toggleBasket={toggleBasket}
+          toggleBackup={toggleBackup}
           onExpand={course => navigate(`/course/${course.id}`)}
           isAdmin={user.role === 'admin'}
           onAddCourse={() => navigate('/admin/add-course')}
@@ -326,10 +404,20 @@ function AppInner({ logout, user }) {
       {activeTab === 'basket' && (
         <BasketView
           basketCourses={basketCourses}
+          backupCourses={backupCourses}
+          allCourses={allCourses}
           toggleBasket={toggleBasket}
+          toggleBackup={toggleBackup}
+          promoteBackup={promoteBackup}
           clearBasket={clearBasket}
           onDownloadPDF={handleDownloadPDF}
           canDownload={allThreeTermsFilled}
+          planners={planners}
+          onSavePlan={savePlan}
+          onRenamePlan={renamePlan}
+          onUpdatePlan={updatePlanBasket}
+          onDeletePlan={deletePlan}
+          onLoadPlan={loadPlan}
         />
       )}
       {activeTab === 'suggest' && user.role === 'student' && (

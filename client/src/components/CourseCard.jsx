@@ -11,18 +11,27 @@ const AREA_COLORS = {
   'Inter-Area': '#64748b',
 };
 
-export default function CourseCard({ course, selected = false, onToggle, onExpand, isAdmin = false, onDelete }) {
+export default function CourseCard({
+  course,
+  selected = false,
+  isBackup = false,
+  onToggle,
+  onToggleBackup,
+  onExpand,
+  isAdmin = false,
+  onDelete,
+}) {
   const color = AREA_COLORS[course.area] || '#64748b';
 
   return (
     <div
-      className={`course-card${selected ? ' selected' : ''}`}
+      className={`course-card${selected ? ' selected' : ''}${isBackup ? ' backup' : ''}`}
       style={{ '--card-glow': color }}
       onClick={() => onExpand && onExpand(course)}
-      onMouseEnter={e => { if (!selected) e.currentTarget.style.borderColor = `${color}55`; }}
-      onMouseLeave={e => { if (!selected) e.currentTarget.style.borderColor = 'var(--glass-border)'; }}
+      onMouseEnter={e => { if (!selected && !isBackup) e.currentTarget.style.borderColor = `${color}55`; }}
+      onMouseLeave={e => { if (!selected && !isBackup) e.currentTarget.style.borderColor = 'var(--glass-border)'; }}
     >
-      {/* Top row: area badge + credits + check */}
+      {/* Top row: area badge + credits + check / backup badge */}
       <div className="card-top">
         <span
           className="area-badge"
@@ -35,6 +44,13 @@ export default function CourseCard({ course, selected = false, onToggle, onExpan
             <span className="card-check">
               <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2.5">
                 <polyline points="2.5,8.5 6.5,12.5 13.5,4.5" />
+              </svg>
+            </span>
+          )}
+          {isBackup && !isAdmin && (
+            <span className="card-backup-badge" title="Saved as backup">
+              <svg viewBox="0 0 16 16" fill="currentColor">
+                <path d="M3 2a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v12l-5-2.5L3 14V2z"/>
               </svg>
             </span>
           )}
@@ -69,7 +85,7 @@ export default function CourseCard({ course, selected = false, onToggle, onExpan
         )}
       </div>
 
-      {/* Footer: Add to Planner (students only) | Delete (admin only) */}
+      {/* Footer */}
       {isAdmin ? (
         <div className="card-footer" onClick={e => e.stopPropagation()}>
           <button
@@ -87,6 +103,18 @@ export default function CourseCard({ course, selected = false, onToggle, onExpan
           >
             {selected ? '✓ In Planner' : '+ Add to Planner'}
           </button>
+          {!selected && (
+            <button
+              className={`card-backup-btn ${isBackup ? 'active' : ''}`}
+              onClick={() => onToggleBackup && onToggleBackup(course)}
+              title={isBackup ? 'Remove backup' : 'Save as backup'}
+            >
+              <svg viewBox="0 0 16 16" fill={isBackup ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="1.5">
+                <path d="M3 2a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v12l-5-2.5L3 14V2z"/>
+              </svg>
+              {isBackup ? 'Backup saved' : 'Set as backup'}
+            </button>
+          )}
         </div>
       )}
     </div>

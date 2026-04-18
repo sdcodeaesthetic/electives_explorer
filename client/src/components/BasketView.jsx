@@ -22,10 +22,297 @@ const TERM_LABELS = {
 
 const fmtCr = (v) => { const n = parseFloat(v); return n % 1 === 0 ? n : n.toFixed(1); };
 
-export default function BasketView({ basketCourses, toggleBasket, clearBasket, onDownloadPDF, canDownload }) {
+// ── Planner Manager panel ─────────────────────────────────────────────────────
+function PlannerManager({
+  planners, basket, allCourses,
+  onSavePlan, onRenamePlan, onUpdatePlan, onDeletePlan, onLoadPlan,
+}) {
+  const [newName,    setNewName]    = useState('');
+  const [editingId,  setEditingId]  = useState(null);
+  const [editName,   setEditName]   = useState('');
+  const [comparing,  setComparing]  = useState(false);
+  const [compareA,   setCompareA]   = useState('');
+  const [compareB,   setCompareB]   = useState('');
+  const [saving,     setSaving]     = useState(false);
+
+  const handleSave = async () => {
+    const name = newName.trim();
+    if (!name) return;
+    setSaving(true);
+    await onSavePlan(name);
+    setNewName('');
+    setSaving(false);
+  };
+
+  const handleRename = async (id) => {
+    const name = editName.trim();
+    if (!name) return;
+    await onRenamePlan(id, name);
+    setEditingId(null);
+  };
+
+  // Build compare data: courses for plan A and B
+  const planAObj = planners.find(p => String(p.id) === String(compareA));
+  const planBObj = planners.find(p => String(p.id) === String(compareB));
+
+  const getCourseNames = (plan) => {
+    if (!plan) return [];
+    return plan.basket.map(id => allCourses.find(c => c.id === id)).filter(Boolean);
+  };
+
+  const coursesA = getCourseNames(planAObj);
+  const coursesB = getCourseNames(planBObj);
+  const idsA = new Set(coursesA.map(c => c.id));
+  const idsB = new Set(coursesB.map(c => c.id));
+
+  const renderCompareColumn = (courses, otherIds, accentClass) => {
+    if (!courses.length) return <p className="plm-compare-empty">No courses in this plan.</p>;
+    const byTerm = courses.reduce((acc, c) => {
+      const t = c.term || 'X';
+      if (!acc[t]) acc[t] = [];
+      acc[t].push(c);
+      return acc;
+    }, {});
+    return TERM_ORDER.filter(t => byTerm[t]).map(t => (
+      <div key={t} className="plm-compare-term">
+        <div className="plm-compare-term-label">{TERM_LABELS[t]}</div>
+        {byTerm[t].map(c => (
+          <div
+            key={c.id}
+            className={`plm-compare-row ${!otherIds.has(c.id) ? accentClass : ''}`}
+          >
+            <span className="plm-compare-course">{c.course}</span>
+            <span className="plm-compare-cr">{c.credits ? `${c.credits}cr` : '—'}</span>
+          </div>
+        ))}
+      </div>
+    ));
+  };
+
+  return (
+    <div className="basket-section">
+      <h2 className="basket-section-title">Saved Plans</h2>
+
+      {/* ── Save current basket as new plan ── */}
+      <div className="plm-save-row">
+        <input
+          className="plm-name-input"
+          type="text"
+          placeholder="Plan name (e.g. Finance Major)"
+          value={newName}
+          onChange={e => setNewName(e.target.value)}
+          onKeyDown={e => e.key === 'Enter' && handleSave()}
+          maxLength={60}
+        />
+        <button
+          className="plm-save-btn"
+          onClick={handleSave}
+          disabled={saving || !newName.trim() || planners.length >= 5}
+        >
+          {saving ? 'Saving…' : '+ Save Current Plan'}
+        </button>
+      </div>
+      {planners.length >= 5 && (
+        <p className="plm-limit-hint">Maximum 5 plans reached. Delete one to save a new plan.</p>
+      )}
+
+      {/* ── Saved plan cards ── */}
+      {planners.length === 0 ? (
+        <p className="plm-empty-hint">No saved plans yet. Build your planner above and click "Save Current Plan".</p>
+      ) : (
+        <div className="plm-list">
+          {planners.map(plan => {
+            const cr = plan.basket
+              .map(id => allCourses.find(c => c.id === id))
+              .filter(Boolean)
+              .reduce((s, c) => s + (c.credits || 0), 0);
+            return (
+              <div key={plan.id} className="plm-card">
+                <div className="plm-card-left">
+                  {editingId === plan.id ? (
+                    <input
+                      className="plm-edit-input"
+                      value={editName}
+                      onChange={e => setEditName(e.target.value)}
+                      onKeyDown={e => {
+                        if (e.key === 'Enter') handleRename(plan.id);
+                        if (e.key === 'Escape') setEditingId(null);
+                      }}
+                      autoFocus
+                    />
+                  ) : (
+                    <span className="plm-card-name">{plan.name}</span>
+                  )}
+                  <span className="plm-card-meta">
+                    {plan.basket.length} course{plan.basket.length !== 1 ? 's' : ''} · {fmtCr(cr)} cr
+                  </span>
+                </div>
+                <div className="plm-card-actions">
+                  {editingId === plan.id ? (
+                    <>
+                      <button className="plm-act-btn plm-act-save"  onClick={() => handleRename(plan.id)}>Save</button>
+                      <button className="plm-act-btn plm-act-cancel" onClick={() => setEditingId(null)}>Cancel</button>
+                    </>
+                  ) : (
+                    <>
+                      <button
+                        className="plm-act-btn plm-act-load"
+                        onClick={() => onLoadPlan(plan)}
+                        title="Load this plan into the planner"
+                      >Load</button>
+                      <button
+                        className="plm-act-btn plm-act-update"
+                        onClick={() => onUpdatePlan(plan.id)}
+                        title="Overwrite this saved plan with current planner"
+                      >Update</button>
+                      <button
+                        className="plm-act-btn plm-act-rename"
+                        onClick={() => { setEditingId(plan.id); setEditName(plan.name); }}
+                        title="Rename"
+                      >Rename</button>
+                      <button
+                        className="plm-act-btn plm-act-delete"
+                        onClick={() => onDeletePlan(plan.id)}
+                        title="Delete"
+                      >Delete</button>
+                    </>
+                  )}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+      {/* ── Compare two plans ── */}
+      {planners.length >= 2 && (
+        <div className="plm-compare-section">
+          <button
+            className="plm-compare-toggle"
+            onClick={() => setComparing(v => !v)}
+          >
+            {comparing ? '▲ Hide Compare' : '⇔ Compare Two Plans'}
+          </button>
+
+          {comparing && (
+            <div className="plm-compare-panel">
+              <div className="plm-compare-selects">
+                <select
+                  className="plm-select"
+                  value={compareA}
+                  onChange={e => setCompareA(e.target.value)}
+                >
+                  <option value="">— Select Plan A —</option>
+                  {planners.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
+                </select>
+                <span className="plm-compare-vs">vs</span>
+                <select
+                  className="plm-select"
+                  value={compareB}
+                  onChange={e => setCompareB(e.target.value)}
+                >
+                  <option value="">— Select Plan B —</option>
+                  {planners.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
+                </select>
+              </div>
+
+              {compareA && compareB && compareA !== compareB && (
+                <div className="plm-compare-grid">
+                  <div className="plm-compare-col plm-col-a">
+                    <div className="plm-compare-col-header plm-col-a-header">
+                      {planAObj?.name}
+                      <span className="plm-compare-col-cr">{fmtCr(coursesA.reduce((s,c)=>s+(c.credits||0),0))} cr</span>
+                    </div>
+                    {renderCompareColumn(coursesA, idsB, 'plm-only-a')}
+                  </div>
+                  <div className="plm-compare-col plm-col-b">
+                    <div className="plm-compare-col-header plm-col-b-header">
+                      {planBObj?.name}
+                      <span className="plm-compare-col-cr">{fmtCr(coursesB.reduce((s,c)=>s+(c.credits||0),0))} cr</span>
+                    </div>
+                    {renderCompareColumn(coursesB, idsA, 'plm-only-b')}
+                  </div>
+                </div>
+              )}
+              {compareA && compareB && compareA === compareB && (
+                <p className="plm-compare-same">Select two different plans to compare.</p>
+              )}
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ── Backup Courses section ────────────────────────────────────────────────────
+function BackupSection({ backupCoursesList, allCourses, toggleBackup, promoteBackup }) {
+  if (!backupCoursesList.length) return null;
+
+  return (
+    <div className="basket-section">
+      <h2 className="basket-section-title">
+        Backup Courses
+        <span className="backup-section-hint"> — not counted toward credits</span>
+      </h2>
+      <div className="backup-list">
+        {backupCoursesList.map(c => {
+          const color = AREA_COLORS[c.area] || '#64748b';
+          return (
+            <div key={c.id} className="backup-row">
+              <div className="backup-row-left">
+                <span className="backup-area-dot" style={{ background: color }} />
+                <div className="backup-info">
+                  <span className="backup-course-name">{c.course}</span>
+                  <span className="backup-meta">{c.area} · {c.faculty} · {c.term}</span>
+                </div>
+              </div>
+              <div className="backup-row-right">
+                <span className="backup-cr">{c.credits ? `${c.credits} cr` : '—'}</span>
+                <button
+                  className="backup-promote-btn"
+                  onClick={() => promoteBackup(c)}
+                  title="Move to primary planner"
+                >
+                  ↑ Add to Planner
+                </button>
+                <button
+                  className="backup-remove-btn"
+                  onClick={() => toggleBackup(c)}
+                  title="Remove backup"
+                >✕</button>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+// ── Main BasketView ───────────────────────────────────────────────────────────
+export default function BasketView({
+  basketCourses,
+  backupCourses = new Set(),
+  allCourses = [],
+  toggleBasket,
+  toggleBackup,
+  promoteBackup,
+  clearBasket,
+  onDownloadPDF,
+  canDownload,
+  planners = [],
+  onSavePlan,
+  onRenamePlan,
+  onUpdatePlan,
+  onDeletePlan,
+  onLoadPlan,
+}) {
   const [confirming, setConfirming] = useState(false);
   const totalCredits = basketCourses.reduce((sum, c) => sum + (parseFloat(c.credits) || 0), 0);
   const totalCourses = basketCourses.length;
+
+  const backupCoursesList = allCourses.filter(c => backupCourses.has(c.id));
 
   // Group by term → area
   const byTerm = basketCourses.reduce((acc, c) => {
@@ -51,7 +338,7 @@ export default function BasketView({ basketCourses, toggleBasket, clearBasket, o
 
   const presentTerms = TERM_ORDER.filter((t) => byTerm[t]);
 
-  if (totalCourses === 0) {
+  if (totalCourses === 0 && backupCoursesList.length === 0) {
     return (
       <div className="basket-wrap">
         <div className="basket-empty">
@@ -61,6 +348,18 @@ export default function BasketView({ basketCourses, toggleBasket, clearBasket, o
             Go to <strong>Browse Courses</strong> and click on any course to add it here.
           </p>
         </div>
+        {planners.length > 0 && (
+          <PlannerManager
+            planners={planners}
+            basket={new Set()}
+            allCourses={allCourses}
+            onSavePlan={onSavePlan}
+            onRenamePlan={onRenamePlan}
+            onUpdatePlan={onUpdatePlan}
+            onDeletePlan={onDeletePlan}
+            onLoadPlan={onLoadPlan}
+          />
+        )}
       </div>
     );
   }
@@ -240,6 +539,14 @@ export default function BasketView({ basketCourses, toggleBasket, clearBasket, o
         </div>
       </div>
 
+      {/* ── Backup courses ── */}
+      <BackupSection
+        backupCoursesList={backupCoursesList}
+        allCourses={allCourses}
+        toggleBackup={toggleBackup}
+        promoteBackup={promoteBackup}
+      />
+
       {/* ── Credit breakdown by area ── */}
       <div className="basket-section">
         <h2 className="basket-section-title">Credit Breakdown by Area</h2>
@@ -269,6 +576,18 @@ export default function BasketView({ basketCourses, toggleBasket, clearBasket, o
           })}
         </div>
       </div>
+
+      {/* ── Saved plans manager ── */}
+      <PlannerManager
+        planners={planners}
+        basket={new Set(basketCourses.map(c => c.id))}
+        allCourses={allCourses}
+        onSavePlan={onSavePlan}
+        onRenamePlan={onRenamePlan}
+        onUpdatePlan={onUpdatePlan}
+        onDeletePlan={onDeletePlan}
+        onLoadPlan={onLoadPlan}
+      />
     </div>
   );
 }
