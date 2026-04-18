@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import '../styles/FilterBar.css';
 
 const AREA_COLORS = {
@@ -14,18 +15,39 @@ const AREA_COLORS = {
 
 // ── Searchable Faculty Dropdown ───────────────────────────────────────────────
 function FacultyDropdown({ faculties, selectedFaculty, setSelectedFaculty }) {
-  const [open,  setOpen]  = useState(false);
-  const [query, setQuery] = useState('');
-  const wrapRef = useRef(null);
+  const [open,    setOpen]    = useState(false);
+  const [query,   setQuery]   = useState('');
+  const [menuPos, setMenuPos] = useState({ top: 0, left: 0 });
+  const wrapRef    = useRef(null);
+  const triggerRef = useRef(null);
+
+  // Calculate fixed position from trigger button
+  function updatePos() {
+    if (!triggerRef.current) return;
+    const r = triggerRef.current.getBoundingClientRect();
+    setMenuPos({ top: r.bottom + 6, left: r.left });
+  }
 
   // Close on outside click
   useEffect(() => {
-    function handler(e) {
+    function onMouse(e) {
       if (wrapRef.current && !wrapRef.current.contains(e.target)) setOpen(false);
     }
-    document.addEventListener('mousedown', handler);
-    return () => document.removeEventListener('mousedown', handler);
+    document.addEventListener('mousedown', onMouse);
+    return () => document.removeEventListener('mousedown', onMouse);
   }, []);
+
+  // Reposition on scroll / resize while open
+  useEffect(() => {
+    if (!open) return;
+    updatePos();
+    window.addEventListener('scroll', updatePos, true);
+    window.addEventListener('resize', updatePos);
+    return () => {
+      window.removeEventListener('scroll', updatePos, true);
+      window.removeEventListener('resize', updatePos);
+    };
+  }, [open]);
 
   const filtered = faculties.filter(f =>
     f.toLowerCase().includes(query.toLowerCase())
@@ -39,12 +61,19 @@ function FacultyDropdown({ faculties, selectedFaculty, setSelectedFaculty }) {
     setOpen(false);
   }
 
+  function handleOpen() {
+    updatePos();
+    setOpen(o => !o);
+    setQuery('');
+  }
+
   return (
     <div className="fac-dropdown" ref={wrapRef}>
       <button
         type="button"
+        ref={triggerRef}
         className={`fac-trigger ${selectedFaculty ? 'has-value' : ''}`}
-        onClick={() => { setOpen(o => !o); setQuery(''); }}
+        onClick={handleOpen}
       >
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="13" height="13">
           <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
@@ -55,8 +84,8 @@ function FacultyDropdown({ faculties, selectedFaculty, setSelectedFaculty }) {
         </svg>
       </button>
 
-      {open && (
-        <div className="fac-menu">
+      {open && createPortal(
+        <div className="fac-menu" style={{ top: menuPos.top, left: menuPos.left }}>
           <div className="fac-search-wrap">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="13" height="13">
               <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
@@ -86,7 +115,8 @@ function FacultyDropdown({ faculties, selectedFaculty, setSelectedFaculty }) {
               </button>
             ))}
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );

@@ -703,13 +703,17 @@
 
 /* Responsive */
 @media (max-width: 768px) {
-  .basket-summary { grid-template-columns: 1fr 1fr; }
-  .summary-card.summary-main { grid-column: 1 / -1; }
+  .basket-summary { grid-template-columns: repeat(3, 1fr); }
+  .summary-card.summary-main { grid-column: unset; }
   .basket-wrap { padding: 20px 16px 48px; }
   .billing-row { padding-left: 20px; }
 }
 @media (max-width: 480px) {
-  .basket-summary { grid-template-columns: 1fr; }
+  .basket-summary { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .summary-card { padding: 12px 10px; }
+  .summary-value { font-size: 21px; }
+  .summary-card:not(.summary-main) .summary-value { font-size: 18px; }
+  .summary-label { font-size: 9px; letter-spacing: 0.02em; }
   .term-header { flex-wrap: wrap; gap: 8px; }
   .plm-compare-grid { grid-template-columns: 1fr; }
   .plm-card-actions { gap: 4px; }

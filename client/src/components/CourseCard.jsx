@@ -112,7 +112,7 @@ export default function CourseCard({
               <svg viewBox="0 0 16 16" fill={isBackup ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="1.5">
                 <path d="M3 2a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v12l-5-2.5L3 14V2z"/>
               </svg>
-              {isBackup ? 'Backup saved' : 'Set as backup'}
+              {isBackup ? 'Backup saved' : 'Set as Backup'}
             </button>
           )}
         </div>
