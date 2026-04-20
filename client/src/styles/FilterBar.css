@@ -1,7 +1,7 @@
 .filter-bar {
   position: sticky;
   top: 0;
-  z-index: 100;
+  z-index: 400;
   background: rgba(10, 22, 40, 0.92);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
@@ -111,15 +111,14 @@
 .fac-caret.open { transform: rotate(180deg); }
 
 .fac-menu {
-  position: absolute;
-  top: calc(100% + 6px);
-  left: 0;
-  z-index: 200;
+  position: fixed;
+  z-index: 9000;
   background: #0f2240;
   border: 1px solid rgba(255,255,255,0.15);
   border-radius: 10px;
   box-shadow: 0 8px 32px rgba(0,0,0,0.5);
   width: 220px;
+  max-width: calc(100vw - 24px);
   overflow: hidden;
 }
 
@@ -307,7 +306,7 @@
   .filter-divider { display: none; }
   .fac-dropdown { width: 100%; }
   .fac-trigger  { width: 100%; max-width: 100%; box-sizing: border-box; }
-  .fac-menu     { width: 100%; }
+  .fac-menu     { width: 100%; max-width: 100%; left: 0; right: 0; }
 
   /* Credits + Term side by side on mobile */
   .credit-term-row {

@@ -219,6 +219,20 @@ async function connectDB() {
         basket     INTEGER[] NOT NULL DEFAULT '{}',
         updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
       );
+
+      -- Backup courses column (migration: safe to run multiple times)
+      ALTER TABLE user_baskets
+        ADD COLUMN IF NOT EXISTS backup INTEGER[] NOT NULL DEFAULT '{}';
+
+      -- Named planners: students can save multiple plans and compare them
+      CREATE TABLE IF NOT EXISTS planners (
+        id         SERIAL PRIMARY KEY,
+        user_id    INTEGER      NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+        name       VARCHAR(120) NOT NULL DEFAULT 'My Plan',
+        basket     INTEGER[]    NOT NULL DEFAULT '{}',
+        created_at TIMESTAMPTZ  NOT NULL DEFAULT NOW(),
+        updated_at TIMESTAMPTZ  NOT NULL DEFAULT NOW()
+      );
     `);
 
     const db = (await client.query('SELECT current_database()')).rows[0].current_database;

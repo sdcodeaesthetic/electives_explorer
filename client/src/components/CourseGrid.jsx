@@ -22,7 +22,7 @@ function DeleteConfirmModal({ course, onConfirm, onCancel }) {
 
 export default function CourseGrid({
   courses, total, filterVersion,
-  basket, toggleBasket, onExpand,
+  basket, backupCourses = new Set(), toggleBasket, toggleBackup, onExpand,
   isAdmin, onAddCourse, onDeleteCourse,
 }) {
   const version = filterVersion.current;
@@ -79,7 +79,9 @@ export default function CourseGrid({
               <CourseCard
                 course={c}
                 selected={basket.has(c.id)}
+                isBackup={backupCourses.has(c.id)}
                 onToggle={toggleBasket}
+                onToggleBackup={toggleBackup}
                 onExpand={onExpand}
                 isAdmin={isAdmin}
                 onDelete={handleDeleteClick}

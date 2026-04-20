@@ -779,11 +779,9 @@
 }
 .cp-comments-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: 1fr;
   gap: 16px;
 }
-@media (max-width: 900px) { .cp-comments-grid { grid-template-columns: repeat(2, 1fr); } }
-@media (max-width: 600px) { .cp-comments-grid { grid-template-columns: 1fr; } }
 
 .cp-comment-card {
   background: var(--glass-bg);
