@@ -219,11 +219,17 @@ function ContentSection({ title, value, fieldKey, onSave, isAdmin, type = 'text'
 }
 
 // ── Complementary Courses section ────────────────────────────────────────────
-function ComplementarySection({ courses: raw, isAdmin, onSave }) {
-  const [editing, setEditing] = useState(false);
-  const [draft,   setDraft]   = useState('');
-  const [jsonErr, setJsonErr] = useState('');
-  const [saving,  setSaving]  = useState(false);
+function ComplementarySection({ courses: raw, isAdmin, onSave, allCourses }) {
+  const [editing,  setEditing]  = useState(false);
+  const [draft,    setDraft]    = useState('');
+  const [jsonErr,  setJsonErr]  = useState('');
+  const [saving,   setSaving]   = useState(false);
+  const [notFound, setNotFound] = useState(false);
+
+  function showNotFound() {
+    setNotFound(true);
+    setTimeout(() => setNotFound(false), 2500);
+  }
 
   let courses = raw;
   if (typeof raw === 'string') {
@@ -273,21 +279,44 @@ function ComplementarySection({ courses: raw, isAdmin, onSave }) {
           </div>
         </div>
       ) : courses.length > 0 ? (
-        <div className="cp-comp-list">
-          {courses.map((c, i) => (
-            <div key={i} className="cp-comp-card">
-              <div className="cp-comp-header">
-                <span className="cp-comp-name">{c.course}</span>
-                <div className="cp-comp-pills">
-                  <span className="cp-comp-pill">{c.term}</span>
-                  <span className="cp-comp-pill">{c.credits} cr</span>
-                  <span className="cp-comp-pill">{c.area}</span>
+        <div className="cp-comp-list" style={{ position: 'relative' }}>
+          {notFound && (
+            <div className="cp-comp-not-found-toast">Course not found.</div>
+          )}
+          {courses.map((c, i) => {
+            const match = Array.isArray(allCourses)
+              ? allCourses.find(ac => ac.course?.toLowerCase() === c.course?.toLowerCase())
+              : null;
+            const cardContent = (
+              <>
+                <div className="cp-comp-header">
+                  <span className="cp-comp-name">{c.course}</span>
+                  <div className="cp-comp-pills">
+                    <span className="cp-comp-pill">{c.term}</span>
+                    <span className="cp-comp-pill">{c.credits} cr</span>
+                    <span className="cp-comp-pill">{c.area}</span>
+                  </div>
                 </div>
+                <p className="cp-comp-faculty">{c.faculty}</p>
+                <p className="cp-comp-why">{c.why}</p>
+              </>
+            );
+            return match ? (
+              <a
+                key={i}
+                href={`/#/course/${match.id}`}
+                target="_blank"
+                rel="noreferrer"
+                className="cp-comp-card cp-comp-card-link"
+              >
+                {cardContent}
+              </a>
+            ) : (
+              <div key={i} className="cp-comp-card cp-comp-card-link" onClick={showNotFound} style={{ cursor: 'pointer' }}>
+                {cardContent}
               </div>
-              <p className="cp-comp-faculty">{c.faculty}</p>
-              <p className="cp-comp-why">{c.why}</p>
-            </div>
-          ))}
+            );
+          })}
         </div>
       ) : (
         <p className="cp-muted cp-empty-hint">Not set — click Edit to add.</p>
@@ -656,6 +685,7 @@ export default function CoursePage({
             courses={course.complementary_courses}
             isAdmin={isAdmin}
             onSave={saveSection}
+            allCourses={allCourses}
           />
         </div>
 
