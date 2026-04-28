@@ -20,6 +20,7 @@ function FacultyDropdown({ faculties, selectedFaculty, setSelectedFaculty }) {
   const [menuPos, setMenuPos] = useState({ top: 0, left: 0 });
   const wrapRef    = useRef(null);
   const triggerRef = useRef(null);
+  const menuRef    = useRef(null);
 
   // Calculate fixed position from trigger button
   function updatePos() {
@@ -28,10 +29,14 @@ function FacultyDropdown({ faculties, selectedFaculty, setSelectedFaculty }) {
     setMenuPos({ top: r.bottom + 6, left: r.left });
   }
 
-  // Close on outside click
+  // Close on outside click — must exclude the portal menu itself since it
+  // renders in document.body outside wrapRef, otherwise mousedown on an option
+  // closes the dropdown before the click event fires and selection is lost.
   useEffect(() => {
     function onMouse(e) {
-      if (wrapRef.current && !wrapRef.current.contains(e.target)) setOpen(false);
+      const insideWrap = wrapRef.current?.contains(e.target);
+      const insideMenu = menuRef.current?.contains(e.target);
+      if (!insideWrap && !insideMenu) setOpen(false);
     }
     document.addEventListener('mousedown', onMouse);
     return () => document.removeEventListener('mousedown', onMouse);
@@ -85,7 +90,7 @@ function FacultyDropdown({ faculties, selectedFaculty, setSelectedFaculty }) {
       </button>
 
       {open && createPortal(
-        <div className="fac-menu" style={{ top: menuPos.top, left: menuPos.left }}>
+        <div ref={menuRef} className="fac-menu" style={{ top: menuPos.top, left: menuPos.left }}>
           <div className="fac-search-wrap">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="13" height="13">
               <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
