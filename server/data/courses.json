@@ -4,839 +4,823 @@
     "area": "Finance",
     "term": "Term V",
     "course": "Banking Operations Management",
-    "faculty": "Dr. Nishi Malhotra",
-    "credits": 3
+    "credits": 3,
+    "faculty": "Dr. Nishi Malhotra"
   },
   {
     "id": 2,
     "area": "Finance",
     "term": "Term V",
     "course": "Business Analysis and Valuation",
-    "faculty": "Prof. Saumya Ranjan Das",
-    "credits": 3
+    "credits": 3,
+    "faculty": "Prof. Saumya Ranjan Das"
   },
   {
     "id": 3,
     "area": "Finance",
     "term": "Term IV",
     "course": "Financial Planning & Wealth Management",
-    "faculty": "Prof. Diwahar Nadar",
-    "credits": 3
+    "credits": 3,
+    "faculty": "Prof. Diwahar Nadar"
   },
   {
     "id": 4,
     "area": "Finance",
     "term": "Term VI",
     "course": "Financial Risk Management",
-    "faculty": "Dr. Nishi Malhotra",
-    "credits": 3
+    "credits": 3,
+    "faculty": "Awaiting Approval"
   },
   {
     "id": 5,
     "area": "Finance",
     "term": "Term V",
     "course": "Fixed Income Securities",
-    "faculty": "Prof. Kaushik Desarkar",
-    "credits": 3
+    "credits": 3,
+    "faculty": "Prof. Kaushik Desarkar"
   },
   {
     "id": 6,
     "area": "Finance",
     "term": "Term V",
     "course": "Finance Modelling using Excel",
-    "faculty": "Prof. Nitin Balwani",
-    "credits": 1.5
+    "credits": 1.5,
+    "faculty": "Prof. Nitin Balwani"
   },
   {
     "id": 7,
     "area": "Finance",
     "term": "Term VI",
     "course": "International Finance",
-    "faculty": "Prof. BB Chakrabarty (Tentative)",
-    "credits": 3
+    "credits": 3,
+    "faculty": "Awaiting Approval"
   },
   {
     "id": 8,
     "area": "Finance",
     "term": "Term IV",
     "course": "Investment Banking",
-    "faculty": "Prof. Pratap Giri",
-    "credits": 1.5
-  },
-  {
-    "id": 9,
-    "area": "Finance",
-    "term": "Term VI",
-    "course": "Fintech",
-    "faculty": "Prof. B B Chakrabarti",
-    "credits": 3
+    "credits": 1.5,
+    "faculty": "Prof. Pratap Giri"
   },
   {
     "id": 10,
     "area": "Finance",
     "term": "Term VI",
     "course": "Mergers & Acquisition",
-    "faculty": "Prof. Seema Gupta",
-    "credits": 3
+    "credits": 3,
+    "faculty": "Prof. Pratap Giri"
   },
   {
     "id": 11,
     "area": "Finance",
     "term": "Term IV",
     "course": "Options, Futures and Derivatives",
-    "faculty": "Prof. B B Chakrabarti (Tentative)",
-    "credits": 3
+    "credits": 3,
+    "faculty": "Prof. Udayan Sharma"
   },
   {
     "id": 12,
     "area": "Finance",
     "term": "Term V",
     "course": "Project Appraisal & Financing",
-    "faculty": "Prof. Pradip Kumar Lath",
-    "credits": 3
+    "credits": 3,
+    "faculty": "Prof. Pradip Kumar Lath"
   },
   {
     "id": 13,
     "area": "Finance",
     "term": "Term IV",
     "course": "Security Analysis and Portfolio Management (SAPM)",
-    "faculty": "Prof. Soumya Guha Deb",
-    "credits": 3
+    "credits": 3,
+    "faculty": "Prof. Soumya Guha Deb"
   },
   {
     "id": 14,
     "area": "Finance",
     "term": "Term VI",
     "course": "Ethical Trading Strategy",
-    "faculty": "Prof. Dharen Kumar Pandey",
-    "credits": 3
+    "credits": 3,
+    "faculty": "Prof. Dharen Kumar Pandey"
   },
   {
     "id": 15,
     "area": "ISM",
     "term": "Term V",
     "course": "Agentic AI for Managers",
-    "faculty": "Prof. Kumari Pritee",
-    "credits": 3
+    "credits": 3,
+    "faculty": "Prof. Kumari Pritee"
   },
   {
     "id": 16,
     "area": "ISM",
     "term": "Term V",
     "course": "AI for Financial Analytics and Decision Making",
-    "faculty": "Prof. Deepanwita Datta",
-    "credits": 1.5
+    "credits": 1.5,
+    "faculty": "Prof. Deepanwita Datta"
   },
   {
     "id": 17,
     "area": "ISM",
     "term": "Term IV",
     "course": "AI for Business",
-    "faculty": "Prof. Deepanwita Datta",
-    "credits": 3
+    "credits": 1.5,
+    "faculty": "Dr. Ashish Sharma"
   },
   {
     "id": 18,
     "area": "ISM",
     "term": "Term VI",
     "course": "Big Data Analytics",
-    "faculty": "Prof. Pritee Kumari",
-    "credits": 3
+    "credits": 3,
+    "faculty": "Prof. Pritee Kumari"
   },
   {
     "id": 19,
     "area": "ISM",
     "term": "Term V",
     "course": "Blockchain and Its Applications",
-    "faculty": "Prof. Keshav Kaushik",
-    "credits": 3
+    "credits": 3,
+    "faculty": "Prof. Keshav Kaushik"
   },
   {
     "id": 20,
     "area": "ISM",
     "term": "Term IV",
     "course": "Business Analytics for Managerial Decisions",
-    "faculty": "Prof. Atanu Dey",
-    "credits": 3
+    "credits": 3,
+    "faculty": "Prof. Atanu Dey"
   },
   {
     "id": 21,
     "area": "ISM",
     "term": "Term V",
     "course": "Business of Cloud Computing",
-    "faculty": "Dr. Biswajit Mohapatra",
-    "credits": 1.5
+    "credits": 1.5,
+    "faculty": "Dr. Biswajit Mohapatra"
   },
   {
     "id": 22,
     "area": "ISM",
     "term": "Term VI",
     "course": "Cybersecurity & Enterprise IT Risk Management",
-    "faculty": "Prof. A Manish Kumar",
-    "credits": 3
+    "credits": 3,
+    "faculty": "Prof. A Manish Kumar"
   },
   {
     "id": 23,
     "area": "ISM",
     "term": "Term IV",
     "course": "Data Visualization and Business Storytelling",
-    "faculty": "Prof. Atanu Dey & Prof. Siddharth Gaurav Majhi",
-    "credits": 3
+    "credits": 3,
+    "faculty": "Prof. Atanu Dey & Prof. Siddharth Gaurav Majhi"
   },
   {
     "id": 24,
     "area": "ISM",
     "term": "Term IV",
     "course": "Digital Product Management",
-    "faculty": "Ms. Ankita Parihar & Mr. Ramkumar Arumugam",
-    "credits": 3
+    "credits": 3,
+    "faculty": "Ms. Ankita Parihar & Mr. Ramkumar Arumugam"
   },
   {
     "id": 25,
     "area": "ISM",
     "term": "Term V",
     "course": "E-Commerce",
-    "faculty": "Prof. V N Rajesh",
-    "credits": 3
+    "credits": 3,
+    "faculty": "Prof. Rajesh Natarajan"
   },
   {
     "id": 26,
     "area": "ISM",
     "term": "Term VI",
     "course": "IoT for Business Processes",
-    "faculty": "Prof. Keshav Kaushik",
-    "credits": 3
+    "credits": 3,
+    "faculty": "Prof. Keshav Kaushik"
   },
   {
     "id": 27,
     "area": "ISM",
-    "term": "Term IV",
+    "term": "Term V",
     "course": "Managing Digital Transformation",
-    "faculty": "Prof. A Manish Kumar",
-    "credits": 3
+    "credits": 3,
+    "faculty": "Prof. A Manish Kumar"
   },
   {
     "id": 28,
     "area": "ISM",
     "term": "Term VI",
     "course": "Sports Analytics",
-    "faculty": "Vivekanand R",
-    "credits": 3
+    "credits": 3,
+    "faculty": "Vivekanand R"
   },
   {
     "id": 29,
     "area": "ISM",
     "term": "Term IV",
     "course": "Tech Consulting and Business Analysis",
-    "faculty": "Merlin Nandy",
-    "credits": 3
+    "credits": 3,
+    "faculty": "Merlin Nandy"
   },
   {
     "id": 30,
     "area": "Marketing",
     "term": "Term V",
     "course": "Digital Marketing",
-    "faculty": "Prof. Anoop T S",
-    "credits": 1.5
+    "credits": 1.5,
+    "faculty": "Prof. Anoop T S"
   },
   {
     "id": 31,
     "area": "Marketing",
     "term": "Term VI",
     "course": "AI in Marketing",
-    "faculty": "Prof. Anoop T S",
-    "credits": 1.5
+    "credits": 1.5,
+    "faculty": "Prof. Anoop T S"
   },
   {
     "id": 32,
     "area": "Marketing",
     "term": "Term IV",
     "course": "Advanced Marketing Research",
-    "faculty": "Prof. M Dev Prasad Murthy",
-    "credits": 3
+    "credits": 3,
+    "faculty": "Prof. M Dev Prasad Murthy"
   },
   {
     "id": 33,
     "area": "Marketing",
     "term": "Term IV",
     "course": "B2B Marketing",
-    "faculty": "Prof. Sandip Mukhopadhyay & Mr. Amrat Parasnis",
-    "credits": 3
+    "credits": 3,
+    "faculty": "Dr. Divakar Kamath"
   },
   {
     "id": 34,
     "area": "Marketing",
     "term": "Term IV",
     "course": "Brand Management",
-    "faculty": "Prof. Poonam Kumar & Dr. Anurag Dugar",
-    "credits": 3
+    "credits": 3,
+    "faculty": "Prof. Poonam Kumar & Dr. Anurag Dugar"
   },
   {
     "id": 35,
     "area": "Marketing",
-    "term": "Term IV",
+    "term": "Term V",
     "course": "Consumer Behaviour and Neuromarketing",
-    "faculty": "Prof. Nitin Soni",
-    "credits": 3
+    "credits": 3,
+    "faculty": "Prof. Nitin Soni & Prof. Poonam Kumar"
   },
   {
     "id": 36,
     "area": "Marketing",
     "term": "Term IV",
     "course": "Sales in the Age of AI (SAI)",
-    "faculty": "Prof. Chandan Kumar Behera & Mr. Samrat Parasnis",
-    "credits": 1.5
+    "credits": 1.5,
+    "faculty": "Prof. Chandan Kumar Behera & Mr. Samrat Parasnis"
   },
   {
     "id": 37,
     "area": "Marketing",
     "term": "Term V",
     "course": "FMCG Marketing",
-    "faculty": "Dr. Vivek Rastogi",
-    "credits": 1.5
+    "credits": 1.5,
+    "faculty": "Dr. Vivek Rastogi"
   },
   {
     "id": 38,
     "area": "Marketing",
     "term": "Term VI",
     "course": "Marketing of Services",
-    "faculty": "Dr. Prashant Mishra & Dr. Chandan Kumar Behera",
-    "credits": 3
+    "credits": 3,
+    "faculty": "Dr. Prashant Mishra & Dr. Chandan Kumar Behera"
   },
   {
     "id": 39,
     "area": "Marketing",
-    "term": "Term V",
+    "term": "Term IV",
     "course": "Product Management and Analytics",
-    "faculty": "Prof. Nitin Soni",
-    "credits": 3
+    "credits": 3,
+    "faculty": "Prof. Nitin Soni"
   },
   {
     "id": 40,
     "area": "Marketing",
-    "term": "Term V",
+    "term": "Term IV",
     "course": "Pricing & Policy",
-    "faculty": "Prof. Akanksha Mishra",
-    "credits": 1.5
+    "credits": 1.5,
+    "faculty": "Prof. Jishnu Changkakoti"
   },
   {
     "id": 41,
     "area": "Marketing",
     "term": "Term V",
     "course": "Sales & Distribution Management",
-    "faculty": "Prof. Sarthak Mohapatra",
-    "credits": 3
+    "credits": 3,
+    "faculty": "Prof. Ramendra Singh & Prof. Sarthak Mohapatra"
   },
   {
     "id": 42,
     "area": "Marketing",
     "term": "Term V",
     "course": "Sustainability Marketing",
-    "faculty": "Prasanta Kr Chopdar",
-    "credits": 3
+    "credits": 3,
+    "faculty": "Prasanta Kr Chopdar"
   },
   {
     "id": 43,
     "area": "Marketing",
     "term": "Term VI",
     "course": "Luxury Marketing",
-    "faculty": "Prof. Nitin Soni",
-    "credits": 1.5
+    "credits": 1.5,
+    "faculty": "Prof. Piyush Kumar Sinha"
   },
   {
     "id": 44,
     "area": "Marketing",
     "term": "Term VI",
     "course": "Marketing Semiotics (Semiotic Strategies)",
-    "faculty": "Dr. Ridhi Agarwala",
-    "credits": 1.5
+    "credits": 1.5,
+    "faculty": "Dr. Ridhi Agarwala"
   },
   {
     "id": 45,
     "area": "Marketing",
     "term": "Term VI",
     "course": "Rural Marketing",
-    "faculty": "Prof. Sarthak Mohapatra",
-    "credits": 1.5
+    "credits": 1.5,
+    "faculty": "Prof. Sanal Kumar Velayudhan"
   },
   {
     "id": 46,
     "area": "Marketing",
     "term": "Term VI",
     "course": "Strategic Marketing (Simulation)",
-    "faculty": "Prof. Gautam Dutta",
-    "credits": 3
+    "credits": 3,
+    "faculty": "Prof. Gautam Dutta"
   },
   {
     "id": 47,
     "area": "Marketing",
     "term": "Term V",
     "course": "Customer Relationship Management (CRM)",
-    "faculty": "Prof. Sandip Mukhopadhyay",
-    "credits": 3
+    "credits": 3,
+    "faculty": "Prof. Sandip Mukhopadhyay & Mr. Manohar Mylavarapu"
   },
   {
     "id": 48,
     "area": "Marketing",
     "term": "Term V",
     "course": "Retail & E-Business Management Strategy",
-    "faculty": "Dr. Arunima Rana",
-    "credits": 3
+    "credits": 3,
+    "faculty": "Dr. Arunima Rana"
   },
   {
     "id": 49,
     "area": "Operations",
     "term": "Term IV",
     "course": "Operations Analytics",
-    "faculty": "Prof. Rohit Gupta & Prof. Bhawana Rathore",
-    "credits": 1.5
+    "credits": 1.5,
+    "faculty": "Prof. Rohit Gupta"
   },
   {
     "id": 50,
     "area": "Operations",
     "term": "Term V",
     "course": "Service Operations Management",
-    "faculty": "Prof. Ramakrushna Padhy & Prof. Rohit Gupta",
-    "credits": 3
+    "credits": 3,
+    "faculty": "Prof. Ramakrushna Padhy & Prof. Rohit Gupta"
   },
   {
     "id": 51,
     "area": "Operations",
     "term": "Term VI",
     "course": "Revenue Management & Dynamic Pricing",
-    "faculty": "Prof. Rohit Gupta",
-    "credits": 1.5
-  },
-  {
-    "id": 52,
-    "area": "Operations",
-    "term": "Term IV",
-    "course": "Agile Management with Scrum",
-    "faculty": "Prof. Shweta Singh",
-    "credits": 1.5
+    "credits": 1.5,
+    "faculty": "Prof. Rohit Gupta"
   },
   {
     "id": 53,
     "area": "Operations",
-    "term": "Term V",
+    "term": "Term VI",
     "course": "Theory of Constraints (Constraint Management)",
-    "faculty": "Prof. Saumyaranjan Sahoo",
-    "credits": 3
+    "credits": 1.5,
+    "faculty": "Prof. Harshal Lowalekar & Prof. Raghavendra Ravi"
   },
   {
     "id": 54,
     "area": "Operations",
     "term": "Term V",
     "course": "Digital Supply Chains",
-    "faculty": "Prof. Harshad Sonar & Prof. Kaustov Chakraborty",
-    "credits": 3
+    "credits": 3,
+    "faculty": "Prof. Harshad Sonar & Prof. Kaustov Chakraborty"
   },
   {
     "id": 55,
     "area": "Operations",
     "term": "Term IV",
     "course": "Decision Making Tools for Managers",
-    "faculty": "Dr. Bhawana Rathore",
-    "credits": 3
+    "credits": 3,
+    "faculty": "Dr. Bhawana Rathore"
   },
   {
     "id": 56,
     "area": "Operations",
     "term": "Term V",
     "course": "Global Logistics and Distributions",
-    "faculty": "Prof. Kaustov Chakraborty",
-    "credits": 1.5
+    "credits": 1.5,
+    "faculty": "Prof. Kaustov Chakraborty"
   },
   {
     "id": 57,
     "area": "Operations",
     "term": "Term V",
     "course": "Logistics and Warehouse Management",
-    "faculty": "Prof. Sourabh Kumar",
-    "credits": 3
+    "credits": 1.5,
+    "faculty": "Prof. Susmita Narayana & Prof. Rofin"
   },
   {
     "id": 58,
     "area": "Operations",
     "term": "Term IV",
     "course": "Project Management",
-    "faculty": "Prof. Rohit Gupta & Prof. Sourabh Kumar",
-    "credits": 3
+    "credits": 3,
+    "faculty": "Prof. Rohit Gupta & Mr. Aasheesh Dixit"
   },
   {
     "id": 59,
     "area": "Operations",
     "term": "Term IV",
     "course": "Operational Excellence",
-    "faculty": "Prof. Kaustov Chakraborty",
-    "credits": 1.5
+    "credits": 1.5,
+    "faculty": "Prof. Kaustov Chakraborty"
   },
   {
     "id": 60,
     "area": "Operations",
-    "term": "Term V",
+    "term": "Term VI",
     "course": "Operations Strategy and Competitive Advantage",
-    "faculty": "Prof. Kaustov Chakraborty & Dr. Rahul Pandey",
-    "credits": 3
+    "credits": 3,
+    "faculty": "Prof. Kaustov Chakraborty & Dr. Rahul Pandey"
   },
   {
     "id": 61,
     "area": "Operations",
     "term": "Term VI",
     "course": "Quick Commerce Supply Chains",
-    "faculty": "Prof. Harshad Sonar",
-    "credits": 1.5
+    "credits": 1.5,
+    "faculty": "Prof. Harshad Sonar"
   },
   {
     "id": 62,
     "area": "Operations",
     "term": "Term IV",
     "course": "Supply Chain Management",
-    "faculty": "Dr. V. G. Venkatesh",
-    "credits": 3
+    "credits": 3,
+    "faculty": "Dr. V. G. Venkatesh"
   },
   {
     "id": 63,
     "area": "Operations",
     "term": "Term VI",
     "course": "Sustainability Management in Business",
-    "faculty": "Prof. Shweta Singh & Prof. Harshad Sonar",
-    "credits": 3
+    "credits": 3,
+    "faculty": "Prof. Shweta Singh & Prof. Harshad Sonar"
   },
   {
     "id": 64,
     "area": "Operations",
     "term": "Term V",
     "course": "Strategic Procurement",
-    "faculty": "Dr. V. G. Venkatesh",
-    "credits": 1.5
+    "credits": 1.5,
+    "faculty": "Dr. V. G. Venkatesh"
   },
   {
     "id": 65,
     "area": "Operations",
     "term": "Term V",
     "course": "Supply Chain Analytics",
-    "faculty": "Prof. Bhawana Rathore & Prof. Shweta Singh",
-    "credits": 3
+    "credits": 3,
+    "faculty": "Mr. Sanjeev Das"
   },
   {
     "id": 66,
     "area": "Operations",
     "term": "Term V",
     "course": "Supply Chain Simulation for Managerial Decision-Making",
-    "faculty": "Prof. Bhawana Rathore & Mr. Ayan Das",
-    "credits": 3
+    "credits": 1.5,
+    "faculty": "Prof. Bhawana Rathore & Mr. Ayan Das"
   },
   {
     "id": 67,
     "area": "Operations",
     "term": "Term IV",
     "course": "Technology-Enabled Operations",
-    "faculty": "Prof. Harshad Sonar",
-    "credits": 1.5
+    "credits": 1.5,
+    "faculty": "Prof. Harshad Sonar"
   },
   {
     "id": 68,
     "area": "Strategy",
     "term": "Term V",
     "course": "Business Models & Plans",
-    "faculty": "Dr. Sanyka Banerjee",
-    "credits": 3
+    "credits": 3,
+    "faculty": "Prof. Prashant Salvan (Awaiting Approval)"
   },
   {
     "id": 69,
     "area": "Strategy",
     "term": "Term VI",
     "course": "Chanakya: Strategic Lessons For Today & Tomorrow",
-    "faculty": "Prof. Sandeep Singh",
-    "credits": 1.5
+    "credits": 1.5,
+    "faculty": "Prof. Sandeep Singh"
   },
   {
     "id": 70,
     "area": "Strategy",
     "term": "Term IV",
     "course": "Corporate Strategy",
-    "faculty": "Prof. Dr. Nilesh Khare & Prof. Dr. Aarti Singh",
-    "credits": 3
-  },
-  {
-    "id": 71,
-    "area": "Strategy",
-    "term": "Term VI",
-    "course": "Creating Markets Beyond Competition: Blue Ocean Strategy",
-    "faculty": "Prof. Janvi Patel",
-    "credits": 1.5
+    "credits": 3,
+    "faculty": "Prof. Dr. Nilesh Khare & Prof. Dr. Aarti Singh"
   },
   {
     "id": 72,
     "area": "Strategy",
     "term": "Term V",
     "course": "Current and Emerging Trends in Strategy",
-    "faculty": "Prof. Dr. Aarti Singh",
-    "credits": 1.5
+    "credits": 1.5,
+    "faculty": "Prof. Dr. Aarti Singh"
   },
   {
     "id": 73,
     "area": "Strategy",
     "term": "Term VI",
     "course": "Digital Entrepreneurship",
-    "faculty": "Prof. Bhairab Chandra Patra",
-    "credits": 1.5
-  },
-  {
-    "id": 74,
-    "area": "Strategy",
-    "term": "Term IV",
-    "course": "Entrepreneurship and Business Development",
-    "faculty": "Prof. Bhairab Chandra Patra",
-    "credits": 1.5
+    "credits": 1.5,
+    "faculty": "Prof. Bhairab Chandra Patra"
   },
   {
     "id": 75,
     "area": "Strategy",
     "term": "Term V",
     "course": "Impact Entrepreneurship",
-    "faculty": "Prof. Janvi Patel",
-    "credits": 3
+    "credits": 3,
+    "faculty": "Prof. Janvi Patel"
   },
   {
     "id": 76,
     "area": "Strategy",
     "term": "Term VI",
     "course": "Innovation Strategies for Indigenous Ventures",
-    "faculty": "Prof. Sanyka Banerjee",
-    "credits": 3
+    "credits": 3,
+    "faculty": "Prof. Sanyka Banerjee"
   },
   {
     "id": 77,
     "area": "Strategy",
     "term": "Term IV",
     "course": "International Business",
-    "faculty": "Prof. Aqueeb Sohail Shaik",
-    "credits": 3
-  },
-  {
-    "id": 78,
-    "area": "Strategy",
-    "term": "Term V",
-    "course": "Mergers & Acquisitions",
-    "faculty": "Prof. Dr. Aarti Singh",
-    "credits": 1.5
+    "credits": 3,
+    "faculty": "Prof. Aqueeb Sohail Shaik"
   },
   {
     "id": 79,
     "area": "Strategy",
-    "term": "Term IV",
+    "term": "Term V",
     "course": "Managing a Consulting Business: A Practitioner's Perspective",
-    "faculty": "Prof. Sandeep Kumar Hota",
-    "credits": 1.5
+    "credits": 1.5,
+    "faculty": "Prof. Sandeep Kumar Hota"
   },
   {
     "id": 80,
     "area": "Strategy",
     "term": "Term IV",
     "course": "Managing Platform Business",
-    "faculty": "Prof. Diptiranjan Mahapatra",
-    "credits": 1.5
+    "credits": 1.5,
+    "faculty": "Prof. Diptiranjan Mahapatra"
   },
   {
     "id": 81,
     "area": "Strategy",
     "term": "Term V",
     "course": "Managing Strategic Transformations",
-    "faculty": "Prof. Sanjeev Kumar Govil",
-    "credits": 1.5
+    "credits": 1.5,
+    "faculty": "Prof. Sanjeev Kumar Govil"
   },
   {
     "id": 82,
     "area": "Strategy",
     "term": "Term IV",
     "course": "Startup Mindset",
-    "faculty": "Dr. Preet Deep Singh",
-    "credits": 1.5
+    "credits": 1.5,
+    "faculty": "Dr. Preet Deep Singh"
   },
   {
     "id": 83,
     "area": "Strategy",
-    "term": "Term IV",
+    "term": "Term V",
     "course": "Strategic Leadership, Thinking & Decision Making",
-    "faculty": "Prof. Diptiprakash Pradhan",
-    "credits": 3
+    "credits": 3,
+    "faculty": "Prof. Diptiprakash Pradhan"
   },
   {
     "id": 84,
     "area": "Strategy",
     "term": "Term VI",
     "course": "Systems Thinking for Management Consulting",
-    "faculty": "Prof. Dr. Aarti Singh",
-    "credits": 1.5
-  },
-  {
-    "id": 85,
-    "area": "Strategy",
-    "term": "Term VI",
-    "course": "Technology & Innovation Management",
-    "faculty": "Prof. Aqueeb Sohail Shaik",
-    "credits": 1.5
+    "credits": 1.5,
+    "faculty": "Prof. Dr. Aarti Singh"
   },
   {
     "id": 86,
     "area": "Strategy",
     "term": "Term IV",
     "course": "Working with AI",
-    "faculty": "Dr. Preet Deep Singh",
-    "credits": 1.5
-  },
-  {
-    "id": 87,
-    "area": "GMPPE",
-    "term": "Term IV",
-    "course": "Applied Econometrics for Manager",
-    "faculty": "Prof. Hemachandra Padhan",
-    "credits": 3
-  },
-  {
-    "id": 88,
-    "area": "GMPPE",
-    "term": "Term IV",
-    "course": "Energy Markets and Pricing Strategies for Business",
-    "faculty": "Prof. Hemachandra Padhan",
-    "credits": 3
+    "credits": 1.5,
+    "faculty": "Dr. Preet Deep Singh"
   },
   {
     "id": 89,
     "area": "GMPPE",
     "term": "Term V",
     "course": "Game Theory and Strategic Decision Making",
-    "faculty": "Prof. Soumya Kanta Mishra",
-    "credits": 3
+    "credits": 3,
+    "faculty": "Prof. Soumya Kanta Mishra"
   },
   {
     "id": 90,
     "area": "GMPPE",
     "term": "Term V",
     "course": "Law, Business and Governance: Critical Issues",
-    "faculty": "Prof. Sujit Kumar Pruseth",
-    "credits": 1.5
+    "credits": 1.5,
+    "faculty": "Prof. Sujit Kumar Pruseth"
   },
   {
     "id": 91,
     "area": "GMPPE",
     "term": "Term IV",
     "course": "Pricing Strategy for Managerial Decision Making",
-    "faculty": "Prof. Ashutosh K. Tripathi",
-    "credits": 3
+    "credits": 3,
+    "faculty": "Prof. Ashutosh K. Tripathi"
   },
   {
     "id": 92,
     "area": "GMPPE",
     "term": "Term V",
     "course": "International Economics",
-    "faculty": "Prof. Anasuya Haldar",
-    "credits": 3
+    "credits": 3,
+    "faculty": "Prof. Anasuya Haldar"
   },
   {
     "id": 93,
     "area": "Inter Area Electives",
     "term": "Term VI",
     "course": "Behavioural Strategy and Decision Making",
-    "faculty": "Prof. Shikha Bhardwaj & Prof. Diptiranjan Mahapatra",
-    "credits": 1.5
+    "credits": 1.5,
+    "faculty": "Prof. Shikha Bhardwaj & Prof. Diptiranjan Mahapatra"
   },
   {
     "id": 94,
     "area": "Inter Area Electives",
     "term": "Term V",
     "course": "Entrepreneurship & Finance",
-    "faculty": "Prof. Bhairab Chandra Patra & Prof. Diwahar Nadar",
-    "credits": 1.5
+    "credits": 1.5,
+    "faculty": "Prof. Bhairab Chandra Patra & Prof. Diwahar Nadar"
   },
   {
     "id": 95,
     "area": "Inter Area Electives",
     "term": "Term IV",
     "course": "Nonmarket Strategy: Focus on Geopolitics and Climate Change",
-    "faculty": "Prof. Diptiranjan Mahapatra & Prof. Sumita Sindhi",
-    "credits": 1.5
+    "credits": 1.5,
+    "faculty": "Prof. Diptiranjan Mahapatra & Prof. Sumita Sindhi"
   },
   {
     "id": 96,
     "area": "OB-HR",
     "term": "Term VI",
     "course": "Coaching and Mentoring for Well-being: Learn to Flourish",
-    "faculty": "Prof. Atri Sengupta & Mr. Anamitra Chatterjee",
-    "credits": 3
+    "credits": 3,
+    "faculty": "Prof. Atri Sengupta & Mr. Anamitra Chatterjee"
   },
   {
     "id": 97,
     "area": "OB-HR",
     "term": "Term V",
     "course": "Competency and Talent Management",
-    "faculty": "Prof. Atri Sengupta & Dr. Dinesh Murugesan",
-    "credits": 3
+    "credits": 3,
+    "faculty": "Prof. Atri Sengupta & Dr. Dinesh Murugesan"
   },
   {
     "id": 98,
     "area": "OB-HR",
     "term": "Term IV",
     "course": "Decoding Team Dynamics",
-    "faculty": "Prof. Shubhi Gupta",
-    "credits": 1.5
+    "credits": 1.5,
+    "faculty": "Prof. Shubhi Gupta"
   },
   {
     "id": 99,
     "area": "OB-HR",
     "term": "Term V",
     "course": "Managing Employee Relations & Employment Laws",
-    "faculty": "Prof. Debi S. Saini",
-    "credits": 3
+    "credits": 3,
+    "faculty": "Prof. Debi S. Saini"
   },
   {
     "id": 100,
     "area": "OB-HR",
     "term": "Term IV",
     "course": "Conflict Management & Negotiation",
-    "faculty": "Prof. Padmavathy Dhillon",
-    "credits": 3
+    "credits": 3,
+    "faculty": "Prof. Padmavathy Dhillon"
   },
   {
     "id": 101,
     "area": "OB-HR",
     "term": "Term VI",
     "course": "HR Analytics",
-    "faculty": "Prof. Padmavathy Dhillon",
-    "credits": 3
+    "credits": 3,
+    "faculty": "Prof. Padmavathy Dhillon"
   },
   {
     "id": 102,
     "area": "OB-HR",
     "term": "Term IV",
     "course": "Games People Play",
-    "faculty": "Prof. Shikha Bhardwaj",
-    "credits": 1.5
+    "credits": 1.5,
+    "faculty": "Prof. Shikha Bhardwaj"
   },
   {
     "id": 103,
     "area": "OB-HR",
     "term": "Term VI",
     "course": "Leading with Cultural Agility",
-    "faculty": "Prof. Shubhi Gupta",
-    "credits": 1.5
+    "credits": 1.5,
+    "faculty": "Prof. Shubhi Gupta"
   },
   {
     "id": 104,
     "area": "OB-HR",
     "term": "Term IV",
     "course": "Organisation Transformation and Change",
-    "faculty": "Prof. Shikha Bhardwaj",
-    "credits": 1.5
+    "credits": 1.5,
+    "faculty": "Prof. Shikha Bhardwaj"
   },
   {
     "id": 105,
     "area": "OB-HR",
     "term": "Term V",
     "course": "Performance and Compensation Management",
-    "faculty": "Prof. Shubhi Gupta",
-    "credits": 3
+    "credits": 3,
+    "faculty": "Prof. Shubhi Gupta"
+  },
+  {
+    "id": 106,
+    "area": "Finance",
+    "term": "Term VI",
+    "course": "Financial Technology",
+    "credits": 3,
+    "faculty": "Awaiting Approval"
+  },
+  {
+    "id": 107,
+    "area": "GMPPE",
+    "term": "Term IV",
+    "course": "Macroeconomics for Business and Financial Strategy",
+    "credits": 3,
+    "faculty": "Prof. Wasim Ahmad"
+  },
+  {
+    "id": 108,
+    "area": "Marketing",
+    "term": "Term VI",
+    "course": "Integrated Marketing communication",
+    "credits": 3,
+    "faculty": "Mr. Prakash Dharmarajan"
+  },
+  {
+    "id": 109,
+    "area": "Operations",
+    "term": "Term IV",
+    "course": "Agile in Digital Environment",
+    "credits": 1.5,
+    "faculty": "Dr. Arnab Banerjee"
+  },
+  {
+    "id": 110,
+    "area": "Operations",
+    "term": "Term V",
+    "course": "Applied Optimization and Analytics",
+    "credits": 3,
+    "faculty": "Prof. Saumyaranjan Sahoo"
+  },
+  {
+    "id": 111,
+    "area": "Strategy",
+    "term": "Term V",
+    "course": "Corporate Entrepreneurship & Innovation",
+    "credits": 1.5,
+    "faculty": "Prof. Sabyasachi Sinha"
   }
 ]
