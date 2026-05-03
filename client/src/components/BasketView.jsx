@@ -249,6 +249,21 @@ function PlannerManager({
 function BackupSection({ backupCoursesList, allCourses, toggleBackup, promoteBackup }) {
   if (!backupCoursesList.length) return null;
 
+  // Sort by term order
+  const sorted = [...backupCoursesList].sort(
+    (a, b) => TERM_ORDER.indexOf(a.term || 'X') - TERM_ORDER.indexOf(b.term || 'X')
+  );
+
+  // Group by term for labelled sections
+  const byTerm = sorted.reduce((acc, c) => {
+    const t = c.term || 'X';
+    if (!acc[t]) acc[t] = [];
+    acc[t].push(c);
+    return acc;
+  }, {});
+
+  const presentTerms = TERM_ORDER.filter(t => byTerm[t]);
+
   return (
     <div className="basket-section">
       <h2 className="basket-section-title">
@@ -256,35 +271,40 @@ function BackupSection({ backupCoursesList, allCourses, toggleBackup, promoteBac
         <span className="backup-section-hint"> — not counted toward credits</span>
       </h2>
       <div className="backup-list">
-        {backupCoursesList.map(c => {
-          const color = AREA_COLORS[c.area] || '#64748b';
-          return (
-            <div key={c.id} className="backup-row">
-              <div className="backup-row-left">
-                <span className="backup-area-dot" style={{ background: color }} />
-                <div className="backup-info">
-                  <span className="backup-course-name">{c.course}</span>
-                  <span className="backup-meta">{c.area} · {c.faculty} · {c.term}</span>
+        {presentTerms.map(term => (
+          <div key={term}>
+            <div className="backup-term-label">{TERM_LABELS[term] || term}</div>
+            {byTerm[term].map(c => {
+              const color = AREA_COLORS[c.area] || '#64748b';
+              return (
+                <div key={c.id} className="backup-row">
+                  <div className="backup-row-left">
+                    <span className="backup-area-dot" style={{ background: color }} />
+                    <div className="backup-info">
+                      <span className="backup-course-name">{c.course}</span>
+                      <span className="backup-meta">{c.area} · {c.faculty}</span>
+                    </div>
+                  </div>
+                  <div className="backup-row-right">
+                    <span className="backup-cr">{c.credits ? `${c.credits} cr` : '—'}</span>
+                    <button
+                      className="backup-promote-btn"
+                      onClick={() => promoteBackup(c)}
+                      title="Move to primary planner"
+                    >
+                      ↑ Add to Planner
+                    </button>
+                    <button
+                      className="backup-remove-btn"
+                      onClick={() => toggleBackup(c)}
+                      title="Remove backup"
+                    >✕</button>
+                  </div>
                 </div>
-              </div>
-              <div className="backup-row-right">
-                <span className="backup-cr">{c.credits ? `${c.credits} cr` : '—'}</span>
-                <button
-                  className="backup-promote-btn"
-                  onClick={() => promoteBackup(c)}
-                  title="Move to primary planner"
-                >
-                  ↑ Add to Planner
-                </button>
-                <button
-                  className="backup-remove-btn"
-                  onClick={() => toggleBackup(c)}
-                  title="Remove backup"
-                >✕</button>
-              </div>
-            </div>
-          );
-        })}
+              );
+            })}
+          </div>
+        ))}
       </div>
     </div>
   );

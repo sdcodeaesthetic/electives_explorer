@@ -294,8 +294,10 @@ function AppInner({ logout, user }) {
     }
 
     // Open a clean print window
+    const backupList = allCourses.filter(c => backupCourses.has(c.id))
+      .sort((a, b) => TERM_ORDER.indexOf(a.term || 'X') - TERM_ORDER.indexOf(b.term || 'X'));
     const win = window.open('', '_blank', 'width=900,height=700');
-    win.document.write(buildPrintHTML(basketCourses, { t4, t5, t6, total }));
+    win.document.write(buildPrintHTML(basketCourses, { t4, t5, t6, total }, backupList));
     win.document.close();
     win.focus();
     setTimeout(() => { win.print(); }, 400);
@@ -491,7 +493,7 @@ const AREA_COLORS = {
 const TERM_ORDER  = ['Term IV', 'Term V', 'Term VI'];
 const TERM_LABELS = { 'Term IV': 'Term 4', 'Term V': 'Term 5', 'Term VI': 'Term 6' };
 
-function buildPrintHTML(courses, { t4, t5, t6, total }) {
+function buildPrintHTML(courses, { t4, t5, t6, total }, backupList = []) {
   const byTerm = TERM_ORDER.reduce((acc, t) => {
     acc[t] = courses.filter(c => c.term === t);
     return acc;
@@ -569,6 +571,8 @@ function buildPrintHTML(courses, { t4, t5, t6, total }) {
   .area-bar-bg   { background: #e5e7eb; border-radius: 4px; height: 4px; margin-bottom: 6px; }
   .area-bar-fill { height: 4px; border-radius: 4px; }
   .area-meta { font-size: 11px; color: #6b7280; }
+  .backup-term-hdr td { background: #e5e7eb; color: #374151; font-weight: 700; font-size: 12px; }
+  .backup-note { font-size: 12px; color: #6b7280; margin-top: 6px; font-style: italic; }
 </style></head><body>
 <h1>IIM Sambalpur · MBA Elective Plan</h1>
 <p class="sub">Generated on ${new Date().toLocaleDateString('en-IN', { day:'numeric', month:'long', year:'numeric' })}</p>
@@ -590,5 +594,25 @@ function buildPrintHTML(courses, { t4, t5, t6, total }) {
     <tr><td><strong>Total</strong></td><td>${total}</td><td>48 – 54</td><td class="${total>=48&&total<=54?'ok':'bad'}">${total>=48&&total<=54?'✓ OK':'✗ Violation'}</td></tr>
   </tbody>
 </table>
+${backupList.length > 0 ? `
+<p class="section-title" style="margin-top:32px">Backup Courses</p>
+<p class="backup-note">Not counted toward credits — kept as alternatives.</p>
+<table style="margin-top:10px">
+  <thead><tr><th>Course</th><th>Area</th><th>Faculty</th><th style="text-align:right">Credits</th></tr></thead>
+  <tbody>
+    ${TERM_ORDER.map(term => {
+      const list = backupList.filter(c => c.term === term);
+      if (!list.length) return '';
+      const rows = list.map(c => `
+        <tr>
+          <td>${c.course}</td>
+          <td>${c.area}</td>
+          <td>${c.faculty}</td>
+          <td style="text-align:right">${c.credits || '—'}</td>
+        </tr>`).join('');
+      return `<tr class="backup-term-hdr"><td colspan="4">${TERM_LABELS[term]}</td></tr>${rows}`;
+    }).join('')}
+  </tbody>
+</table>` : ''}
 </body></html>`;
 }
