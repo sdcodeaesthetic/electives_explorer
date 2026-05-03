@@ -2,14 +2,14 @@ import { useState } from 'react';
 import '../styles/BasketView.css';
 
 const AREA_COLORS = {
-  Finance:      '#3b82f6',
-  GMPP:         '#8b5cf6',
-  ISM:          '#14b8a6',
-  Marketing:    '#f97316',
-  'OB/HR':      '#22c55e',
-  Operations:   '#eab308',
-  Strategy:     '#ec4899',
-  'Inter-Area': '#64748b',
+  Finance:                '#3b82f6',
+  GMPPE:                  '#8b5cf6',
+  ISM:                    '#14b8a6',
+  Marketing:              '#f97316',
+  'OB-HR':                '#22c55e',
+  Operations:             '#eab308',
+  Strategy:               '#ec4899',
+  'Inter Area Electives': '#64748b',
 };
 
 const TERM_ORDER = ['Term IV', 'Term V', 'Term VI', 'X'];

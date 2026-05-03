@@ -13,12 +13,12 @@ async function fetchProfessors() {
 }
 
 const AREA_COLORS = {
-  Finance: '#3b82f6', GMPP: '#8b5cf6', ISM: '#14b8a6',
-  Marketing: '#f97316', 'OB/HR': '#22c55e', Operations: '#eab308',
-  Strategy: '#ec4899', 'Inter-Area': '#64748b',
+  Finance: '#3b82f6', GMPPE: '#8b5cf6', ISM: '#14b8a6',
+  Marketing: '#f97316', 'OB-HR': '#22c55e', Operations: '#eab308',
+  Strategy: '#ec4899', 'Inter Area Electives': '#64748b',
 };
 
-const AREAS   = ['Finance','GMPP','ISM','Marketing','OB/HR','Operations','Strategy','Inter-Area'];
+const AREAS   = ['Finance','GMPPE','ISM','Marketing','OB-HR','Operations','Strategy','Inter Area Electives'];
 const TERMS   = ['Term IV','Term V','Term VI'];
 const CREDITS = [1.5, 2, 2.5, 3, 4, 6];
 
