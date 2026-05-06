@@ -19,23 +19,23 @@
       {
         "why": "Direct continuation into risk-management techniques taught by the same faculty.",
         "area": "Finance",
-        "term": "VI",
+        "term": "Term VI",
         "course": "Financial Risk Management",
         "credits": "3",
-        "faculty": "Dr. Nishi Malhotra"
+        "faculty": "Mr. Jitender Arora & Dr. Nishi Malhotra"
       },
       {
         "why": "Covers how digital disruption is reshaping banking business models.",
         "area": "Finance",
         "term": "Term VI",
         "course": "Financial Technology",
-        "credits": "3",
-        "faculty": "Awaiting Approval"
+        "credits": "1.5",
+        "faculty": "Mr. Priyadarshi Dutta"
       },
       {
         "why": "Deepens lender-side credit evaluation for larger corporate loans.",
         "area": "Finance",
-        "term": "V",
+        "term": "Term V",
         "course": "Project Appraisal & Financing",
         "credits": "3",
         "faculty": "Prof. Pradip Kumar Lath"
@@ -47,7 +47,7 @@
     "professor2_name": null,
     "faculty": "Dr. Nishi Malhotra",
     "created_at": "2026-04-11T18:32:51.658Z",
-    "updated_at": "2026-05-03T06:13:23.846Z"
+    "updated_at": "2026-05-06T16:19:38.196Z"
   },
   {
     "id": 2,
@@ -69,7 +69,7 @@
       {
         "why": "Valuation is the analytical backbone of all IB transactions.",
         "area": "Finance",
-        "term": "IV",
+        "term": "Term IV",
         "course": "Investment Banking",
         "credits": "1.5",
         "faculty": "Prof. Pratap Giri"
@@ -77,15 +77,15 @@
       {
         "why": "Uses valuation as the core input for M&A deal-making.",
         "area": "Finance",
-        "term": "VI",
+        "term": "Term VI",
         "course": "Mergers & Acquisition",
         "credits": "3",
-        "faculty": "Prof. Seema Gupta"
+        "faculty": "Prof. Pratap Giri"
       },
       {
         "why": "Provides the Excel modelling rigour needed for any valuation exercise.",
         "area": "Finance",
-        "term": "V",
+        "term": "Term V",
         "course": "Finance Modelling using Excel",
         "credits": "1.5",
         "faculty": "Prof. Nitin Balwani"
@@ -97,7 +97,7 @@
     "professor2_name": null,
     "faculty": "Prof. Saumya Ranjan Das",
     "created_at": "2026-04-11T18:32:51.838Z",
-    "updated_at": "2026-04-14T17:07:06.698Z"
+    "updated_at": "2026-05-04T15:10:45.662Z"
   },
   {
     "id": 3,
@@ -127,7 +127,7 @@
       {
         "why": "Shows the institutional side of capital markets that retail clients interact with.",
         "area": "Finance",
-        "term": "IV",
+        "term": "Term IV",
         "course": "Investment Banking",
         "credits": "1.5",
         "faculty": "Prof. Pratap Giri"
@@ -135,10 +135,10 @@
       {
         "why": "Deepens understanding of how clients actually make money decisions, reinforcing behavioural finance.",
         "area": "Marketing",
-        "term": "IV",
+        "term": "Term V",
         "course": "Consumer Behaviour and Neuromarketing",
         "credits": "3",
-        "faculty": "Prof. Nitin Soni"
+        "faculty": "Prof. Nitin Soni & Prof. Poonam Kumar"
       }
     ],
     "professor1_id": 32,
@@ -147,7 +147,7 @@
     "professor2_name": null,
     "faculty": "Prof. Diwahar Nadar",
     "created_at": "2026-04-11T18:32:52.018Z",
-    "updated_at": "2026-05-03T06:13:24.010Z"
+    "updated_at": "2026-05-04T15:10:45.806Z"
   },
   {
     "id": 4,
@@ -169,7 +169,7 @@
       {
         "why": "Same faculty, direct continuation with strong content overlap.",
         "area": "Finance",
-        "term": "V",
+        "term": "Term V",
         "course": "Banking Operations Management",
         "credits": "3",
         "faculty": "Dr. Nishi Malhotra"
@@ -177,7 +177,7 @@
       {
         "why": "Derivatives are the primary hedging instruments in FRM.",
         "area": "Finance",
-        "term": "IV",
+        "term": "Term IV",
         "course": "Options, Futures and Derivatives",
         "credits": "3",
         "faculty": "Prof. Udayan Sharma"
@@ -185,19 +185,19 @@
       {
         "why": "Duration, convexity, and credit risk concepts feed directly into FRM.",
         "area": "Finance",
-        "term": "V",
+        "term": "Term V",
         "course": "Fixed Income Securities",
         "credits": "3",
         "faculty": "Prof. Kaushik Desarkar"
       }
     ],
-    "professor1_id": 121,
-    "professor2_id": null,
-    "professor1_name": "Awaiting Approval",
-    "professor2_name": null,
-    "faculty": "Awaiting Approval",
+    "professor1_id": 124,
+    "professor2_id": 53,
+    "professor1_name": "Mr. Jitender Arora",
+    "professor2_name": "Dr. Nishi Malhotra",
+    "faculty": "Mr. Jitender Arora & Dr. Nishi Malhotra",
     "created_at": "2026-04-11T18:32:52.198Z",
-    "updated_at": "2026-05-02T08:11:03.321Z"
+    "updated_at": "2026-05-06T16:12:50.015Z"
   },
   {
     "id": 5,
@@ -219,7 +219,7 @@
       {
         "why": "Derivatives coverage directly extends into interest-rate derivatives.",
         "area": "Finance",
-        "term": "IV",
+        "term": "Term IV",
         "course": "Options, Futures and Derivatives",
         "credits": "3",
         "faculty": "Prof. Udayan Sharma"
@@ -227,15 +227,15 @@
       {
         "why": "Applies fixed-income risk measures within a broader institutional risk context.",
         "area": "Finance",
-        "term": "VI",
+        "term": "Term VI",
         "course": "Financial Risk Management",
         "credits": "3",
-        "faculty": "Dr. Nishi Malhotra"
+        "faculty": "Mr. Jitender Arora & Dr. Nishi Malhotra"
       },
       {
         "why": "Banking balance sheets are dominated by fixed-income instruments.",
         "area": "Finance",
-        "term": "V",
+        "term": "Term V",
         "course": "Banking Operations Management",
         "credits": "3",
         "faculty": "Dr. Nishi Malhotra"
@@ -247,7 +247,7 @@
     "professor2_name": null,
     "faculty": "Prof. Kaushik Desarkar",
     "created_at": "2026-04-11T18:32:52.378Z",
-    "updated_at": "2026-04-14T16:38:12.312Z"
+    "updated_at": "2026-05-06T16:19:38.404Z"
   },
   {
     "id": 6,
@@ -269,7 +269,7 @@
       {
         "why": "Direct application of modelling skills to valuation exercises.",
         "area": "Finance",
-        "term": "V",
+        "term": "Term V",
         "course": "Business Analysis and Valuation",
         "credits": "3",
         "faculty": "Prof. Saumya Ranjan Das"
@@ -277,7 +277,7 @@
       {
         "why": "Extends modelling into project finance and capital-budgeting contexts.",
         "area": "Finance",
-        "term": "V",
+        "term": "Term V",
         "course": "Project Appraisal & Financing",
         "credits": "3",
         "faculty": "Prof. Pradip Kumar Lath"
@@ -285,7 +285,7 @@
       {
         "why": "Complements Excel modelling with Python-based analytics for broader decision support.",
         "area": "ISM",
-        "term": "IV",
+        "term": "Term IV",
         "course": "Business Analytics for Managerial Decisions",
         "credits": "3",
         "faculty": "Prof. Atanu Dey"
@@ -297,57 +297,7 @@
     "professor2_name": null,
     "faculty": "Prof. Nitin Balwani",
     "created_at": "2026-04-11T18:32:52.558Z",
-    "updated_at": "2026-04-14T16:38:12.312Z"
-  },
-  {
-    "id": 7,
-    "area": "Finance",
-    "term": "Term VI",
-    "course": "International Finance",
-    "credits": 3,
-    "description": "Businesses are operating in an increasingly interconnected global environment. Most businesses today are either directly or indirectly exposed to international competition. Managing such businesses requires an understanding of currency risks and the global financial environment. The objective of this course is to provide students with an in-depth knowledge of these issues. The main topics covered in this course are: forex markets, international Parity conditions, forex risks, currency derivatives and hedging issues, issues with currency investment strategies, issues with cross-border financing decisions and cross-border investment decisions.\n\nStudent Learning Outcomes:\n\nAfter completing this course, students should be able to\n1. Demonstrate basic understanding of the foreign exchange market and exchange rates\n2. Demonstrate basic understanding of how to use foreign exchange derivatives and other techniques to manage foreign exchange exposures of firms\n3. Demonstrate basic understanding of the issues of multinational financing and investment decisions\n4. Demonstrate critical and analytical skills, wherein they should be able to make sense out of a mass of information to address relevant issues of international finance theory.",
-    "key_takeaways": "• Understanding of foreign exchange markets, spot/forward rates, and quotations.\n• Ability to use forex derivatives to hedge currency exposure.\n• Capability to evaluate international parity conditions (PPP, IRP, Fisher effect).\n• Skills for cross-border capital budgeting and multinational financing decisions.\n• Analytical framework for currency-risk management in MNC contexts.",
-    "prerequisites": "• Strong grounding in Financial Management and familiarity with corporate finance decisions.\n• Basic macroeconomics, especially exchange rates and balance of payments.\n• Comfort with numerical problem-solving and Excel-based hedging exercises.",
-    "course_curriculum": "Tutorial 1; Numerical problem solving involving topics covered in sessions 1-9 and Case discussion\nInternational Capital Budgeting; Case/Minicase discussion\nFinancing International Trade; Case/Minicase discussion\nTutorial 2; Numerical problem solving involving topics covered in sessions 11-19 and Case discussion",
-    "summary": [
-      "Covers forex markets, international parity conditions, currency derivatives, hedging, multinational financing and investment decisions, and cross-border capital budgeting.",
-      "Essential for managers in multinationals, exporters/importers, or corporate treasury functions dealing with currency exposure.",
-      "Research-paper heavy for students interested in academic rigour; also highly practical with numerical problem-solving sessions.",
-      "Particularly relevant given India's growing integration with global supply chains and capital markets."
-    ],
-    "complementary_courses": [
-      {
-        "why": "Derivatives coverage is the tool-set for forex hedging.",
-        "area": "Finance",
-        "term": "IV",
-        "course": "Options, Futures and Derivatives",
-        "credits": "3",
-        "faculty": "Prof. Udayan Sharma"
-      },
-      {
-        "why": "Provides the strategic business context for cross-border finance.",
-        "area": "Strategy",
-        "term": "IV",
-        "course": "International Business",
-        "credits": "3",
-        "faculty": "Prof. Aqueeb Sohail Shaik"
-      },
-      {
-        "why": "Macroeconomic foundation for exchange-rate and trade policy discussions.",
-        "area": "GMPPE",
-        "term": "V",
-        "course": "International Economics",
-        "credits": "3",
-        "faculty": "Prof. Anasuya Haldar"
-      }
-    ],
-    "professor1_id": 121,
-    "professor2_id": null,
-    "professor1_name": "Awaiting Approval",
-    "professor2_name": null,
-    "faculty": "Awaiting Approval",
-    "created_at": "2026-04-11T18:32:52.738Z",
-    "updated_at": "2026-05-03T04:31:43.098Z"
+    "updated_at": "2026-05-04T15:10:46.242Z"
   },
   {
     "id": 8,
@@ -377,7 +327,7 @@
       {
         "why": "Deepens valuation rigour with DCF, multiples, and real options.",
         "area": "Finance",
-        "term": "V",
+        "term": "Term V",
         "course": "Business Analysis and Valuation",
         "credits": "3",
         "faculty": "Prof. Saumya Ranjan Das"
@@ -385,10 +335,10 @@
       {
         "why": "Extends IB deal-making into M&A transaction execution.",
         "area": "Finance",
-        "term": "VI",
+        "term": "Term VI",
         "course": "Mergers & Acquisition",
         "credits": "3",
-        "faculty": "Prof. Seema Gupta"
+        "faculty": "Prof. Pratap Giri"
       }
     ],
     "professor1_id": 83,
@@ -397,7 +347,7 @@
     "professor2_name": null,
     "faculty": "Prof. Pratap Giri",
     "created_at": "2026-04-11T18:32:52.918Z",
-    "updated_at": "2026-05-03T06:13:24.170Z"
+    "updated_at": "2026-05-04T15:10:46.534Z"
   },
   {
     "id": 10,
@@ -419,7 +369,7 @@
       {
         "why": "Core valuation toolkit that M&A transactions depend on.",
         "area": "Finance",
-        "term": "V",
+        "term": "Term V",
         "course": "Business Analysis and Valuation",
         "credits": "3",
         "faculty": "Prof. Saumya Ranjan Das"
@@ -427,10 +377,10 @@
       {
         "why": "Strategic rationale for M&A within corporate strategy.",
         "area": "Strategy",
-        "term": "IV",
+        "term": "Term IV",
         "course": "Corporate Strategy",
         "credits": "3",
-        "faculty": "Prof. Nilesh Khare & Prof. Aarti Singh"
+        "faculty": "Prof. Dr. Nilesh Khare & Prof. Dr. Aarti Singh"
       },
       {
         "why": "M&A transactions are structured and financed by investment banks; this course provides the deal origination, valuation, and capital markets context that underpins every M&A transaction.",
@@ -447,7 +397,7 @@
     "professor2_name": null,
     "faculty": "Prof. Pratap Giri",
     "created_at": "2026-04-11T18:32:53.298Z",
-    "updated_at": "2026-05-03T06:13:24.334Z"
+    "updated_at": "2026-05-04T15:10:46.762Z"
   },
   {
     "id": 11,
@@ -477,7 +427,7 @@
       {
         "why": "Extends derivatives thinking into interest-rate and bond markets.",
         "area": "Finance",
-        "term": "V",
+        "term": "Term V",
         "course": "Fixed Income Securities",
         "credits": "3",
         "faculty": "Prof. Kaushik Desarkar"
@@ -485,10 +435,10 @@
       {
         "why": "Applies derivative concepts to institutional risk management (Basel, credit/market risk).",
         "area": "Finance",
-        "term": "VI",
+        "term": "Term VI",
         "course": "Financial Risk Management",
         "credits": "3",
-        "faculty": "Dr. Nishi Malhotra"
+        "faculty": "Mr. Jitender Arora & Dr. Nishi Malhotra"
       }
     ],
     "professor1_id": 103,
@@ -497,7 +447,7 @@
     "professor2_name": null,
     "faculty": "Prof. Udayan Sharma",
     "created_at": "2026-04-11T18:32:53.498Z",
-    "updated_at": "2026-05-03T06:13:24.494Z"
+    "updated_at": "2026-05-06T16:19:38.612Z"
   },
   {
     "id": 12,
@@ -519,7 +469,7 @@
       {
         "why": "Valuation frameworks directly support project-appraisal decisions.",
         "area": "Finance",
-        "term": "V",
+        "term": "Term V",
         "course": "Business Analysis and Valuation",
         "credits": "3",
         "faculty": "Prof. Saumya Ranjan Das"
@@ -527,15 +477,15 @@
       {
         "why": "Extends project risk into institutional risk-management practices.",
         "area": "Finance",
-        "term": "VI",
+        "term": "Term VI",
         "course": "Financial Risk Management",
         "credits": "3",
-        "faculty": "Dr. Nishi Malhotra"
+        "faculty": "Mr. Jitender Arora & Dr. Nishi Malhotra"
       },
       {
         "why": "Lender-side view that complements borrower-side project structuring.",
         "area": "Finance",
-        "term": "V",
+        "term": "Term V",
         "course": "Banking Operations Management",
         "credits": "3",
         "faculty": "Dr. Nishi Malhotra"
@@ -547,7 +497,7 @@
     "professor2_name": null,
     "faculty": "Prof. Pradip Kumar Lath",
     "created_at": "2026-04-11T18:32:53.728Z",
-    "updated_at": "2026-04-14T16:38:12.312Z"
+    "updated_at": "2026-05-06T16:19:38.820Z"
   },
   {
     "id": 13,
@@ -569,7 +519,7 @@
       {
         "why": "Derivatives are a core tool for portfolio hedging and enhancement.",
         "area": "Finance",
-        "term": "IV",
+        "term": "Term IV",
         "course": "Options, Futures and Derivatives",
         "credits": "3",
         "faculty": "Prof. Udayan Sharma"
@@ -577,7 +527,7 @@
       {
         "why": "Valuation rigour directly supports fundamental equity analysis.",
         "area": "Finance",
-        "term": "V",
+        "term": "Term V",
         "course": "Business Analysis and Valuation",
         "credits": "3",
         "faculty": "Prof. Saumya Ranjan Das"
@@ -585,7 +535,7 @@
       {
         "why": "Rounds out the equity-heavy SAPM content with debt instruments.",
         "area": "Finance",
-        "term": "V",
+        "term": "Term V",
         "course": "Fixed Income Securities",
         "credits": "3",
         "faculty": "Prof. Kaushik Desarkar"
@@ -597,7 +547,7 @@
     "professor2_name": null,
     "faculty": "Prof. Soumya Guha Deb",
     "created_at": "2026-04-11T18:32:53.898Z",
-    "updated_at": "2026-04-14T16:38:12.312Z"
+    "updated_at": "2026-05-04T15:10:47.194Z"
   },
   {
     "id": 14,
@@ -627,7 +577,7 @@
       {
         "why": "Covers cognitive biases that drive unethical trading behaviour.",
         "area": "Inter Area Electives",
-        "term": "VI",
+        "term": "Term VI",
         "course": "Behavioural Strategy and Decision Making",
         "credits": "1.5",
         "faculty": "Prof. Shikha Bhardwaj & Prof. Diptiranjan Mahapatra"
@@ -635,7 +585,7 @@
       {
         "why": "Brings AI and NLP tools into financial analysis.",
         "area": "ISM",
-        "term": "V",
+        "term": "Term V",
         "course": "AI for Financial Analytics and Decision Making",
         "credits": "1.5",
         "faculty": "Prof. Deepanwita Datta"
@@ -647,7 +597,7 @@
     "professor2_name": null,
     "faculty": "Prof. Dharen Kumar Pandey",
     "created_at": "2026-04-11T18:32:54.118Z",
-    "updated_at": "2026-05-03T06:13:24.658Z"
+    "updated_at": "2026-05-04T15:10:47.338Z"
   },
   {
     "id": 15,
@@ -669,15 +619,15 @@
       {
         "why": "Conceptual AI foundation that this course assumes.",
         "area": "ISM",
-        "term": "IV",
+        "term": "Term IV",
         "course": "AI for Business",
-        "credits": "3",
-        "faculty": "Prof. Deepanwita Datta"
+        "credits": "1.5",
+        "faculty": "Dr. Ashish Sharma"
       },
       {
         "why": "GenAI product-management module directly extends into agentic thinking.",
         "area": "ISM",
-        "term": "IV",
+        "term": "Term IV",
         "course": "Digital Product Management",
         "credits": "3",
         "faculty": "Ms. Ankita Parihar & Mr. Ramkumar Arumugam"
@@ -685,7 +635,7 @@
       {
         "why": "Practical AI tool usage for managerial workflows.",
         "area": "Strategy",
-        "term": "IV",
+        "term": "Term IV",
         "course": "Working with AI",
         "credits": "1.5",
         "faculty": "Dr. Preet Deep Singh"
@@ -697,7 +647,7 @@
     "professor2_name": null,
     "faculty": "Prof. Kumari Pritee",
     "created_at": "2026-04-11T18:32:54.338Z",
-    "updated_at": "2026-04-14T16:38:12.312Z"
+    "updated_at": "2026-05-04T15:10:47.482Z"
   },
   {
     "id": 16,
@@ -719,23 +669,23 @@
       {
         "why": "Same faculty — broader AI foundations that feed this specialised course.",
         "area": "ISM",
-        "term": "IV",
+        "term": "Term IV",
         "course": "AI for Business",
-        "credits": "3",
-        "faculty": "Prof. Deepanwita Datta"
+        "credits": "1.5",
+        "faculty": "Dr. Ashish Sharma"
       },
       {
         "why": "Applies AI techniques to traditional risk-management contexts.",
         "area": "Finance",
-        "term": "VI",
+        "term": "Term VI",
         "course": "Financial Risk Management",
         "credits": "3",
-        "faculty": "Dr. Nishi Malhotra"
+        "faculty": "Mr. Jitender Arora & Dr. Nishi Malhotra"
       },
       {
         "why": "Python and ML execution skills that complement this course.",
         "area": "ISM",
-        "term": "IV",
+        "term": "Term IV",
         "course": "Business Analytics for Managerial Decisions",
         "credits": "3",
         "faculty": "Prof. Atanu Dey"
@@ -747,7 +697,7 @@
     "professor2_name": null,
     "faculty": "Prof. Deepanwita Datta",
     "created_at": "2026-04-11T18:32:54.538Z",
-    "updated_at": "2026-04-14T16:38:12.312Z"
+    "updated_at": "2026-05-06T16:19:39.028Z"
   },
   {
     "id": 17,
@@ -769,7 +719,7 @@
       {
         "why": "Practical ML execution skills that ground AI strategy in real datasets.",
         "area": "ISM",
-        "term": "IV",
+        "term": "Term IV",
         "course": "Business Analytics for Managerial Decisions",
         "credits": "3",
         "faculty": "Prof. Atanu Dey"
@@ -777,7 +727,7 @@
       {
         "why": "Extends AI strategy into product design and go-to-market.",
         "area": "ISM",
-        "term": "IV",
+        "term": "Term IV",
         "course": "Digital Product Management",
         "credits": "3",
         "faculty": "Ms. Ankita Parihar & Mr. Ramkumar Arumugam"
@@ -785,7 +735,7 @@
       {
         "why": "Takes AI-for-business into autonomous-agent territory.",
         "area": "ISM",
-        "term": "V",
+        "term": "Term V",
         "course": "Agentic AI for Managers",
         "credits": "3",
         "faculty": "Prof. Kumari Pritee"
@@ -797,7 +747,7 @@
     "professor2_name": null,
     "faculty": "Dr. Ashish Sharma",
     "created_at": "2026-04-11T18:32:54.728Z",
-    "updated_at": "2026-05-02T04:31:21.879Z"
+    "updated_at": "2026-05-04T15:10:47.838Z"
   },
   {
     "id": 18,
@@ -819,7 +769,7 @@
       {
         "why": "Technical analytics execution that complements the strategic framing here.",
         "area": "ISM",
-        "term": "IV",
+        "term": "Term IV",
         "course": "Business Analytics for Managerial Decisions",
         "credits": "3",
         "faculty": "Prof. Atanu Dey"
@@ -827,7 +777,7 @@
       {
         "why": "Visualisation skills for communicating big-data insights.",
         "area": "ISM",
-        "term": "IV",
+        "term": "Term IV",
         "course": "Data Visualization and Business Storytelling",
         "credits": "3",
         "faculty": "Prof. Atanu Dey & Prof. Siddharth Gaurav Majhi"
@@ -835,10 +785,10 @@
       {
         "why": "Domain-specific application of analytics in supply chains.",
         "area": "Operations",
-        "term": "V",
+        "term": "Term V",
         "course": "Supply Chain Analytics",
         "credits": "3",
-        "faculty": "Prof. Bhawana Rathore & Prof. Shweta Singh"
+        "faculty": "Mr. Sanjeev Das"
       }
     ],
     "professor1_id": 78,
@@ -847,7 +797,7 @@
     "professor2_name": null,
     "faculty": "Prof. Pritee Kumari",
     "created_at": "2026-04-11T18:32:54.938Z",
-    "updated_at": "2026-04-14T16:38:12.312Z"
+    "updated_at": "2026-05-04T15:10:47.982Z"
   },
   {
     "id": 19,
@@ -871,13 +821,13 @@
         "area": "Finance",
         "term": "Term VI",
         "course": "Financial Technology",
-        "credits": "3",
-        "faculty": "Awaiting Approval"
+        "credits": "1.5",
+        "faculty": "Mr. Priyadarshi Dutta"
       },
       {
         "why": "Security and risk perspectives on blockchain systems.",
         "area": "ISM",
-        "term": "VI",
+        "term": "Term VI",
         "course": "Cybersecurity & Enterprise IT Risk Management",
         "credits": "3",
         "faculty": "Prof. A Manish Kumar"
@@ -885,7 +835,7 @@
       {
         "why": "Practical supply-chain applications of blockchain.",
         "area": "Operations",
-        "term": "V",
+        "term": "Term V",
         "course": "Digital Supply Chains",
         "credits": "3",
         "faculty": "Prof. Harshad Sonar & Prof. Kaustov Chakraborty"
@@ -897,7 +847,7 @@
     "professor2_name": null,
     "faculty": "Prof. Keshav Kaushik",
     "created_at": "2026-04-11T18:32:55.138Z",
-    "updated_at": "2026-05-03T06:13:24.818Z"
+    "updated_at": "2026-05-06T16:19:39.236Z"
   },
   {
     "id": 20,
@@ -919,7 +869,7 @@
       {
         "why": "Same faculty continuation into Power BI and Tableau for executive communication.",
         "area": "ISM",
-        "term": "IV",
+        "term": "Term IV",
         "course": "Data Visualization and Business Storytelling",
         "credits": "3",
         "faculty": "Prof. Atanu Dey & Prof. Siddharth Gaurav Majhi"
@@ -927,15 +877,15 @@
       {
         "why": "Pairs analytics execution with AI strategy framing.",
         "area": "ISM",
-        "term": "IV",
+        "term": "Term IV",
         "course": "AI for Business",
-        "credits": "3",
-        "faculty": "Prof. Deepanwita Datta"
+        "credits": "1.5",
+        "faculty": "Dr. Ashish Sharma"
       },
       {
         "why": "Extends analytics from small datasets to enterprise-scale decision-making.",
         "area": "ISM",
-        "term": "VI",
+        "term": "Term VI",
         "course": "Big Data Analytics",
         "credits": "3",
         "faculty": "Prof. Pritee Kumari"
@@ -947,7 +897,7 @@
     "professor2_name": null,
     "faculty": "Prof. Atanu Dey",
     "created_at": "2026-04-11T18:32:55.318Z",
-    "updated_at": "2026-04-14T16:38:12.312Z"
+    "updated_at": "2026-05-04T15:10:48.353Z"
   },
   {
     "id": 21,
@@ -969,7 +919,7 @@
       {
         "why": "Cloud is a core enabler of enterprise digital transformation.",
         "area": "ISM",
-        "term": "IV",
+        "term": "Term V",
         "course": "Managing Digital Transformation",
         "credits": "3",
         "faculty": "Prof. A Manish Kumar"
@@ -977,7 +927,7 @@
       {
         "why": "Risk and security dimensions of cloud deployment.",
         "area": "ISM",
-        "term": "VI",
+        "term": "Term VI",
         "course": "Cybersecurity & Enterprise IT Risk Management",
         "credits": "3",
         "faculty": "Prof. A Manish Kumar"
@@ -985,7 +935,7 @@
       {
         "why": "Cloud infrastructure underpins modern big-data analytics.",
         "area": "ISM",
-        "term": "VI",
+        "term": "Term VI",
         "course": "Big Data Analytics",
         "credits": "3",
         "faculty": "Prof. Pritee Kumari"
@@ -997,7 +947,7 @@
     "professor2_name": null,
     "faculty": "Dr. Biswajit Mohapatra",
     "created_at": "2026-04-11T18:32:55.498Z",
-    "updated_at": "2026-04-14T16:38:12.312Z"
+    "updated_at": "2026-05-04T15:10:48.518Z"
   },
   {
     "id": 22,
@@ -1019,7 +969,7 @@
       {
         "why": "Same faculty — security context that complements transformation strategy.",
         "area": "ISM",
-        "term": "IV",
+        "term": "Term V",
         "course": "Managing Digital Transformation",
         "credits": "3",
         "faculty": "Prof. A Manish Kumar"
@@ -1027,7 +977,7 @@
       {
         "why": "Cloud GRC directly extends into cybersecurity.",
         "area": "ISM",
-        "term": "V",
+        "term": "Term V",
         "course": "Business of Cloud Computing",
         "credits": "1.5",
         "faculty": "Dr. Biswajit Mohapatra"
@@ -1035,10 +985,10 @@
       {
         "why": "Operational risk and enterprise risk management context.",
         "area": "Finance",
-        "term": "VI",
+        "term": "Term VI",
         "course": "Financial Risk Management",
         "credits": "3",
-        "faculty": "Dr. Nishi Malhotra"
+        "faculty": "Mr. Jitender Arora & Dr. Nishi Malhotra"
       }
     ],
     "professor1_id": 16,
@@ -1047,7 +997,7 @@
     "professor2_name": null,
     "faculty": "Prof. A Manish Kumar",
     "created_at": "2026-04-11T18:32:55.678Z",
-    "updated_at": "2026-04-14T16:38:12.312Z"
+    "updated_at": "2026-05-06T16:19:39.448Z"
   },
   {
     "id": 23,
@@ -1069,7 +1019,7 @@
       {
         "why": "Same faculty, natural prerequisite for the analytics behind the visuals.",
         "area": "ISM",
-        "term": "IV",
+        "term": "Term IV",
         "course": "Business Analytics for Managerial Decisions",
         "credits": "3",
         "faculty": "Prof. Atanu Dey"
@@ -1077,7 +1027,7 @@
       {
         "why": "Strategic context for analytics and dashboarding at enterprise scale.",
         "area": "ISM",
-        "term": "VI",
+        "term": "Term VI",
         "course": "Big Data Analytics",
         "credits": "3",
         "faculty": "Prof. Pritee Kumari"
@@ -1085,7 +1035,7 @@
       {
         "why": "Domain-specific application of visualisation in people-analytics contexts.",
         "area": "OB-HR",
-        "term": "VI",
+        "term": "Term VI",
         "course": "HR Analytics",
         "credits": "3",
         "faculty": "Prof. Padmavathy Dhillon"
@@ -1097,7 +1047,7 @@
     "professor2_name": "Prof. Siddharth Gaurav Majhi",
     "faculty": "Prof. Atanu Dey & Prof. Siddharth Gaurav Majhi",
     "created_at": "2026-04-11T18:32:55.868Z",
-    "updated_at": "2026-04-14T16:38:12.312Z"
+    "updated_at": "2026-05-04T15:10:48.805Z"
   },
   {
     "id": 24,
@@ -1119,15 +1069,15 @@
       {
         "why": "Conceptual AI foundation that this course assumes.",
         "area": "ISM",
-        "term": "IV",
+        "term": "Term IV",
         "course": "AI for Business",
-        "credits": "3",
-        "faculty": "Prof. Deepanwita Datta"
+        "credits": "1.5",
+        "faculty": "Dr. Ashish Sharma"
       },
       {
         "why": "Adds data and ML execution depth to product decisions.",
         "area": "ISM",
-        "term": "IV",
+        "term": "Term IV",
         "course": "Business Analytics for Managerial Decisions",
         "credits": "3",
         "faculty": "Prof. Atanu Dey"
@@ -1135,7 +1085,7 @@
       {
         "why": "Extends product thinking into platform and network-effect strategy.",
         "area": "Strategy",
-        "term": "IV",
+        "term": "Term IV",
         "course": "Managing Platform Business",
         "credits": "1.5",
         "faculty": "Prof. Diptiranjan Mahapatra"
@@ -1143,7 +1093,7 @@
       {
         "why": "Natural continuation covering adoption, retention, and growth metrics.",
         "area": "Marketing",
-        "term": "V",
+        "term": "Term IV",
         "course": "Product Management and Analytics",
         "credits": "3",
         "faculty": "Prof. Nitin Soni"
@@ -1155,7 +1105,7 @@
     "professor2_name": "Mr. Ramkumar Arumugam",
     "faculty": "Ms. Ankita Parihar & Mr. Ramkumar Arumugam",
     "created_at": "2026-04-11T18:32:56.058Z",
-    "updated_at": "2026-04-14T16:38:12.312Z"
+    "updated_at": "2026-05-04T15:10:48.950Z"
   },
   {
     "id": 25,
@@ -1177,7 +1127,7 @@
       {
         "why": "Retail strategy lens on the same ecosystem.",
         "area": "Marketing",
-        "term": "V",
+        "term": "Term V",
         "course": "Retail & E-Business Management Strategy",
         "credits": "3",
         "faculty": "Dr. Arunima Rana"
@@ -1185,7 +1135,7 @@
       {
         "why": "Marketing execution skills for e-commerce contexts.",
         "area": "Marketing",
-        "term": "V",
+        "term": "Term V",
         "course": "Digital Marketing",
         "credits": "1.5",
         "faculty": "Prof. Anoop T S"
@@ -1193,7 +1143,7 @@
       {
         "why": "Operational side of fast-delivery e-commerce models.",
         "area": "Operations",
-        "term": "VI",
+        "term": "Term VI",
         "course": "Quick Commerce Supply Chains",
         "credits": "1.5",
         "faculty": "Prof. Harshad Sonar"
@@ -1205,7 +1155,7 @@
     "professor2_name": null,
     "faculty": "Prof. Rajesh Natarajan",
     "created_at": "2026-04-11T18:32:56.288Z",
-    "updated_at": "2026-05-02T08:11:04.193Z"
+    "updated_at": "2026-05-04T15:10:49.094Z"
   },
   {
     "id": 26,
@@ -1227,7 +1177,7 @@
       {
         "why": "IoT is a core enabler of digital supply chain visibility.",
         "area": "Operations",
-        "term": "V",
+        "term": "Term V",
         "course": "Digital Supply Chains",
         "credits": "3",
         "faculty": "Prof. Harshad Sonar & Prof. Kaustov Chakraborty"
@@ -1235,7 +1185,7 @@
       {
         "why": "Operational application of IoT and related technologies.",
         "area": "Operations",
-        "term": "IV",
+        "term": "Term IV",
         "course": "Technology-Enabled Operations",
         "credits": "1.5",
         "faculty": "Prof. Harshad Sonar"
@@ -1243,7 +1193,7 @@
       {
         "why": "Security concerns specific to IoT deployments.",
         "area": "ISM",
-        "term": "VI",
+        "term": "Term VI",
         "course": "Cybersecurity & Enterprise IT Risk Management",
         "credits": "3",
         "faculty": "Prof. A Manish Kumar"
@@ -1255,7 +1205,7 @@
     "professor2_name": null,
     "faculty": "Prof. Keshav Kaushik",
     "created_at": "2026-04-11T18:32:56.478Z",
-    "updated_at": "2026-04-14T16:38:12.312Z"
+    "updated_at": "2026-05-04T15:10:49.238Z"
   },
   {
     "id": 27,
@@ -1277,7 +1227,7 @@
       {
         "why": "Same faculty — extends digital strategy into risk and security dimensions.",
         "area": "ISM",
-        "term": "VI",
+        "term": "Term VI",
         "course": "Cybersecurity & Enterprise IT Risk Management",
         "credits": "3",
         "faculty": "Prof. A Manish Kumar"
@@ -1285,7 +1235,7 @@
       {
         "why": "Cloud is a core enabler of digital transformation.",
         "area": "ISM",
-        "term": "V",
+        "term": "Term V",
         "course": "Business of Cloud Computing",
         "credits": "1.5",
         "faculty": "Dr. Biswajit Mohapatra"
@@ -1293,7 +1243,7 @@
       {
         "why": "People-side complement to the technology-led change covered here.",
         "area": "OB-HR",
-        "term": "IV",
+        "term": "Term IV",
         "course": "Organisation Transformation and Change",
         "credits": "1.5",
         "faculty": "Prof. Shikha Bhardwaj"
@@ -1305,7 +1255,7 @@
     "professor2_name": null,
     "faculty": "Prof. A Manish Kumar",
     "created_at": "2026-04-11T18:32:56.678Z",
-    "updated_at": "2026-05-03T04:36:59.105Z"
+    "updated_at": "2026-05-04T15:10:49.381Z"
   },
   {
     "id": 28,
@@ -1327,7 +1277,7 @@
       {
         "why": "Core Python and ML skills that sports analytics builds on.",
         "area": "ISM",
-        "term": "IV",
+        "term": "Term IV",
         "course": "Business Analytics for Managerial Decisions",
         "credits": "3",
         "faculty": "Prof. Atanu Dey"
@@ -1335,7 +1285,7 @@
       {
         "why": "Strategic framing for analytics-led business decisions.",
         "area": "ISM",
-        "term": "VI",
+        "term": "Term VI",
         "course": "Big Data Analytics",
         "credits": "3",
         "faculty": "Prof. Pritee Kumari"
@@ -1343,7 +1293,7 @@
       {
         "why": "Visualisation is central to sports-analytics communication.",
         "area": "ISM",
-        "term": "IV",
+        "term": "Term IV",
         "course": "Data Visualization and Business Storytelling",
         "credits": "3",
         "faculty": "Prof. Atanu Dey & Prof. Siddharth Gaurav Majhi"
@@ -1355,7 +1305,7 @@
     "professor2_name": null,
     "faculty": "Vivekanand R",
     "created_at": "2026-04-11T18:32:56.878Z",
-    "updated_at": "2026-04-14T16:38:12.312Z"
+    "updated_at": "2026-05-04T15:10:49.530Z"
   },
   {
     "id": 29,
@@ -1377,7 +1327,7 @@
       {
         "why": "General consulting practice that frames tech consulting.",
         "area": "Strategy",
-        "term": "V",
+        "term": "Term V",
         "course": "Managing a Consulting Business: A Practitioner's Perspective",
         "credits": "1.5",
         "faculty": "Prof. Sandeep Kumar Hota"
@@ -1385,7 +1335,7 @@
       {
         "why": "Requirements engineering and product thinking overlap significantly.",
         "area": "ISM",
-        "term": "IV",
+        "term": "Term IV",
         "course": "Digital Product Management",
         "credits": "3",
         "faculty": "Ms. Ankita Parihar & Mr. Ramkumar Arumugam"
@@ -1393,7 +1343,7 @@
       {
         "why": "Broader enterprise transformation context for tech consulting engagements.",
         "area": "ISM",
-        "term": "IV",
+        "term": "Term V",
         "course": "Managing Digital Transformation",
         "credits": "3",
         "faculty": "Prof. A Manish Kumar"
@@ -1405,7 +1355,7 @@
     "professor2_name": null,
     "faculty": "Merlin Nandy",
     "created_at": "2026-04-11T18:32:57.073Z",
-    "updated_at": "2026-04-14T16:38:12.312Z"
+    "updated_at": "2026-05-04T15:10:49.738Z"
   },
   {
     "id": 30,
@@ -1427,7 +1377,7 @@
       {
         "why": "Same faculty — extends digital marketing into AI-enabled practices.",
         "area": "Marketing",
-        "term": "VI",
+        "term": "Term VI",
         "course": "AI in Marketing",
         "credits": "1.5",
         "faculty": "Prof. Anoop T S"
@@ -1435,7 +1385,7 @@
       {
         "why": "Strategic context for digital-retail execution.",
         "area": "Marketing",
-        "term": "V",
+        "term": "Term V",
         "course": "Retail & E-Business Management Strategy",
         "credits": "3",
         "faculty": "Dr. Arunima Rana"
@@ -1443,10 +1393,10 @@
       {
         "why": "Business-model lens on digital commerce.",
         "area": "ISM",
-        "term": "V",
+        "term": "Term V",
         "course": "E-Commerce",
         "credits": "3",
-        "faculty": "Prof. V N Rajesh"
+        "faculty": "Prof. Rajesh Natarajan"
       }
     ],
     "professor1_id": 5,
@@ -1455,7 +1405,7 @@
     "professor2_name": null,
     "faculty": "Prof. Anoop T S",
     "created_at": "2026-04-11T18:32:57.298Z",
-    "updated_at": "2026-04-14T16:38:12.312Z"
+    "updated_at": "2026-05-04T15:10:49.882Z"
   },
   {
     "id": 31,
@@ -1477,7 +1427,7 @@
       {
         "why": "Same faculty — digital foundation that AI builds on.",
         "area": "Marketing",
-        "term": "V",
+        "term": "Term V",
         "course": "Digital Marketing",
         "credits": "1.5",
         "faculty": "Prof. Anoop T S"
@@ -1485,15 +1435,15 @@
       {
         "why": "Cross-functional AI strategy context.",
         "area": "ISM",
-        "term": "IV",
+        "term": "Term IV",
         "course": "AI for Business",
-        "credits": "3",
-        "faculty": "Prof. Deepanwita Datta"
+        "credits": "1.5",
+        "faculty": "Dr. Ashish Sharma"
       },
       {
         "why": "Product-led approach to AI-enabled growth.",
         "area": "Marketing",
-        "term": "V",
+        "term": "Term IV",
         "course": "Product Management and Analytics",
         "credits": "3",
         "faculty": "Prof. Nitin Soni"
@@ -1505,7 +1455,7 @@
     "professor2_name": null,
     "faculty": "Prof. Anoop T S",
     "created_at": "2026-04-11T18:32:57.498Z",
-    "updated_at": "2026-04-14T16:38:12.312Z"
+    "updated_at": "2026-05-04T15:10:50.026Z"
   },
   {
     "id": 32,
@@ -1527,15 +1477,15 @@
       {
         "why": "Behavioural foundation for the research methods taught here.",
         "area": "Marketing",
-        "term": "IV",
+        "term": "Term V",
         "course": "Consumer Behaviour and Neuromarketing",
         "credits": "3",
-        "faculty": "Prof. Nitin Soni"
+        "faculty": "Prof. Nitin Soni & Prof. Poonam Kumar"
       },
       {
         "why": "Python-based analytics that complements SPSS rigour.",
         "area": "ISM",
-        "term": "IV",
+        "term": "Term IV",
         "course": "Business Analytics for Managerial Decisions",
         "credits": "3",
         "faculty": "Prof. Atanu Dey"
@@ -1543,7 +1493,7 @@
       {
         "why": "Applies research methods to product lifecycle decisions.",
         "area": "Marketing",
-        "term": "V",
+        "term": "Term IV",
         "course": "Product Management and Analytics",
         "credits": "3",
         "faculty": "Prof. Nitin Soni"
@@ -1555,7 +1505,7 @@
     "professor2_name": null,
     "faculty": "Prof. M Dev Prasad Murthy",
     "created_at": "2026-04-11T18:32:57.698Z",
-    "updated_at": "2026-04-14T16:38:12.312Z"
+    "updated_at": "2026-05-04T15:10:50.170Z"
   },
   {
     "id": 33,
@@ -1579,8 +1529,8 @@
         "area": "Marketing",
         "term": "Term V",
         "course": "Sales & Distribution Management",
-        "credits": 3,
-        "faculty": "Prof. Jayanta Routray"
+        "credits": "3",
+        "faculty": "Prof. Ramendra Singh & Prof. Sarthak Mohapatra"
       },
       {
         "why": "Key Account Management and relationship building are central to B2B Marketing; CRM provides the analytical and technological toolkit — loyalty programmes, lifetime value models, and CRM platforms — needed to institutionalise those relationships at scale.",
@@ -1593,10 +1543,10 @@
       {
         "why": "With B2B buying journeys increasingly starting online, Digital Marketing complements this course by covering SEO, content marketing, marketing automation, and digital analytics — capabilities essential for modern B2B demand generation and online marketplace strategies.",
         "area": "Marketing",
-        "term": "Term IV",
+        "term": "Term V",
         "course": "Digital Marketing",
-        "credits": 3,
-        "faculty": "Prof. Dipankar Chakraborti"
+        "credits": "1.5",
+        "faculty": "Prof. Anoop T S"
       }
     ],
     "professor1_id": 105,
@@ -1605,7 +1555,7 @@
     "professor2_name": null,
     "faculty": "Dr. Divakar Kamath",
     "created_at": "2026-04-11T18:32:57.878Z",
-    "updated_at": "2026-05-03T06:13:24.978Z"
+    "updated_at": "2026-05-04T15:10:50.314Z"
   },
   {
     "id": 34,
@@ -1627,18 +1577,18 @@
       {
         "why": "Consumer psychology foundation for brand decisions.",
         "area": "Marketing",
-        "term": "IV",
+        "term": "Term V",
         "course": "Consumer Behaviour and Neuromarketing",
         "credits": "3",
-        "faculty": "Prof. Nitin Soni"
+        "faculty": "Prof. Nitin Soni & Prof. Poonam Kumar"
       },
       {
         "why": "Applies brand management to the luxury segment specifically.",
         "area": "Marketing",
-        "term": "VI",
+        "term": "Term VI",
         "course": "Luxury Marketing",
         "credits": "1.5",
-        "faculty": "Prof. Nitin Soni"
+        "faculty": "Prof. Piyush Kumar Sinha"
       },
       {
         "why": "Deep cultural-meaning lens on brand building.",
@@ -1655,7 +1605,7 @@
     "professor2_name": "Dr. Anurag Dugar",
     "faculty": "Prof. Poonam Kumar & Dr. Anurag Dugar",
     "created_at": "2026-04-11T18:32:58.068Z",
-    "updated_at": "2026-05-03T06:13:25.142Z"
+    "updated_at": "2026-05-04T15:10:50.458Z"
   },
   {
     "id": 35,
@@ -1677,7 +1627,7 @@
       {
         "why": "Brand decisions flow directly from consumer-behaviour insights.",
         "area": "Marketing",
-        "term": "IV",
+        "term": "Term IV",
         "course": "Brand Management",
         "credits": "3",
         "faculty": "Prof. Poonam Kumar & Dr. Anurag Dugar"
@@ -1685,7 +1635,7 @@
       {
         "why": "Quantitative methods for measuring the behaviours studied here.",
         "area": "Marketing",
-        "term": "IV",
+        "term": "Term IV",
         "course": "Advanced Marketing Research",
         "credits": "3",
         "faculty": "Prof. M Dev Prasad Murthy"
@@ -1693,7 +1643,7 @@
       {
         "why": "Broader behavioural-science lens applicable beyond consumers.",
         "area": "Inter Area Electives",
-        "term": "VI",
+        "term": "Term VI",
         "course": "Behavioural Strategy and Decision Making",
         "credits": "1.5",
         "faculty": "Prof. Shikha Bhardwaj & Prof. Diptiranjan Mahapatra"
@@ -1705,7 +1655,7 @@
     "professor2_name": "Prof. Poonam Kumar",
     "faculty": "Prof. Nitin Soni & Prof. Poonam Kumar",
     "created_at": "2026-04-11T18:32:58.258Z",
-    "updated_at": "2026-05-02T04:31:23.183Z"
+    "updated_at": "2026-05-04T15:10:50.602Z"
   },
   {
     "id": 36,
@@ -1727,23 +1677,23 @@
       {
         "why": "Comprehensive sales-organisation foundation.",
         "area": "Marketing",
-        "term": "V",
+        "term": "Term V",
         "course": "Sales & Distribution Management",
         "credits": "3",
-        "faculty": "Prof. Sarthak Mohapatra"
+        "faculty": "Prof. Ramendra Singh & Prof. Sarthak Mohapatra"
       },
       {
         "why": "B2B context where AI sales tools are most valuable.",
         "area": "Marketing",
-        "term": "IV",
+        "term": "Term IV",
         "course": "B2B Marketing",
         "credits": "3",
-        "faculty": "Prof. Sandip Mukhopadhyay & Mr. Amrat Parasnis"
+        "faculty": "Dr. Divakar Kamath"
       },
       {
         "why": "Deeper understanding of the agentic AI systems powering modern sales.",
         "area": "ISM",
-        "term": "V",
+        "term": "Term V",
         "course": "Agentic AI for Managers",
         "credits": "3",
         "faculty": "Prof. Kumari Pritee"
@@ -1755,7 +1705,7 @@
     "professor2_name": "Mr. Samrat Parasnis",
     "faculty": "Prof. Chandan Kumar Behera & Mr. Samrat Parasnis",
     "created_at": "2026-04-11T18:32:58.458Z",
-    "updated_at": "2026-04-14T16:38:12.312Z"
+    "updated_at": "2026-05-04T15:10:50.862Z"
   },
   {
     "id": 37,
@@ -1777,7 +1727,7 @@
       {
         "why": "Core brand frameworks that FMCG applies.",
         "area": "Marketing",
-        "term": "IV",
+        "term": "Term IV",
         "course": "Brand Management",
         "credits": "3",
         "faculty": "Prof. Poonam Kumar & Dr. Anurag Dugar"
@@ -1785,18 +1735,18 @@
       {
         "why": "Rural is a critical growth frontier for FMCG in India.",
         "area": "Marketing",
-        "term": "VI",
+        "term": "Term VI",
         "course": "Rural Marketing",
         "credits": "1.5",
-        "faculty": "Prof. Sarthak Mohapatra"
+        "faculty": "Prof. Sanal Kumar Velayudhan"
       },
       {
         "why": "FMCG success depends heavily on distribution execution.",
         "area": "Marketing",
-        "term": "V",
+        "term": "Term V",
         "course": "Sales & Distribution Management",
         "credits": "3",
-        "faculty": "Prof. Sarthak Mohapatra"
+        "faculty": "Prof. Ramendra Singh & Prof. Sarthak Mohapatra"
       }
     ],
     "professor1_id": 61,
@@ -1805,7 +1755,7 @@
     "professor2_name": null,
     "faculty": "Dr. Vivek Rastogi",
     "created_at": "2026-04-11T18:32:58.628Z",
-    "updated_at": "2026-04-14T16:38:12.312Z"
+    "updated_at": "2026-05-04T15:10:51.005Z"
   },
   {
     "id": 38,
@@ -1835,7 +1785,7 @@
       {
         "why": "Operational side of service delivery and quality.",
         "area": "Operations",
-        "term": "V",
+        "term": "Term V",
         "course": "Service Operations Management",
         "credits": "3",
         "faculty": "Prof. Ramakrushna Padhy & Prof. Rohit Gupta"
@@ -1843,7 +1793,7 @@
       {
         "why": "Service branding is a unique branding challenge.",
         "area": "Marketing",
-        "term": "IV",
+        "term": "Term IV",
         "course": "Brand Management",
         "credits": "3",
         "faculty": "Prof. Poonam Kumar & Dr. Anurag Dugar"
@@ -1855,7 +1805,7 @@
     "professor2_name": "Dr. Chandan Kumar Behera",
     "faculty": "Dr. Prashant Mishra & Dr. Chandan Kumar Behera",
     "created_at": "2026-04-11T18:32:58.848Z",
-    "updated_at": "2026-05-03T07:37:56.041Z"
+    "updated_at": "2026-05-04T15:10:51.150Z"
   },
   {
     "id": 39,
@@ -1877,7 +1827,7 @@
       {
         "why": "Software-product angle to complement consumer-product focus.",
         "area": "ISM",
-        "term": "IV",
+        "term": "Term IV",
         "course": "Digital Product Management",
         "credits": "3",
         "faculty": "Ms. Ankita Parihar & Mr. Ramkumar Arumugam"
@@ -1885,15 +1835,15 @@
       {
         "why": "Same faculty — consumer psychology foundations.",
         "area": "Marketing",
-        "term": "IV",
+        "term": "Term V",
         "course": "Consumer Behaviour and Neuromarketing",
         "credits": "3",
-        "faculty": "Prof. Nitin Soni"
+        "faculty": "Prof. Nitin Soni & Prof. Poonam Kumar"
       },
       {
         "why": "Research methods that inform product decisions.",
         "area": "Marketing",
-        "term": "IV",
+        "term": "Term IV",
         "course": "Advanced Marketing Research",
         "credits": "3",
         "faculty": "Prof. M Dev Prasad Murthy"
@@ -1905,7 +1855,7 @@
     "professor2_name": null,
     "faculty": "Prof. Nitin Soni",
     "created_at": "2026-04-11T18:32:59.303Z",
-    "updated_at": "2026-05-02T04:31:22.168Z"
+    "updated_at": "2026-05-04T15:10:51.370Z"
   },
   {
     "id": 40,
@@ -1927,7 +1877,7 @@
       {
         "why": "Economics-driven pricing theory and strategic pricing.",
         "area": "GMPPE",
-        "term": "IV",
+        "term": "Term IV",
         "course": "Pricing Strategy for Managerial Decision Making",
         "credits": "3",
         "faculty": "Prof. Ashutosh K. Tripathi"
@@ -1935,7 +1885,7 @@
       {
         "why": "Operational execution of dynamic pricing.",
         "area": "Operations",
-        "term": "VI",
+        "term": "Term VI",
         "course": "Revenue Management & Dynamic Pricing",
         "credits": "1.5",
         "faculty": "Prof. Rohit Gupta"
@@ -1943,7 +1893,7 @@
       {
         "why": "Pricing is a core lever in product-lifecycle management.",
         "area": "Marketing",
-        "term": "V",
+        "term": "Term IV",
         "course": "Product Management and Analytics",
         "credits": "3",
         "faculty": "Prof. Nitin Soni"
@@ -1955,7 +1905,7 @@
     "professor2_name": null,
     "faculty": "Prof. Jishnu Changkakoti",
     "created_at": "2026-04-11T18:32:59.753Z",
-    "updated_at": "2026-05-03T05:04:32.215Z"
+    "updated_at": "2026-05-04T15:10:51.513Z"
   },
   {
     "id": 41,
@@ -1977,26 +1927,26 @@
       {
         "why": "Same faculty — rural-market extension.",
         "area": "Marketing",
-        "term": "VI",
+        "term": "Term VI",
         "course": "Rural Marketing",
         "credits": "1.5",
-        "faculty": "Prof. Sarthak Mohapatra"
+        "faculty": "Prof. Sanal Kumar Velayudhan"
       },
       {
         "why": "B2B context for enterprise sales organisations.",
         "area": "Marketing",
-        "term": "IV",
+        "term": "Term IV",
         "course": "B2B Marketing",
         "credits": "3",
-        "faculty": "Prof. Sandip Mukhopadhyay & Mr. Amrat Parasnis"
+        "faculty": "Dr. Divakar Kamath"
       },
       {
         "why": "Logistics foundation underlying distribution decisions.",
         "area": "Operations",
-        "term": "V",
+        "term": "Term V",
         "course": "Logistics and Warehouse Management",
-        "credits": "3",
-        "faculty": "Prof. Sourabh Kumar"
+        "credits": "1.5",
+        "faculty": "Prof. Susmita Narayana & Prof. Rofin"
       }
     ],
     "professor1_id": 108,
@@ -2005,7 +1955,7 @@
     "professor2_name": "Prof. Sarthak Mohapatra",
     "faculty": "Prof. Ramendra Singh & Prof. Sarthak Mohapatra",
     "created_at": "2026-04-11T18:33:00.208Z",
-    "updated_at": "2026-05-03T07:37:56.205Z"
+    "updated_at": "2026-05-04T15:10:51.670Z"
   },
   {
     "id": 42,
@@ -2027,7 +1977,7 @@
       {
         "why": "Operational side of the sustainability agenda.",
         "area": "Operations",
-        "term": "VI",
+        "term": "Term VI",
         "course": "Sustainability Management in Business",
         "credits": "3",
         "faculty": "Prof. Shweta Singh & Prof. Harshad Sonar"
@@ -2035,7 +1985,7 @@
       {
         "why": "Sustainability-driven strategic thinking.",
         "area": "Strategy",
-        "term": "V",
+        "term": "Term V",
         "course": "Current and Emerging Trends in Strategy",
         "credits": "1.5",
         "faculty": "Prof. Dr. Aarti Singh"
@@ -2043,7 +1993,7 @@
       {
         "why": "Entrepreneurial context for sustainability-led ventures.",
         "area": "Strategy",
-        "term": "V",
+        "term": "Term V",
         "course": "Impact Entrepreneurship",
         "credits": "3",
         "faculty": "Prof. Janvi Patel"
@@ -2055,7 +2005,7 @@
     "professor2_name": null,
     "faculty": "Prasanta Kr Chopdar",
     "created_at": "2026-04-11T18:33:00.729Z",
-    "updated_at": "2026-05-03T05:08:00.103Z"
+    "updated_at": "2026-05-04T15:10:51.814Z"
   },
   {
     "id": 43,
@@ -2077,7 +2027,7 @@
       {
         "why": "Core brand framework that luxury applies at extremes.",
         "area": "Marketing",
-        "term": "IV",
+        "term": "Term IV",
         "course": "Brand Management",
         "credits": "3",
         "faculty": "Prof. Poonam Kumar & Dr. Anurag Dugar"
@@ -2085,10 +2035,10 @@
       {
         "why": "Same faculty — deep consumer psychology foundation.",
         "area": "Marketing",
-        "term": "IV",
+        "term": "Term V",
         "course": "Consumer Behaviour and Neuromarketing",
         "credits": "3",
-        "faculty": "Prof. Nitin Soni"
+        "faculty": "Prof. Nitin Soni & Prof. Poonam Kumar"
       },
       {
         "why": "Cultural-meaning lens directly relevant to luxury.",
@@ -2105,7 +2055,7 @@
     "professor2_name": null,
     "faculty": "Prof. Piyush Kumar Sinha",
     "created_at": "2026-04-11T18:33:01.088Z",
-    "updated_at": "2026-05-03T06:13:25.462Z"
+    "updated_at": "2026-05-04T15:10:51.957Z"
   },
   {
     "id": 44,
@@ -2127,7 +2077,7 @@
       {
         "why": "Brand framework that semiotics enriches with cultural depth.",
         "area": "Marketing",
-        "term": "IV",
+        "term": "Term IV",
         "course": "Brand Management",
         "credits": "3",
         "faculty": "Prof. Poonam Kumar & Dr. Anurag Dugar"
@@ -2135,18 +2085,18 @@
       {
         "why": "Luxury brands rely heavily on semiotic codes.",
         "area": "Marketing",
-        "term": "VI",
+        "term": "Term VI",
         "course": "Luxury Marketing",
         "credits": "1.5",
-        "faculty": "Prof. Nitin Soni"
+        "faculty": "Prof. Piyush Kumar Sinha"
       },
       {
         "why": "Complementary lens on how consumers make meaning.",
         "area": "Marketing",
-        "term": "IV",
+        "term": "Term V",
         "course": "Consumer Behaviour and Neuromarketing",
         "credits": "3",
-        "faculty": "Prof. Nitin Soni"
+        "faculty": "Prof. Nitin Soni & Prof. Poonam Kumar"
       }
     ],
     "professor1_id": 23,
@@ -2155,7 +2105,7 @@
     "professor2_name": null,
     "faculty": "Dr. Ridhi Agarwala",
     "created_at": "2026-04-11T18:33:01.284Z",
-    "updated_at": "2026-05-03T05:09:35.962Z"
+    "updated_at": "2026-05-04T15:10:52.114Z"
   },
   {
     "id": 45,
@@ -2177,7 +2127,7 @@
       {
         "why": "FMCG is the primary industry application of rural marketing.",
         "area": "Marketing",
-        "term": "V",
+        "term": "Term V",
         "course": "FMCG Marketing",
         "credits": "1.5",
         "faculty": "Dr. Vivek Rastogi"
@@ -2185,15 +2135,15 @@
       {
         "why": "Same faculty — rural distribution depth.",
         "area": "Marketing",
-        "term": "V",
+        "term": "Term V",
         "course": "Sales & Distribution Management",
         "credits": "3",
-        "faculty": "Prof. Sarthak Mohapatra"
+        "faculty": "Prof. Ramendra Singh & Prof. Sarthak Mohapatra"
       },
       {
         "why": "Entrepreneurial lens on BoP market opportunities.",
         "area": "Strategy",
-        "term": "V",
+        "term": "Term V",
         "course": "Impact Entrepreneurship",
         "credits": "3",
         "faculty": "Prof. Janvi Patel"
@@ -2205,7 +2155,7 @@
     "professor2_name": null,
     "faculty": "Prof. Sanal Kumar Velayudhan",
     "created_at": "2026-04-11T18:33:01.503Z",
-    "updated_at": "2026-05-03T05:10:54.935Z"
+    "updated_at": "2026-05-04T15:10:52.257Z"
   },
   {
     "id": 46,
@@ -2227,7 +2177,7 @@
       {
         "why": "Brand frameworks applied to the simulation decisions.",
         "area": "Marketing",
-        "term": "IV",
+        "term": "Term IV",
         "course": "Brand Management",
         "credits": "3",
         "faculty": "Prof. Poonam Kumar & Dr. Anurag Dugar"
@@ -2235,7 +2185,7 @@
       {
         "why": "Product-lifecycle decisions directly tested in Markstrat.",
         "area": "Marketing",
-        "term": "V",
+        "term": "Term IV",
         "course": "Product Management and Analytics",
         "credits": "3",
         "faculty": "Prof. Nitin Soni"
@@ -2243,10 +2193,10 @@
       {
         "why": "Pricing decisions are a core lever in the simulation.",
         "area": "Marketing",
-        "term": "V",
+        "term": "Term IV",
         "course": "Pricing & Policy",
         "credits": "1.5",
-        "faculty": "Prof. Akanksha Mishra"
+        "faculty": "Prof. Jishnu Changkakoti"
       }
     ],
     "professor1_id": 62,
@@ -2255,7 +2205,7 @@
     "professor2_name": null,
     "faculty": "Prof. Gautam Dutta",
     "created_at": "2026-04-11T18:33:01.698Z",
-    "updated_at": "2026-04-14T16:38:12.312Z"
+    "updated_at": "2026-05-04T15:10:52.421Z"
   },
   {
     "id": 47,
@@ -2277,15 +2227,15 @@
       {
         "why": "Same faculty — B2B customer management foundation.",
         "area": "Marketing",
-        "term": "IV",
+        "term": "Term IV",
         "course": "B2B Marketing",
         "credits": "3",
-        "faculty": "Prof. Sandip Mukhopadhyay & Mr. Amrat Parasnis"
+        "faculty": "Dr. Divakar Kamath"
       },
       {
         "why": "Service-specific customer management and experience design.",
         "area": "Marketing",
-        "term": "VI",
+        "term": "Term VI",
         "course": "Marketing of Services",
         "credits": "3",
         "faculty": "Dr. Prashant Mishra & Dr. Chandan Kumar Behera"
@@ -2293,7 +2243,7 @@
       {
         "why": "Product-led approach to customer retention and growth.",
         "area": "Marketing",
-        "term": "V",
+        "term": "Term IV",
         "course": "Product Management and Analytics",
         "credits": "3",
         "faculty": "Prof. Nitin Soni"
@@ -2305,7 +2255,7 @@
     "professor2_name": "Mr. Manohar Mylavarapu",
     "faculty": "Prof. Sandip Mukhopadhyay & Mr. Manohar Mylavarapu",
     "created_at": "2026-04-11T18:33:01.918Z",
-    "updated_at": "2026-05-02T04:31:23.039Z"
+    "updated_at": "2026-05-04T15:10:52.566Z"
   },
   {
     "id": 48,
@@ -2327,23 +2277,23 @@
       {
         "why": "Business-model foundation for digital retail.",
         "area": "ISM",
-        "term": "V",
+        "term": "Term V",
         "course": "E-Commerce",
         "credits": "3",
-        "faculty": "Prof. V N Rajesh"
+        "faculty": "Prof. Rajesh Natarajan"
       },
       {
         "why": "Distribution depth that retail strategy depends on.",
         "area": "Marketing",
-        "term": "V",
+        "term": "Term V",
         "course": "Sales & Distribution Management",
         "credits": "3",
-        "faculty": "Prof. Sarthak Mohapatra"
+        "faculty": "Prof. Ramendra Singh & Prof. Sarthak Mohapatra"
       },
       {
         "why": "Operational side of fast-delivery retail.",
         "area": "Operations",
-        "term": "VI",
+        "term": "Term VI",
         "course": "Quick Commerce Supply Chains",
         "credits": "1.5",
         "faculty": "Prof. Harshad Sonar"
@@ -2355,7 +2305,7 @@
     "professor2_name": null,
     "faculty": "Dr. Arunima Rana",
     "created_at": "2026-04-11T18:33:02.098Z",
-    "updated_at": "2026-04-14T16:38:12.312Z"
+    "updated_at": "2026-05-04T15:10:52.722Z"
   },
   {
     "id": 49,
@@ -2377,15 +2327,15 @@
       {
         "why": "Same faculty — deeper analytics extension.",
         "area": "Operations",
-        "term": "V",
+        "term": "Term V",
         "course": "Supply Chain Analytics",
         "credits": "3",
-        "faculty": "Prof. Bhawana Rathore & Prof. Shweta Singh"
+        "faculty": "Mr. Sanjeev Das"
       },
       {
         "why": "Same faculty — structured decision-making complement.",
         "area": "Operations",
-        "term": "IV",
+        "term": "Term IV",
         "course": "Decision Making Tools for Managers",
         "credits": "3",
         "faculty": "Dr. Bhawana Rathore"
@@ -2393,7 +2343,7 @@
       {
         "why": "Same faculty — pricing analytics extension.",
         "area": "Operations",
-        "term": "VI",
+        "term": "Term VI",
         "course": "Revenue Management & Dynamic Pricing",
         "credits": "1.5",
         "faculty": "Prof. Rohit Gupta"
@@ -2405,7 +2355,7 @@
     "professor2_name": null,
     "faculty": "Prof. Rohit Gupta",
     "created_at": "2026-04-11T18:33:02.298Z",
-    "updated_at": "2026-05-02T04:31:24.199Z"
+    "updated_at": "2026-05-04T15:10:52.865Z"
   },
   {
     "id": 50,
@@ -2427,7 +2377,7 @@
       {
         "why": "Marketing side of services.",
         "area": "Marketing",
-        "term": "VI",
+        "term": "Term VI",
         "course": "Marketing of Services",
         "credits": "3",
         "faculty": "Dr. Prashant Mishra & Dr. Chandan Kumar Behera"
@@ -2435,7 +2385,7 @@
       {
         "why": "Process-excellence principles applied to services.",
         "area": "Operations",
-        "term": "IV",
+        "term": "Term IV",
         "course": "Operational Excellence",
         "credits": "1.5",
         "faculty": "Prof. Kaustov Chakraborty"
@@ -2443,7 +2393,7 @@
       {
         "why": "Same faculty — revenue management in services.",
         "area": "Operations",
-        "term": "VI",
+        "term": "Term VI",
         "course": "Revenue Management & Dynamic Pricing",
         "credits": "1.5",
         "faculty": "Prof. Rohit Gupta"
@@ -2455,7 +2405,7 @@
     "professor2_name": "Prof. Rohit Gupta",
     "faculty": "Prof. Ramakrushna Padhy & Prof. Rohit Gupta",
     "created_at": "2026-04-11T18:33:02.518Z",
-    "updated_at": "2026-05-03T07:37:56.361Z"
+    "updated_at": "2026-05-04T15:10:53.009Z"
   },
   {
     "id": 51,
@@ -2477,23 +2427,23 @@
       {
         "why": "Marketing-side pricing strategy that revenue management operationalises.",
         "area": "Marketing",
-        "term": "V",
+        "term": "Term IV",
         "course": "Pricing & Policy",
         "credits": "1.5",
-        "faculty": "Prof. Akanksha Mishra"
+        "faculty": "Prof. Jishnu Changkakoti"
       },
       {
         "why": "Same faculty — analytics foundation.",
         "area": "Operations",
-        "term": "IV",
+        "term": "Term IV",
         "course": "Operations Analytics",
         "credits": "1.5",
-        "faculty": "Prof. Rohit Gupta & Prof. Bhawana Rathore"
+        "faculty": "Prof. Rohit Gupta"
       },
       {
         "why": "Economic theory behind dynamic pricing.",
         "area": "GMPPE",
-        "term": "IV",
+        "term": "Term IV",
         "course": "Pricing Strategy for Managerial Decision Making",
         "credits": "3",
         "faculty": "Prof. Ashutosh K. Tripathi"
@@ -2505,7 +2455,7 @@
     "professor2_name": null,
     "faculty": "Prof. Rohit Gupta",
     "created_at": "2026-04-11T18:33:02.728Z",
-    "updated_at": "2026-04-14T16:38:12.312Z"
+    "updated_at": "2026-05-04T15:10:53.182Z"
   },
   {
     "id": 53,
@@ -2527,7 +2477,7 @@
       {
         "why": "Complementary continuous-improvement foundation.",
         "area": "Operations",
-        "term": "IV",
+        "term": "Term IV",
         "course": "Operational Excellence",
         "credits": "1.5",
         "faculty": "Prof. Kaustov Chakraborty"
@@ -2535,7 +2485,7 @@
       {
         "why": "Strategic context for TOC applications.",
         "area": "Operations",
-        "term": "VI",
+        "term": "Term VI",
         "course": "Operations Strategy and Competitive Advantage",
         "credits": "3",
         "faculty": "Prof. Kaustov Chakraborty & Dr. Rahul Pandey"
@@ -2543,7 +2493,7 @@
       {
         "why": "Broader decision-making toolkit for constraint contexts.",
         "area": "Operations",
-        "term": "IV",
+        "term": "Term IV",
         "course": "Decision Making Tools for Managers",
         "credits": "3",
         "faculty": "Dr. Bhawana Rathore"
@@ -2555,7 +2505,7 @@
     "professor2_name": "Prof. Raghavendra Ravi",
     "faculty": "Prof. Harshal Lowalekar & Prof. Raghavendra Ravi",
     "created_at": "2026-04-11T18:33:03.138Z",
-    "updated_at": "2026-05-02T04:31:25.955Z"
+    "updated_at": "2026-05-04T15:10:53.325Z"
   },
   {
     "id": 54,
@@ -2577,15 +2527,15 @@
       {
         "why": "Foundation that digital SCM builds on.",
         "area": "Operations",
-        "term": "IV",
+        "term": "Term IV",
         "course": "Supply Chain Management",
         "credits": "3",
-        "faculty": "Dr. V. G Venkatesh"
+        "faculty": "Dr. V. G. Venkatesh"
       },
       {
         "why": "Same faculty — operational-tech foundation.",
         "area": "Operations",
-        "term": "IV",
+        "term": "Term IV",
         "course": "Technology-Enabled Operations",
         "credits": "1.5",
         "faculty": "Prof. Harshad Sonar"
@@ -2593,7 +2543,7 @@
       {
         "why": "Blockchain is a key digital-SCM enabler.",
         "area": "ISM",
-        "term": "V",
+        "term": "Term V",
         "course": "Blockchain and Its Applications",
         "credits": "3",
         "faculty": "Prof. Keshav Kaushik"
@@ -2605,7 +2555,7 @@
     "professor2_name": "Prof. Kaustov Chakraborty",
     "faculty": "Prof. Harshad Sonar & Prof. Kaustov Chakraborty",
     "created_at": "2026-04-11T18:33:03.318Z",
-    "updated_at": "2026-04-14T16:38:12.312Z"
+    "updated_at": "2026-05-04T15:10:53.530Z"
   },
   {
     "id": 55,
@@ -2627,23 +2577,23 @@
       {
         "why": "Same faculty — analytics perspective on operational decisions.",
         "area": "Operations",
-        "term": "IV",
+        "term": "Term IV",
         "course": "Operations Analytics",
         "credits": "1.5",
-        "faculty": "Prof. Rohit Gupta & Prof. Bhawana Rathore"
+        "faculty": "Prof. Rohit Gupta"
       },
       {
         "why": "Applies MCDM methods to supply chain contexts.",
         "area": "Operations",
-        "term": "V",
+        "term": "Term V",
         "course": "Supply Chain Analytics",
         "credits": "3",
-        "faculty": "Prof. Bhawana Rathore & Prof. Shweta Singh"
+        "faculty": "Mr. Sanjeev Das"
       },
       {
         "why": "Python-based analytical toolkit for decision support.",
         "area": "ISM",
-        "term": "IV",
+        "term": "Term IV",
         "course": "Business Analytics for Managerial Decisions",
         "credits": "3",
         "faculty": "Prof. Atanu Dey"
@@ -2655,7 +2605,7 @@
     "professor2_name": null,
     "faculty": "Dr. Bhawana Rathore",
     "created_at": "2026-04-11T18:33:03.548Z",
-    "updated_at": "2026-04-14T16:38:12.312Z"
+    "updated_at": "2026-05-04T15:10:53.673Z"
   },
   {
     "id": 56,
@@ -2677,26 +2627,26 @@
       {
         "why": "Domestic logistics and warehousing execution depth.",
         "area": "Operations",
-        "term": "V",
+        "term": "Term V",
         "course": "Logistics and Warehouse Management",
-        "credits": "3",
-        "faculty": "Prof. Sourabh Kumar"
+        "credits": "1.5",
+        "faculty": "Prof. Susmita Narayana & Prof. Rofin"
       },
       {
         "why": "Procurement side of global supply chains.",
         "area": "Operations",
-        "term": "V",
+        "term": "Term V",
         "course": "Strategic Procurement",
         "credits": "1.5",
-        "faculty": "Dr. V. G Venkatesh"
+        "faculty": "Dr. V. G. Venkatesh"
       },
       {
         "why": "Foundational SCM context.",
         "area": "Operations",
-        "term": "IV",
+        "term": "Term IV",
         "course": "Supply Chain Management",
         "credits": "3",
-        "faculty": "Dr. V. G Venkatesh"
+        "faculty": "Dr. V. G. Venkatesh"
       }
     ],
     "professor1_id": 26,
@@ -2705,7 +2655,7 @@
     "professor2_name": null,
     "faculty": "Prof. Kaustov Chakraborty",
     "created_at": "2026-04-11T18:33:03.738Z",
-    "updated_at": "2026-04-14T16:38:12.312Z"
+    "updated_at": "2026-05-04T15:10:53.817Z"
   },
   {
     "id": 57,
@@ -2727,7 +2677,7 @@
       {
         "why": "Digital transformation of warehousing and logistics.",
         "area": "Operations",
-        "term": "V",
+        "term": "Term V",
         "course": "Digital Supply Chains",
         "credits": "3",
         "faculty": "Prof. Harshad Sonar & Prof. Kaustov Chakraborty"
@@ -2735,7 +2685,7 @@
       {
         "why": "International-trade extension of logistics.",
         "area": "Operations",
-        "term": "V",
+        "term": "Term V",
         "course": "Global Logistics and Distributions",
         "credits": "1.5",
         "faculty": "Prof. Kaustov Chakraborty"
@@ -2743,10 +2693,10 @@
       {
         "why": "Commercial side of distribution.",
         "area": "Marketing",
-        "term": "V",
+        "term": "Term V",
         "course": "Sales & Distribution Management",
         "credits": "3",
-        "faculty": "Prof. Sarthak Mohapatra"
+        "faculty": "Prof. Ramendra Singh & Prof. Sarthak Mohapatra"
       }
     ],
     "professor1_id": 112,
@@ -2755,7 +2705,7 @@
     "professor2_name": "Prof. Rofin",
     "faculty": "Prof. Susmita Narayana & Prof. Rofin",
     "created_at": "2026-04-11T18:33:03.918Z",
-    "updated_at": "2026-05-03T07:37:56.553Z"
+    "updated_at": "2026-05-04T15:10:54.029Z"
   },
   {
     "id": 58,
@@ -2785,15 +2735,15 @@
       {
         "why": "Procurement is a core project-management concern.",
         "area": "Operations",
-        "term": "V",
+        "term": "Term V",
         "course": "Strategic Procurement",
         "credits": "1.5",
-        "faculty": "Dr. V. G Venkatesh"
+        "faculty": "Dr. V. G. Venkatesh"
       },
       {
         "why": "Product-management angle on delivering complex initiatives.",
         "area": "ISM",
-        "term": "IV",
+        "term": "Term IV",
         "course": "Digital Product Management",
         "credits": "3",
         "faculty": "Ms. Ankita Parihar & Mr. Ramkumar Arumugam"
@@ -2805,7 +2755,7 @@
     "professor2_name": "Mr. Aasheesh Dixit",
     "faculty": "Prof. Rohit Gupta & Mr. Aasheesh Dixit",
     "created_at": "2026-04-11T18:33:04.098Z",
-    "updated_at": "2026-05-03T07:37:56.709Z"
+    "updated_at": "2026-05-04T15:10:54.182Z"
   },
   {
     "id": 59,
@@ -2835,7 +2785,7 @@
       {
         "why": "Same faculty — strategic framing of excellence.",
         "area": "Operations",
-        "term": "VI",
+        "term": "Term VI",
         "course": "Operations Strategy and Competitive Advantage",
         "credits": "3",
         "faculty": "Prof. Kaustov Chakraborty & Dr. Rahul Pandey"
@@ -2843,10 +2793,10 @@
       {
         "why": "Broader SCM context for excellence initiatives.",
         "area": "Operations",
-        "term": "IV",
+        "term": "Term IV",
         "course": "Supply Chain Management",
         "credits": "3",
-        "faculty": "Dr. V. G Venkatesh"
+        "faculty": "Dr. V. G. Venkatesh"
       }
     ],
     "professor1_id": 26,
@@ -2855,7 +2805,7 @@
     "professor2_name": null,
     "faculty": "Prof. Kaustov Chakraborty",
     "created_at": "2026-04-11T18:33:04.278Z",
-    "updated_at": "2026-05-03T06:13:25.782Z"
+    "updated_at": "2026-05-04T15:10:54.326Z"
   },
   {
     "id": 60,
@@ -2877,7 +2827,7 @@
       {
         "why": "Same faculty — operational improvement foundation.",
         "area": "Operations",
-        "term": "IV",
+        "term": "Term IV",
         "course": "Operational Excellence",
         "credits": "1.5",
         "faculty": "Prof. Kaustov Chakraborty"
@@ -2885,10 +2835,10 @@
       {
         "why": "Strategic management foundation that operations strategy extends.",
         "area": "Strategy",
-        "term": "IV",
+        "term": "Term IV",
         "course": "Corporate Strategy",
         "credits": "3",
-        "faculty": "Prof. Nilesh Khare & Prof. Aarti Singh"
+        "faculty": "Prof. Dr. Nilesh Khare & Prof. Dr. Aarti Singh"
       },
       {
         "why": "Systems-thinking lens on operations strategy.",
@@ -2905,7 +2855,7 @@
     "professor2_name": "Dr. Rahul Pandey",
     "faculty": "Prof. Kaustov Chakraborty & Dr. Rahul Pandey",
     "created_at": "2026-04-11T18:33:04.458Z",
-    "updated_at": "2026-05-03T07:37:56.861Z"
+    "updated_at": "2026-05-04T15:10:54.521Z"
   },
   {
     "id": 61,
@@ -2927,7 +2877,7 @@
       {
         "why": "Same faculty — broader digital SCM context.",
         "area": "Operations",
-        "term": "V",
+        "term": "Term V",
         "course": "Digital Supply Chains",
         "credits": "3",
         "faculty": "Prof. Harshad Sonar & Prof. Kaustov Chakraborty"
@@ -2935,15 +2885,15 @@
       {
         "why": "Business model foundation for Q-commerce.",
         "area": "ISM",
-        "term": "V",
+        "term": "Term V",
         "course": "E-Commerce",
         "credits": "3",
-        "faculty": "Prof. V N Rajesh"
+        "faculty": "Prof. Rajesh Natarajan"
       },
       {
         "why": "Retail strategy lens on digital commerce.",
         "area": "Marketing",
-        "term": "V",
+        "term": "Term V",
         "course": "Retail & E-Business Management Strategy",
         "credits": "3",
         "faculty": "Dr. Arunima Rana"
@@ -2955,7 +2905,7 @@
     "professor2_name": null,
     "faculty": "Prof. Harshad Sonar",
     "created_at": "2026-04-11T18:33:04.648Z",
-    "updated_at": "2026-04-14T16:38:12.312Z"
+    "updated_at": "2026-05-04T15:10:54.665Z"
   },
   {
     "id": 62,
@@ -2977,7 +2927,7 @@
       {
         "why": "Digital transformation of SCM.",
         "area": "Operations",
-        "term": "V",
+        "term": "Term V",
         "course": "Digital Supply Chains",
         "credits": "3",
         "faculty": "Prof. Harshad Sonar & Prof. Kaustov Chakraborty"
@@ -2985,18 +2935,18 @@
       {
         "why": "Same faculty — procurement depth.",
         "area": "Operations",
-        "term": "V",
+        "term": "Term V",
         "course": "Strategic Procurement",
         "credits": "1.5",
-        "faculty": "Dr. V. G Venkatesh"
+        "faculty": "Dr. V. G. Venkatesh"
       },
       {
         "why": "Execution depth on logistics and warehousing.",
         "area": "Operations",
-        "term": "V",
+        "term": "Term V",
         "course": "Logistics and Warehouse Management",
-        "credits": "3",
-        "faculty": "Prof. Sourabh Kumar"
+        "credits": "1.5",
+        "faculty": "Prof. Susmita Narayana & Prof. Rofin"
       }
     ],
     "professor1_id": 70,
@@ -3005,7 +2955,7 @@
     "professor2_name": null,
     "faculty": "Dr. V. G. Venkatesh",
     "created_at": "2026-04-11T18:33:04.878Z",
-    "updated_at": "2026-04-14T16:38:12.312Z"
+    "updated_at": "2026-05-04T15:10:54.809Z"
   },
   {
     "id": 63,
@@ -3027,10 +2977,10 @@
       {
         "why": "Marketing side of the sustainability agenda.",
         "area": "Marketing",
-        "term": "V",
+        "term": "Term V",
         "course": "Sustainability Marketing",
         "credits": "3",
-        "faculty": "Prof. Prasanta Kr Chopdar"
+        "faculty": "Prasanta Kr Chopdar"
       },
       {
         "why": "Sustainability is a core dimension of operations strategy; this course provides the competitive and systemic framework for embedding sustainable practices into long-term operational decisions.",
@@ -3038,12 +2988,12 @@
         "term": "Term VI",
         "course": "Operations Strategy and Competitive Advantage",
         "credits": "3",
-        "faculty": "Prof. Kaustov Chakraborty"
+        "faculty": "Prof. Kaustov Chakraborty & Dr. Rahul Pandey"
       },
       {
         "why": "Strategic lens on climate nonmarket forces.",
         "area": "Inter Area Electives",
-        "term": "IV",
+        "term": "Term VI",
         "course": "Nonmarket Strategy: Focus on Geopolitics and Climate Change",
         "credits": "1.5",
         "faculty": "Prof. Diptiranjan Mahapatra & Prof. Sumita Sindhi"
@@ -3055,7 +3005,7 @@
     "professor2_name": "Prof. Harshad Sonar",
     "faculty": "Prof. Shweta Singh & Prof. Harshad Sonar",
     "created_at": "2026-04-11T18:33:05.078Z",
-    "updated_at": "2026-05-03T06:13:26.102Z"
+    "updated_at": "2026-05-06T16:19:39.656Z"
   },
   {
     "id": 64,
@@ -3077,15 +3027,15 @@
       {
         "why": "Same faculty — broader SCM context.",
         "area": "Operations",
-        "term": "IV",
+        "term": "Term IV",
         "course": "Supply Chain Management",
         "credits": "3",
-        "faculty": "Dr. V. G Venkatesh"
+        "faculty": "Dr. V. G. Venkatesh"
       },
       {
         "why": "Logistics side of global procurement.",
         "area": "Operations",
-        "term": "V",
+        "term": "Term V",
         "course": "Global Logistics and Distributions",
         "credits": "1.5",
         "faculty": "Prof. Kaustov Chakraborty"
@@ -3093,10 +3043,10 @@
       {
         "why": "Procurement is a key project-management discipline.",
         "area": "Operations",
-        "term": "IV",
+        "term": "Term IV",
         "course": "Project Management",
         "credits": "3",
-        "faculty": "Prof. Rohit Gupta & Prof. Sourabh Kumar"
+        "faculty": "Prof. Rohit Gupta & Mr. Aasheesh Dixit"
       }
     ],
     "professor1_id": 70,
@@ -3105,7 +3055,7 @@
     "professor2_name": null,
     "faculty": "Dr. V. G. Venkatesh",
     "created_at": "2026-04-11T18:33:05.278Z",
-    "updated_at": "2026-04-14T16:38:12.312Z"
+    "updated_at": "2026-05-04T15:10:55.205Z"
   },
   {
     "id": 65,
@@ -3127,23 +3077,23 @@
       {
         "why": "Same faculty — foundational analytics.",
         "area": "Operations",
-        "term": "IV",
+        "term": "Term IV",
         "course": "Operations Analytics",
         "credits": "1.5",
-        "faculty": "Prof. Rohit Gupta & Prof. Bhawana Rathore"
+        "faculty": "Prof. Rohit Gupta"
       },
       {
         "why": "Same faculty — AnyLogic simulation depth.",
         "area": "Operations",
-        "term": "V",
+        "term": "Term V",
         "course": "Supply Chain Simulation for Managerial Decision-Making",
-        "credits": "3",
+        "credits": "1.5",
         "faculty": "Prof. Bhawana Rathore & Mr. Ayan Das"
       },
       {
         "why": "Strategic context for analytics-led SCM.",
         "area": "ISM",
-        "term": "VI",
+        "term": "Term VI",
         "course": "Big Data Analytics",
         "credits": "3",
         "faculty": "Prof. Pritee Kumari"
@@ -3155,7 +3105,7 @@
     "professor2_name": null,
     "faculty": "Mr. Sanjeev Das",
     "created_at": "2026-04-11T18:33:05.529Z",
-    "updated_at": "2026-05-03T04:49:34.285Z"
+    "updated_at": "2026-05-04T15:10:55.349Z"
   },
   {
     "id": 66,
@@ -3177,23 +3127,23 @@
       {
         "why": "Same faculty — analytics foundation for simulation.",
         "area": "Operations",
-        "term": "V",
+        "term": "Term V",
         "course": "Supply Chain Analytics",
         "credits": "3",
-        "faculty": "Prof. Bhawana Rathore & Prof. Shweta Singh"
+        "faculty": "Mr. Sanjeev Das"
       },
       {
         "why": "Same faculty — applied analytics context.",
         "area": "Operations",
-        "term": "IV",
+        "term": "Term IV",
         "course": "Operations Analytics",
         "credits": "1.5",
-        "faculty": "Prof. Rohit Gupta & Prof. Bhawana Rathore"
+        "faculty": "Prof. Rohit Gupta"
       },
       {
         "why": "Digital-SCM context for simulation applications.",
         "area": "Operations",
-        "term": "V",
+        "term": "Term V",
         "course": "Digital Supply Chains",
         "credits": "3",
         "faculty": "Prof. Harshad Sonar & Prof. Kaustov Chakraborty"
@@ -3205,7 +3155,7 @@
     "professor2_name": "Mr. Ayan Das",
     "faculty": "Prof. Bhawana Rathore & Mr. Ayan Das",
     "created_at": "2026-04-11T18:33:05.728Z",
-    "updated_at": "2026-05-02T04:31:24.639Z"
+    "updated_at": "2026-05-04T15:10:55.573Z"
   },
   {
     "id": 67,
@@ -3227,7 +3177,7 @@
       {
         "why": "Same faculty — supply-chain extension.",
         "area": "Operations",
-        "term": "V",
+        "term": "Term V",
         "course": "Digital Supply Chains",
         "credits": "3",
         "faculty": "Prof. Harshad Sonar & Prof. Kaustov Chakraborty"
@@ -3235,7 +3185,7 @@
       {
         "why": "IoT is a core operational technology.",
         "area": "ISM",
-        "term": "VI",
+        "term": "Term VI",
         "course": "IoT for Business Processes",
         "credits": "3",
         "faculty": "Prof. Keshav Kaushik"
@@ -3243,7 +3193,7 @@
       {
         "why": "Enterprise-wide transformation context.",
         "area": "ISM",
-        "term": "IV",
+        "term": "Term V",
         "course": "Managing Digital Transformation",
         "credits": "3",
         "faculty": "Prof. A Manish Kumar"
@@ -3255,7 +3205,7 @@
     "professor2_name": null,
     "faculty": "Prof. Harshad Sonar",
     "created_at": "2026-04-11T18:33:05.918Z",
-    "updated_at": "2026-04-14T16:38:12.312Z"
+    "updated_at": "2026-05-04T15:10:55.718Z"
   },
   {
     "id": 68,
@@ -3285,7 +3235,7 @@
       {
         "why": "Practical startup execution mindset.",
         "area": "Strategy",
-        "term": "IV",
+        "term": "Term IV",
         "course": "Startup Mindset",
         "credits": "1.5",
         "faculty": "Dr. Preet Deep Singh"
@@ -3293,7 +3243,7 @@
       {
         "why": "Impact-oriented business-model application.",
         "area": "Strategy",
-        "term": "V",
+        "term": "Term V",
         "course": "Impact Entrepreneurship",
         "credits": "3",
         "faculty": "Prof. Janvi Patel"
@@ -3305,7 +3255,7 @@
     "professor2_name": null,
     "faculty": "Prof. Prashant Salvan (Awaiting Approval)",
     "created_at": "2026-04-11T18:33:06.098Z",
-    "updated_at": "2026-05-03T06:13:26.262Z"
+    "updated_at": "2026-05-04T15:10:55.861Z"
   },
   {
     "id": 69,
@@ -3327,7 +3277,7 @@
       {
         "why": "Modern geopolitical strategy context.",
         "area": "Inter Area Electives",
-        "term": "IV",
+        "term": "Term VI",
         "course": "Nonmarket Strategy: Focus on Geopolitics and Climate Change",
         "credits": "1.5",
         "faculty": "Prof. Diptiranjan Mahapatra & Prof. Sumita Sindhi"
@@ -3335,7 +3285,7 @@
       {
         "why": "Geopolitical lens on modern business.",
         "area": "Strategy",
-        "term": "IV",
+        "term": "Term IV",
         "course": "International Business",
         "credits": "3",
         "faculty": "Prof. Aqueeb Sohail Shaik"
@@ -3343,7 +3293,7 @@
       {
         "why": "Philosophical framing of strategic decision-making.",
         "area": "Inter Area Electives",
-        "term": "VI",
+        "term": "Term VI",
         "course": "Behavioural Strategy and Decision Making",
         "credits": "1.5",
         "faculty": "Prof. Shikha Bhardwaj & Prof. Diptiranjan Mahapatra"
@@ -3355,7 +3305,7 @@
     "professor2_name": null,
     "faculty": "Prof. Sandeep Singh",
     "created_at": "2026-04-11T18:33:06.278Z",
-    "updated_at": "2026-04-14T16:38:12.312Z"
+    "updated_at": "2026-05-06T16:19:39.864Z"
   },
   {
     "id": 70,
@@ -3385,7 +3335,7 @@
       {
         "why": "Advanced strategy for senior leadership roles.",
         "area": "Strategy",
-        "term": "V",
+        "term": "Term V",
         "course": "Strategic Leadership, Thinking & Decision Making",
         "credits": "3",
         "faculty": "Prof. Diptiprakash Pradhan"
@@ -3393,7 +3343,7 @@
       {
         "why": "Cross-border dimension of corporate strategy.",
         "area": "Strategy",
-        "term": "IV",
+        "term": "Term IV",
         "course": "International Business",
         "credits": "3",
         "faculty": "Prof. Aqueeb Sohail Shaik"
@@ -3405,7 +3355,7 @@
     "professor2_name": "Prof. Dr. Aarti Singh",
     "faculty": "Prof. Dr. Nilesh Khare & Prof. Dr. Aarti Singh",
     "created_at": "2026-04-11T18:33:06.794Z",
-    "updated_at": "2026-05-03T07:37:57.066Z"
+    "updated_at": "2026-05-04T15:10:56.149Z"
   },
   {
     "id": 72,
@@ -3427,15 +3377,15 @@
       {
         "why": "Same faculty — foundational corporate strategy context.",
         "area": "Strategy",
-        "term": "IV",
+        "term": "Term IV",
         "course": "Corporate Strategy",
         "credits": "3",
-        "faculty": "Prof. Nilesh Khare & Prof. Aarti Singh"
+        "faculty": "Prof. Dr. Nilesh Khare & Prof. Dr. Aarti Singh"
       },
       {
         "why": "Operational execution of sustainability strategy.",
         "area": "Operations",
-        "term": "VI",
+        "term": "Term VI",
         "course": "Sustainability Management in Business",
         "credits": "3",
         "faculty": "Prof. Shweta Singh & Prof. Harshad Sonar"
@@ -3443,7 +3393,7 @@
       {
         "why": "Same faculty — systems-level consulting approach.",
         "area": "Strategy",
-        "term": "VI",
+        "term": "Term VI",
         "course": "Systems Thinking for Management Consulting",
         "credits": "1.5",
         "faculty": "Prof. Dr. Aarti Singh"
@@ -3455,7 +3405,7 @@
     "professor2_name": null,
     "faculty": "Prof. Dr. Aarti Singh",
     "created_at": "2026-04-11T18:33:07.658Z",
-    "updated_at": "2026-05-03T04:53:16.926Z"
+    "updated_at": "2026-05-04T15:10:56.294Z"
   },
   {
     "id": 73,
@@ -3485,7 +3435,7 @@
       {
         "why": "Product-management lens on digital ventures.",
         "area": "ISM",
-        "term": "IV",
+        "term": "Term IV",
         "course": "Digital Product Management",
         "credits": "3",
         "faculty": "Ms. Ankita Parihar & Mr. Ramkumar Arumugam"
@@ -3493,7 +3443,7 @@
       {
         "why": "AI-tool application for digital entrepreneurs.",
         "area": "Strategy",
-        "term": "IV",
+        "term": "Term IV",
         "course": "Working with AI",
         "credits": "1.5",
         "faculty": "Dr. Preet Deep Singh"
@@ -3505,7 +3455,7 @@
     "professor2_name": null,
     "faculty": "Prof. Bhairab Chandra Patra",
     "created_at": "2026-04-11T18:33:07.938Z",
-    "updated_at": "2026-05-03T06:13:26.582Z"
+    "updated_at": "2026-05-04T15:10:56.501Z"
   },
   {
     "id": 75,
@@ -3527,7 +3477,7 @@
       {
         "why": "Complementary focus on frugal and indigenous innovation.",
         "area": "Strategy",
-        "term": "VI",
+        "term": "Term VI",
         "course": "Innovation Strategies for Indigenous Ventures",
         "credits": "3",
         "faculty": "Prof. Sanyka Banerjee"
@@ -3535,18 +3485,18 @@
       {
         "why": "Marketing lens on BoP contexts.",
         "area": "Marketing",
-        "term": "VI",
+        "term": "Term VI",
         "course": "Rural Marketing",
         "credits": "1.5",
-        "faculty": "Prof. Sarthak Mohapatra"
+        "faculty": "Prof. Sanal Kumar Velayudhan"
       },
       {
         "why": "Broader business-model curriculum.",
         "area": "Strategy",
-        "term": "V",
+        "term": "Term V",
         "course": "Business Models & Plans",
         "credits": "3",
-        "faculty": "Dr. Sanyka Banerjee & Prof. Aqueeb Sohail Shaik"
+        "faculty": "Prof. Prashant Salvan (Awaiting Approval)"
       }
     ],
     "professor1_id": 39,
@@ -3555,7 +3505,7 @@
     "professor2_name": null,
     "faculty": "Prof. Janvi Patel",
     "created_at": "2026-04-11T18:33:08.533Z",
-    "updated_at": "2026-04-14T16:38:12.312Z"
+    "updated_at": "2026-05-04T15:10:56.653Z"
   },
   {
     "id": 76,
@@ -3577,7 +3527,7 @@
       {
         "why": "Complementary focus on Bharat and BoP entrepreneurship.",
         "area": "Strategy",
-        "term": "V",
+        "term": "Term V",
         "course": "Impact Entrepreneurship",
         "credits": "3",
         "faculty": "Prof. Janvi Patel"
@@ -3585,18 +3535,18 @@
       {
         "why": "Marketing lens on rural markets where jugaad works.",
         "area": "Marketing",
-        "term": "VI",
+        "term": "Term VI",
         "course": "Rural Marketing",
         "credits": "1.5",
-        "faculty": "Prof. Sarthak Mohapatra"
+        "faculty": "Prof. Sanal Kumar Velayudhan"
       },
       {
         "why": "Same faculty — business-model foundation.",
         "area": "Strategy",
-        "term": "V",
+        "term": "Term V",
         "course": "Business Models & Plans",
         "credits": "3",
-        "faculty": "Dr. Sanyka Banerjee & Prof. Aqueeb Sohail Shaik"
+        "faculty": "Prof. Prashant Salvan (Awaiting Approval)"
       }
     ],
     "professor1_id": 20,
@@ -3605,7 +3555,7 @@
     "professor2_name": null,
     "faculty": "Prof. Sanyka Banerjee",
     "created_at": "2026-04-11T18:33:08.798Z",
-    "updated_at": "2026-04-14T16:38:12.312Z"
+    "updated_at": "2026-05-04T15:10:56.833Z"
   },
   {
     "id": 77,
@@ -3627,23 +3577,15 @@
       {
         "why": "Economics foundation for international business decisions.",
         "area": "GMPPE",
-        "term": "V",
+        "term": "Term V",
         "course": "International Economics",
         "credits": "3",
         "faculty": "Prof. Anasuya Haldar"
       },
       {
-        "why": "Financial dimension of cross-border operations.",
-        "area": "Finance",
-        "term": "VI",
-        "course": "International Finance",
-        "credits": "3",
-        "faculty": "Prof. BB Chakrabarti"
-      },
-      {
         "why": "Nonmarket context for global business strategy.",
         "area": "Inter Area Electives",
-        "term": "IV",
+        "term": "Term VI",
         "course": "Nonmarket Strategy: Focus on Geopolitics and Climate Change",
         "credits": "1.5",
         "faculty": "Prof. Diptiranjan Mahapatra & Prof. Sumita Sindhi"
@@ -3655,7 +3597,7 @@
     "professor2_name": null,
     "faculty": "Prof. Aqueeb Sohail Shaik",
     "created_at": "2026-04-11T18:33:08.988Z",
-    "updated_at": "2026-04-14T16:38:12.312Z"
+    "updated_at": "2026-05-06T16:21:49.385Z"
   },
   {
     "id": 79,
@@ -3677,7 +3619,7 @@
       {
         "why": "Technology-consulting specialisation.",
         "area": "ISM",
-        "term": "IV",
+        "term": "Term IV",
         "course": "Tech Consulting and Business Analysis",
         "credits": "3",
         "faculty": "Merlin Nandy"
@@ -3685,7 +3627,7 @@
       {
         "why": "Analytical toolkit for consulting engagements.",
         "area": "Strategy",
-        "term": "VI",
+        "term": "Term VI",
         "course": "Systems Thinking for Management Consulting",
         "credits": "1.5",
         "faculty": "Prof. Dr. Aarti Singh"
@@ -3693,7 +3635,7 @@
       {
         "why": "Senior-leadership context for strategic consulting.",
         "area": "Strategy",
-        "term": "V",
+        "term": "Term V",
         "course": "Strategic Leadership, Thinking & Decision Making",
         "credits": "3",
         "faculty": "Prof. Diptiprakash Pradhan"
@@ -3705,7 +3647,7 @@
     "professor2_name": null,
     "faculty": "Prof. Sandeep Kumar Hota",
     "created_at": "2026-04-11T18:33:09.358Z",
-    "updated_at": "2026-05-02T04:31:26.099Z"
+    "updated_at": "2026-05-04T15:10:57.165Z"
   },
   {
     "id": 80,
@@ -3727,7 +3669,7 @@
       {
         "why": "Product-management lens on building platforms.",
         "area": "ISM",
-        "term": "IV",
+        "term": "Term IV",
         "course": "Digital Product Management",
         "credits": "3",
         "faculty": "Ms. Ankita Parihar & Mr. Ramkumar Arumugam"
@@ -3735,7 +3677,7 @@
       {
         "why": "Same faculty — nonmarket context for platforms.",
         "area": "Inter Area Electives",
-        "term": "IV",
+        "term": "Term VI",
         "course": "Nonmarket Strategy: Focus on Geopolitics and Climate Change",
         "credits": "1.5",
         "faculty": "Prof. Diptiranjan Mahapatra & Prof. Sumita Sindhi"
@@ -3743,10 +3685,10 @@
       {
         "why": "Business context where platforms most visibly compete.",
         "area": "ISM",
-        "term": "V",
+        "term": "Term V",
         "course": "E-Commerce",
         "credits": "3",
-        "faculty": "Prof. V N Rajesh"
+        "faculty": "Prof. Rajesh Natarajan"
       }
     ],
     "professor1_id": 11,
@@ -3755,7 +3697,7 @@
     "professor2_name": null,
     "faculty": "Prof. Diptiranjan Mahapatra",
     "created_at": "2026-04-11T18:33:09.538Z",
-    "updated_at": "2026-05-03T04:56:59.981Z"
+    "updated_at": "2026-05-06T16:19:40.292Z"
   },
   {
     "id": 81,
@@ -3777,7 +3719,7 @@
       {
         "why": "People-side complement to strategic transformation.",
         "area": "OB-HR",
-        "term": "IV",
+        "term": "Term IV",
         "course": "Organisation Transformation and Change",
         "credits": "1.5",
         "faculty": "Prof. Shikha Bhardwaj"
@@ -3785,7 +3727,7 @@
       {
         "why": "Digital dimension of strategic transformation.",
         "area": "ISM",
-        "term": "IV",
+        "term": "Term V",
         "course": "Managing Digital Transformation",
         "credits": "3",
         "faculty": "Prof. A Manish Kumar"
@@ -3793,10 +3735,10 @@
       {
         "why": "Corporate restructuring foundation.",
         "area": "Strategy",
-        "term": "IV",
+        "term": "Term IV",
         "course": "Corporate Strategy",
         "credits": "3",
-        "faculty": "Prof. Nilesh Khare & Prof. Aarti Singh"
+        "faculty": "Prof. Dr. Nilesh Khare & Prof. Dr. Aarti Singh"
       }
     ],
     "professor1_id": 66,
@@ -3805,7 +3747,7 @@
     "professor2_name": null,
     "faculty": "Prof. Sanjeev Kumar Govil",
     "created_at": "2026-04-11T18:33:09.718Z",
-    "updated_at": "2026-05-03T04:59:49.704Z"
+    "updated_at": "2026-05-04T15:10:57.453Z"
   },
   {
     "id": 82,
@@ -3835,7 +3777,7 @@
       {
         "why": "Same faculty — complementary tech focus.",
         "area": "Strategy",
-        "term": "IV",
+        "term": "Term IV",
         "course": "Working with AI",
         "credits": "1.5",
         "faculty": "Dr. Preet Deep Singh"
@@ -3843,10 +3785,10 @@
       {
         "why": "Structured business-plan development for ventures.",
         "area": "Strategy",
-        "term": "V",
+        "term": "Term V",
         "course": "Business Models & Plans",
         "credits": "3",
-        "faculty": "Dr. Sanyka Banerjee"
+        "faculty": "Prof. Prashant Salvan (Awaiting Approval)"
       }
     ],
     "professor1_id": 35,
@@ -3855,7 +3797,7 @@
     "professor2_name": null,
     "faculty": "Dr. Preet Deep Singh",
     "created_at": "2026-04-11T18:33:09.898Z",
-    "updated_at": "2026-05-03T06:13:26.742Z"
+    "updated_at": "2026-05-04T15:10:57.598Z"
   },
   {
     "id": 83,
@@ -3877,15 +3819,15 @@
       {
         "why": "Strategic management foundation.",
         "area": "Strategy",
-        "term": "IV",
+        "term": "Term IV",
         "course": "Corporate Strategy",
         "credits": "3",
-        "faculty": "Prof. Nilesh Khare & Prof. Aarti Singh"
+        "faculty": "Prof. Dr. Nilesh Khare & Prof. Dr. Aarti Singh"
       },
       {
         "why": "Analytical depth for strategic problem-solving.",
         "area": "Strategy",
-        "term": "VI",
+        "term": "Term VI",
         "course": "Systems Thinking for Management Consulting",
         "credits": "1.5",
         "faculty": "Prof. Dr. Aarti Singh"
@@ -3893,7 +3835,7 @@
       {
         "why": "Practitioner complement to strategic thinking.",
         "area": "Strategy",
-        "term": "V",
+        "term": "Term V",
         "course": "Managing a Consulting Business: A Practitioner's Perspective",
         "credits": "1.5",
         "faculty": "Prof. Sandeep Kumar Hota"
@@ -3905,7 +3847,7 @@
     "professor2_name": null,
     "faculty": "Prof. Diptiprakash Pradhan",
     "created_at": "2026-04-11T18:33:10.078Z",
-    "updated_at": "2026-04-16T07:06:14.531Z"
+    "updated_at": "2026-05-04T15:10:57.753Z"
   },
   {
     "id": 84,
@@ -3927,7 +3869,7 @@
       {
         "why": "Same faculty — strategic flexibility foundation.",
         "area": "Strategy",
-        "term": "V",
+        "term": "Term V",
         "course": "Current and Emerging Trends in Strategy",
         "credits": "1.5",
         "faculty": "Prof. Dr. Aarti Singh"
@@ -3935,7 +3877,7 @@
       {
         "why": "Practice-focused consulting course.",
         "area": "Strategy",
-        "term": "V",
+        "term": "Term V",
         "course": "Managing a Consulting Business: A Practitioner's Perspective",
         "credits": "1.5",
         "faculty": "Prof. Sandeep Kumar Hota"
@@ -3943,9 +3885,9 @@
       {
         "why": "Operational application of system-dynamics simulation.",
         "area": "Operations",
-        "term": "V",
+        "term": "Term V",
         "course": "Supply Chain Simulation for Managerial Decision-Making",
-        "credits": "3",
+        "credits": "1.5",
         "faculty": "Prof. Bhawana Rathore & Mr. Ayan Das"
       }
     ],
@@ -3955,7 +3897,7 @@
     "professor2_name": null,
     "faculty": "Prof. Dr. Aarti Singh",
     "created_at": "2026-04-11T18:33:10.298Z",
-    "updated_at": "2026-05-03T05:01:20.398Z"
+    "updated_at": "2026-05-04T15:10:57.897Z"
   },
   {
     "id": 86,
@@ -3977,7 +3919,7 @@
       {
         "why": "Next-level AI course on autonomous systems.",
         "area": "ISM",
-        "term": "V",
+        "term": "Term V",
         "course": "Agentic AI for Managers",
         "credits": "3",
         "faculty": "Prof. Kumari Pritee"
@@ -3985,15 +3927,15 @@
       {
         "why": "Conceptual foundation for business AI strategy.",
         "area": "ISM",
-        "term": "IV",
+        "term": "Term IV",
         "course": "AI for Business",
-        "credits": "3",
-        "faculty": "Prof. Deepanwita Datta"
+        "credits": "1.5",
+        "faculty": "Dr. Ashish Sharma"
       },
       {
         "why": "Same faculty — complementary entrepreneurial framing.",
         "area": "Strategy",
-        "term": "IV",
+        "term": "Term IV",
         "course": "Startup Mindset",
         "credits": "1.5",
         "faculty": "Dr. Preet Deep Singh"
@@ -4005,7 +3947,7 @@
     "professor2_name": null,
     "faculty": "Dr. Preet Deep Singh",
     "created_at": "2026-04-11T18:33:10.678Z",
-    "updated_at": "2026-04-14T16:38:12.312Z"
+    "updated_at": "2026-05-04T15:10:58.041Z"
   },
   {
     "id": 89,
@@ -4027,7 +3969,7 @@
       {
         "why": "Strategic pricing decisions are pure game-theoretic problems.",
         "area": "GMPPE",
-        "term": "IV",
+        "term": "Term IV",
         "course": "Pricing Strategy for Managerial Decision Making",
         "credits": "3",
         "faculty": "Prof. Ashutosh K. Tripathi"
@@ -4035,7 +3977,7 @@
       {
         "why": "Negotiation theory builds on bargaining-game concepts.",
         "area": "OB-HR",
-        "term": "IV",
+        "term": "Term IV",
         "course": "Conflict Management & Negotiation",
         "credits": "3",
         "faculty": "Prof. Padmavathy Dhillon"
@@ -4043,7 +3985,7 @@
       {
         "why": "Behavioural lens on how real decisions deviate from game-theoretic predictions.",
         "area": "Inter Area Electives",
-        "term": "VI",
+        "term": "Term VI",
         "course": "Behavioural Strategy and Decision Making",
         "credits": "1.5",
         "faculty": "Prof. Shikha Bhardwaj & Prof. Diptiranjan Mahapatra"
@@ -4055,7 +3997,7 @@
     "professor2_name": null,
     "faculty": "Prof. Soumya Kanta Mishra",
     "created_at": "2026-04-11T18:33:11.218Z",
-    "updated_at": "2026-04-14T16:38:12.312Z"
+    "updated_at": "2026-05-04T15:10:58.186Z"
   },
   {
     "id": 90,
@@ -4077,7 +4019,7 @@
       {
         "why": "Extends governance discussions into geopolitics and climate policy.",
         "area": "Inter Area Electives",
-        "term": "IV",
+        "term": "Term VI",
         "course": "Nonmarket Strategy: Focus on Geopolitics and Climate Change",
         "credits": "1.5",
         "faculty": "Prof. Diptiranjan Mahapatra & Prof. Sumita Sindhi"
@@ -4085,7 +4027,7 @@
       {
         "why": "Labour law perspective within broader governance.",
         "area": "OB-HR",
-        "term": "V",
+        "term": "Term V",
         "course": "Managing Employee Relations & Employment Laws",
         "credits": "3",
         "faculty": "Prof. Debi S. Saini"
@@ -4093,10 +4035,10 @@
       {
         "why": "Strategic framing for regulatory and governance challenges.",
         "area": "Strategy",
-        "term": "IV",
+        "term": "Term IV",
         "course": "Corporate Strategy",
         "credits": "3",
-        "faculty": "Prof. Nilesh Khare & Prof. Aarti Singh"
+        "faculty": "Prof. Dr. Nilesh Khare & Prof. Dr. Aarti Singh"
       }
     ],
     "professor1_id": 6,
@@ -4105,7 +4047,7 @@
     "professor2_name": null,
     "faculty": "Prof. Sujit Kumar Pruseth",
     "created_at": "2026-04-11T18:33:11.418Z",
-    "updated_at": "2026-04-14T16:38:12.312Z"
+    "updated_at": "2026-05-06T16:19:40.504Z"
   },
   {
     "id": 91,
@@ -4127,15 +4069,15 @@
       {
         "why": "Marketing-focused pricing extension covering value-based pricing frameworks.",
         "area": "Marketing",
-        "term": "V",
+        "term": "Term IV",
         "course": "Pricing & Policy",
         "credits": "1.5",
-        "faculty": "Prof. Akanksha Mishra"
+        "faculty": "Prof. Jishnu Changkakoti"
       },
       {
         "why": "Game theory directly informs competitive pricing decisions.",
         "area": "GMPPE",
-        "term": "V",
+        "term": "Term V",
         "course": "Game Theory and Strategic Decision Making",
         "credits": "3",
         "faculty": "Prof. Soumya Kanta Mishra"
@@ -4143,7 +4085,7 @@
       {
         "why": "Operational implementation of dynamic pricing models.",
         "area": "Operations",
-        "term": "VI",
+        "term": "Term VI",
         "course": "Revenue Management & Dynamic Pricing",
         "credits": "1.5",
         "faculty": "Prof. Rohit Gupta"
@@ -4155,7 +4097,7 @@
     "professor2_name": null,
     "faculty": "Prof. Ashutosh K. Tripathi",
     "created_at": "2026-04-11T18:33:11.648Z",
-    "updated_at": "2026-05-03T04:33:53.311Z"
+    "updated_at": "2026-05-04T15:10:58.481Z"
   },
   {
     "id": 92,
@@ -4177,23 +4119,15 @@
       {
         "why": "Strategic and operational lens on the economic concepts covered here.",
         "area": "Strategy",
-        "term": "IV",
+        "term": "Term IV",
         "course": "International Business",
         "credits": "3",
         "faculty": "Prof. Aqueeb Sohail Shaik"
       },
       {
-        "why": "Financial-system depth on exchange rates and cross-border capital flows.",
-        "area": "Finance",
-        "term": "VI",
-        "course": "International Finance",
-        "credits": "3",
-        "faculty": "Prof. BB Chakrabarti"
-      },
-      {
         "why": "Geopolitical context that shapes international economic relations.",
         "area": "Inter Area Electives",
-        "term": "IV",
+        "term": "Term VI",
         "course": "Nonmarket Strategy: Focus on Geopolitics and Climate Change",
         "credits": "1.5",
         "faculty": "Prof. Diptiranjan Mahapatra & Prof. Sumita Sindhi"
@@ -4205,7 +4139,7 @@
     "professor2_name": null,
     "faculty": "Prof. Anasuya Haldar",
     "created_at": "2026-04-11T18:33:11.823Z",
-    "updated_at": "2026-04-14T16:38:12.312Z"
+    "updated_at": "2026-05-06T16:21:49.385Z"
   },
   {
     "id": 93,
@@ -4227,15 +4161,15 @@
       {
         "why": "Strategic framework that behavioural strategy critiques and enriches.",
         "area": "Strategy",
-        "term": "IV",
+        "term": "Term IV",
         "course": "Corporate Strategy",
         "credits": "3",
-        "faculty": "Prof. Nilesh Khare & Prof. Aarti Singh"
+        "faculty": "Prof. Dr. Nilesh Khare & Prof. Dr. Aarti Singh"
       },
       {
         "why": "Same faculty — interpersonal decision-making and psychology.",
         "area": "OB-HR",
-        "term": "IV",
+        "term": "Term IV",
         "course": "Games People Play",
         "credits": "1.5",
         "faculty": "Prof. Shikha Bhardwaj"
@@ -4243,7 +4177,7 @@
       {
         "why": "Direct application of behavioural biases in investment decisions.",
         "area": "Finance",
-        "term": "VI",
+        "term": "Term VI",
         "course": "Ethical Trading Strategy",
         "credits": "3",
         "faculty": "Prof. Dharen Kumar Pandey"
@@ -4255,7 +4189,7 @@
     "professor2_name": "Prof. Diptiranjan Mahapatra",
     "faculty": "Prof. Shikha Bhardwaj & Prof. Diptiranjan Mahapatra",
     "created_at": "2026-04-11T18:33:12.038Z",
-    "updated_at": "2026-04-14T16:38:12.312Z"
+    "updated_at": "2026-05-04T15:10:58.781Z"
   },
   {
     "id": 94,
@@ -4277,7 +4211,7 @@
       {
         "why": "Entrepreneurial thinking that grounds financial decisions.",
         "area": "Strategy",
-        "term": "IV",
+        "term": "Term IV",
         "course": "Startup Mindset",
         "credits": "1.5",
         "faculty": "Dr. Preet Deep Singh"
@@ -4285,7 +4219,7 @@
       {
         "why": "Valuation rigour for private-company contexts.",
         "area": "Finance",
-        "term": "V",
+        "term": "Term V",
         "course": "Business Analysis and Valuation",
         "credits": "3",
         "faculty": "Prof. Saumya Ranjan Das"
@@ -4305,12 +4239,12 @@
     "professor2_name": "Prof. Diwahar Nadar",
     "faculty": "Prof. Bhairab Chandra Patra & Prof. Diwahar Nadar",
     "created_at": "2026-04-11T18:33:12.238Z",
-    "updated_at": "2026-05-03T07:37:57.222Z"
+    "updated_at": "2026-05-04T15:10:58.926Z"
   },
   {
     "id": 95,
     "area": "Inter Area Electives",
-    "term": "Term IV",
+    "term": "Term VI",
     "course": "Nonmarket Strategy: Focus on Geopolitics and Climate Change",
     "credits": 1.5,
     "description": "Given the increased volatility and uncertainty engendered by a multipolar world economy, non-market variables have increasingly become significant inputs driving strategy making and actions of businesses. No longer it is safe and correct for organizations to stay aloof from goings-on as diverse as activism, political risk, regulatory environment, racial discrimination, immigrants’ issue, political lobbying and so on. Seemingly detached from its impact on firm’s business, increasingly these issues are likely to have subtle and not-so subtle implications on bottom line. Put it another way, NMS recognizes that businesses are not just solely economic agents seeking to maximize profits businesses but also operate in the realm of social and political context. Yet, few companies/ managers are equipped with tools and frameworks to developing an effective nonmarket strategy. Stemming from this, our motivation to develop NMS has been our curiosity to understand why some companies despite being a stellar performer in market environment often find it difficult to manoeuvre in non-market context; and in similar vein why some businesses are quite adept at manoeuvring nonmarket environment at ease",
@@ -4327,10 +4261,10 @@
       {
         "why": "Market-strategy foundation that nonmarket strategy complements.",
         "area": "Strategy",
-        "term": "IV",
+        "term": "Term IV",
         "course": "Corporate Strategy",
         "credits": "3",
-        "faculty": "Prof. Nilesh Khare & Prof. Aarti Singh"
+        "faculty": "Prof. Dr. Nilesh Khare & Prof. Dr. Aarti Singh"
       },
       {
         "why": "Legal and governance dimensions of nonmarket strategy.",
@@ -4355,7 +4289,7 @@
     "professor2_name": "Prof. Sumita Sindhi",
     "faculty": "Prof. Diptiranjan Mahapatra & Prof. Sumita Sindhi",
     "created_at": "2026-04-11T18:33:12.458Z",
-    "updated_at": "2026-05-03T06:13:27.062Z"
+    "updated_at": "2026-05-06T08:30:30.550Z"
   },
   {
     "id": 96,
@@ -4377,7 +4311,7 @@
       {
         "why": "Same faculty — talent development foundation.",
         "area": "OB-HR",
-        "term": "V",
+        "term": "Term V",
         "course": "Competency and Talent Management",
         "credits": "3",
         "faculty": "Prof. Atri Sengupta & Dr. Dinesh Murugesan"
@@ -4385,7 +4319,7 @@
       {
         "why": "Complementary leadership development focus.",
         "area": "OB-HR",
-        "term": "VI",
+        "term": "Term VI",
         "course": "Leading with Cultural Agility",
         "credits": "1.5",
         "faculty": "Prof. Shubhi Gupta"
@@ -4393,7 +4327,7 @@
       {
         "why": "Coaching is central to performance conversations.",
         "area": "OB-HR",
-        "term": "V",
+        "term": "Term V",
         "course": "Performance and Compensation Management",
         "credits": "3",
         "faculty": "Prof. Shubhi Gupta"
@@ -4405,7 +4339,7 @@
     "professor2_name": "Mr. Anamitra Chatterjee",
     "faculty": "Prof. Atri Sengupta & Mr. Anamitra Chatterjee",
     "created_at": "2026-04-11T18:33:12.638Z",
-    "updated_at": "2026-04-14T16:38:12.312Z"
+    "updated_at": "2026-05-04T15:10:59.213Z"
   },
   {
     "id": 97,
@@ -4427,7 +4361,7 @@
       {
         "why": "Natural companion focusing on performance and rewards.",
         "area": "OB-HR",
-        "term": "V",
+        "term": "Term V",
         "course": "Performance and Compensation Management",
         "credits": "3",
         "faculty": "Prof. Shubhi Gupta"
@@ -4435,7 +4369,7 @@
       {
         "why": "Data-driven approach to talent decisions.",
         "area": "OB-HR",
-        "term": "VI",
+        "term": "Term VI",
         "course": "HR Analytics",
         "credits": "3",
         "faculty": "Prof. Padmavathy Dhillon"
@@ -4455,7 +4389,7 @@
     "professor2_name": "Dr. Dinesh Murugesan",
     "faculty": "Prof. Atri Sengupta & Dr. Dinesh Murugesan",
     "created_at": "2026-04-11T18:33:12.864Z",
-    "updated_at": "2026-05-03T06:13:27.222Z"
+    "updated_at": "2026-05-04T15:10:59.357Z"
   },
   {
     "id": 98,
@@ -4477,7 +4411,7 @@
       {
         "why": "Complementary toolkit for interpersonal disputes within teams.",
         "area": "OB-HR",
-        "term": "IV",
+        "term": "Term IV",
         "course": "Conflict Management & Negotiation",
         "credits": "3",
         "faculty": "Prof. Padmavathy Dhillon"
@@ -4485,7 +4419,7 @@
       {
         "why": "Same faculty — cross-cultural team leadership extension.",
         "area": "OB-HR",
-        "term": "VI",
+        "term": "Term VI",
         "course": "Leading with Cultural Agility",
         "credits": "1.5",
         "faculty": "Prof. Shubhi Gupta"
@@ -4493,7 +4427,7 @@
       {
         "why": "Same faculty — team performance management context.",
         "area": "OB-HR",
-        "term": "V",
+        "term": "Term V",
         "course": "Performance and Compensation Management",
         "credits": "3",
         "faculty": "Prof. Shubhi Gupta"
@@ -4505,7 +4439,7 @@
     "professor2_name": null,
     "faculty": "Prof. Shubhi Gupta",
     "created_at": "2026-04-11T18:33:13.058Z",
-    "updated_at": "2026-05-03T04:40:06.022Z"
+    "updated_at": "2026-05-04T15:10:59.502Z"
   },
   {
     "id": 99,
@@ -4535,7 +4469,7 @@
       {
         "why": "Negotiation skills directly relevant to collective bargaining.",
         "area": "OB-HR",
-        "term": "IV",
+        "term": "Term IV",
         "course": "Conflict Management & Negotiation",
         "credits": "3",
         "faculty": "Prof. Padmavathy Dhillon"
@@ -4543,7 +4477,7 @@
       {
         "why": "Compensation and performance frameworks that interact with ER.",
         "area": "OB-HR",
-        "term": "V",
+        "term": "Term V",
         "course": "Performance and Compensation Management",
         "credits": "3",
         "faculty": "Prof. Shubhi Gupta"
@@ -4555,7 +4489,7 @@
     "professor2_name": null,
     "faculty": "Prof. Debi S. Saini",
     "created_at": "2026-04-11T18:33:13.278Z",
-    "updated_at": "2026-05-03T06:13:27.382Z"
+    "updated_at": "2026-05-04T15:10:59.645Z"
   },
   {
     "id": 100,
@@ -4577,7 +4511,7 @@
       {
         "why": "Theoretical foundation for bargaining-game analysis.",
         "area": "GMPPE",
-        "term": "V",
+        "term": "Term V",
         "course": "Game Theory and Strategic Decision Making",
         "credits": "3",
         "faculty": "Prof. Soumya Kanta Mishra"
@@ -4585,7 +4519,7 @@
       {
         "why": "Cross-cultural negotiation and communication depth.",
         "area": "OB-HR",
-        "term": "VI",
+        "term": "Term VI",
         "course": "Leading with Cultural Agility",
         "credits": "1.5",
         "faculty": "Prof. Shubhi Gupta"
@@ -4593,7 +4527,7 @@
       {
         "why": "Team-level conflict and communication patterns.",
         "area": "OB-HR",
-        "term": "IV",
+        "term": "Term IV",
         "course": "Decoding Team Dynamics",
         "credits": "1.5",
         "faculty": "Prof. Shubhi Gupta"
@@ -4605,7 +4539,7 @@
     "professor2_name": null,
     "faculty": "Prof. Padmavathy Dhillon",
     "created_at": "2026-04-11T18:33:13.458Z",
-    "updated_at": "2026-04-14T16:38:12.312Z"
+    "updated_at": "2026-05-04T15:10:59.789Z"
   },
   {
     "id": 101,
@@ -4627,7 +4561,7 @@
       {
         "why": "Broader analytics toolkit applicable to HR.",
         "area": "ISM",
-        "term": "IV",
+        "term": "Term IV",
         "course": "Business Analytics for Managerial Decisions",
         "credits": "3",
         "faculty": "Prof. Atanu Dey"
@@ -4635,7 +4569,7 @@
       {
         "why": "Domain context for HR analytics applications.",
         "area": "OB-HR",
-        "term": "V",
+        "term": "Term V",
         "course": "Performance and Compensation Management",
         "credits": "3",
         "faculty": "Prof. Shubhi Gupta"
@@ -4643,7 +4577,7 @@
       {
         "why": "Visualisation skills for presenting HR analytics to leadership.",
         "area": "ISM",
-        "term": "IV",
+        "term": "Term IV",
         "course": "Data Visualization and Business Storytelling",
         "credits": "3",
         "faculty": "Prof. Atanu Dey & Prof. Siddharth Gaurav Majhi"
@@ -4655,7 +4589,7 @@
     "professor2_name": null,
     "faculty": "Prof. Padmavathy Dhillon",
     "created_at": "2026-04-11T18:33:13.678Z",
-    "updated_at": "2026-05-03T04:41:20.704Z"
+    "updated_at": "2026-05-04T15:10:59.934Z"
   },
   {
     "id": 102,
@@ -4677,7 +4611,7 @@
       {
         "why": "Same faculty — strategic-level behavioural analysis.",
         "area": "Inter Area Electives",
-        "term": "VI",
+        "term": "Term VI",
         "course": "Behavioural Strategy and Decision Making",
         "credits": "1.5",
         "faculty": "Prof. Shikha Bhardwaj & Prof. Diptiranjan Mahapatra"
@@ -4685,7 +4619,7 @@
       {
         "why": "Practical skills for the games identified here.",
         "area": "OB-HR",
-        "term": "IV",
+        "term": "Term IV",
         "course": "Conflict Management & Negotiation",
         "credits": "3",
         "faculty": "Prof. Padmavathy Dhillon"
@@ -4693,7 +4627,7 @@
       {
         "why": "Formal game theory that underlies these interpersonal games.",
         "area": "GMPPE",
-        "term": "V",
+        "term": "Term V",
         "course": "Game Theory and Strategic Decision Making",
         "credits": "3",
         "faculty": "Prof. Soumya Kanta Mishra"
@@ -4705,7 +4639,7 @@
     "professor2_name": null,
     "faculty": "Prof. Shikha Bhardwaj",
     "created_at": "2026-04-11T18:33:13.878Z",
-    "updated_at": "2026-04-14T16:38:12.312Z"
+    "updated_at": "2026-05-04T15:11:00.182Z"
   },
   {
     "id": 103,
@@ -4727,7 +4661,7 @@
       {
         "why": "Same faculty — foundational team-dynamics lens.",
         "area": "OB-HR",
-        "term": "IV",
+        "term": "Term IV",
         "course": "Decoding Team Dynamics",
         "credits": "1.5",
         "faculty": "Prof. Shubhi Gupta"
@@ -4735,7 +4669,7 @@
       {
         "why": "Cross-cultural negotiation extension.",
         "area": "OB-HR",
-        "term": "IV",
+        "term": "Term IV",
         "course": "Conflict Management & Negotiation",
         "credits": "3",
         "faculty": "Prof. Padmavathy Dhillon"
@@ -4743,7 +4677,7 @@
       {
         "why": "Strategic context for global leadership.",
         "area": "Strategy",
-        "term": "IV",
+        "term": "Term IV",
         "course": "International Business",
         "credits": "3",
         "faculty": "Prof. Aqueeb Sohail Shaik"
@@ -4755,7 +4689,7 @@
     "professor2_name": null,
     "faculty": "Prof. Shubhi Gupta",
     "created_at": "2026-04-11T18:33:14.058Z",
-    "updated_at": "2026-05-03T04:42:26.789Z"
+    "updated_at": "2026-05-04T15:11:00.325Z"
   },
   {
     "id": 104,
@@ -4777,7 +4711,7 @@
       {
         "why": "Technology-side complement to the people-side focus here.",
         "area": "ISM",
-        "term": "IV",
+        "term": "Term V",
         "course": "Managing Digital Transformation",
         "credits": "3",
         "faculty": "Prof. A Manish Kumar"
@@ -4785,7 +4719,7 @@
       {
         "why": "Strategic-level view of transformation.",
         "area": "Strategy",
-        "term": "V",
+        "term": "Term V",
         "course": "Managing Strategic Transformations",
         "credits": "1.5",
         "faculty": "Prof. Sanjeev Kumar Govil"
@@ -4793,7 +4727,7 @@
       {
         "why": "Same faculty — interpersonal dynamics during change.",
         "area": "OB-HR",
-        "term": "IV",
+        "term": "Term IV",
         "course": "Games People Play",
         "credits": "1.5",
         "faculty": "Prof. Shikha Bhardwaj"
@@ -4805,7 +4739,7 @@
     "professor2_name": null,
     "faculty": "Prof. Shikha Bhardwaj",
     "created_at": "2026-04-11T18:33:14.258Z",
-    "updated_at": "2026-04-14T16:38:12.312Z"
+    "updated_at": "2026-05-04T15:11:00.470Z"
   },
   {
     "id": 105,
@@ -4827,7 +4761,7 @@
       {
         "why": "Upstream talent frameworks that feed performance management.",
         "area": "OB-HR",
-        "term": "V",
+        "term": "Term V",
         "course": "Competency and Talent Management",
         "credits": "3",
         "faculty": "Prof. Atri Sengupta & Dr. Dinesh Murugesan"
@@ -4835,7 +4769,7 @@
       {
         "why": "Data-driven approach to performance decisions.",
         "area": "OB-HR",
-        "term": "VI",
+        "term": "Term VI",
         "course": "HR Analytics",
         "credits": "3",
         "faculty": "Prof. Padmavathy Dhillon"
@@ -4843,7 +4777,7 @@
       {
         "why": "Same faculty — team-level foundation for performance.",
         "area": "OB-HR",
-        "term": "IV",
+        "term": "Term IV",
         "course": "Decoding Team Dynamics",
         "credits": "1.5",
         "faculty": "Prof. Shubhi Gupta"
@@ -4855,14 +4789,14 @@
     "professor2_name": null,
     "faculty": "Prof. Shubhi Gupta",
     "created_at": "2026-04-11T18:33:14.438Z",
-    "updated_at": "2026-04-14T16:38:12.312Z"
+    "updated_at": "2026-05-04T15:11:00.709Z"
   },
   {
     "id": 106,
     "area": "Finance",
     "term": "Term VI",
     "course": "Financial Technology",
-    "credits": 3,
+    "credits": 1.5,
     "description": "Technology is playing an increasingly dominant role in the financial services industry, empowering existing players and threatening to obliviate business models of entire sectors within the industry. The course exposes students to this fast-growing and exciting intersection between technology and finance – P2P lending, Loan processing, Blockchains, crypto currency, Bitcoins, electronic payments, financial applications of machine learning, robo-advising, algorithmic trading, digital transformation in banks, central bank digital currency, new approaches to KYC and AML, regulation of Fintech and fintech venture funding and other topics.",
     "key_takeaways": "1. Fintech industry overview and ecosystem\n2. P2P Lending – mechanisms, credit risk, and regulation\n3. Cryptography and encryption algorithms\n4. Blockchain / Distributed Ledger Technology and its applications\n5. Crypto currency and Bitcoin\n6. Initial Coin Offerings (ICO, STO, IEO)\n7. Electronic payments and fintech payment models\n8. Robo-advising and its impact on wealth management\n9. Machine learning, Algorithmic trading and High-Frequency Trading (HFT)\n10. Digital transformation in banks\n11. Central Bank Digital Currencies (CBDCs)\n12. AML and KYC – new approaches\n13. InsurTech – concepts, applications, and business models\n14. RegTech – regulatory technology and SupTech\n15. Disruptive Technologies (Quantum computing, DAPPs)\n16. Project evaluation for Fintech ventures and start-up funding (VC, crowdfunding)",
     "prerequisites": "Nil",
@@ -4891,16 +4825,16 @@
         "term": "Term VI",
         "course": "Financial Risk Management",
         "credits": "3",
-        "faculty": "Awaiting Approval"
+        "faculty": "Mr. Jitender Arora & Dr. Nishi Malhotra"
       }
     ],
-    "professor1_id": 121,
+    "professor1_id": 125,
     "professor2_id": null,
-    "professor1_name": "Awaiting Approval",
+    "professor1_name": "Mr. Priyadarshi Dutta",
     "professor2_name": null,
-    "faculty": "Awaiting Approval",
+    "faculty": "Mr. Priyadarshi Dutta",
     "created_at": "2026-05-02T04:31:26.243Z",
-    "updated_at": "2026-05-03T06:13:27.542Z"
+    "updated_at": "2026-05-06T16:19:40.920Z"
   },
   {
     "id": 107,
@@ -4936,7 +4870,7 @@
         "term": "Term VI",
         "course": "Financial Risk Management",
         "credits": "3",
-        "faculty": "Awaiting Approval"
+        "faculty": "Mr. Jitender Arora & Dr. Nishi Malhotra"
       }
     ],
     "professor1_id": 117,
@@ -4945,7 +4879,7 @@
     "professor2_name": null,
     "faculty": "Prof. Wasim Ahmad",
     "created_at": "2026-05-02T04:31:26.535Z",
-    "updated_at": "2026-05-02T14:24:58.336Z"
+    "updated_at": "2026-05-06T16:19:41.128Z"
   },
   {
     "id": 108,
